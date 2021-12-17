@@ -1,0 +1,10 @@
+C = 3;%number of powerplants
+N = 5;%number of days
+K = 3;%number of skills
+S = 3;%number of specialists
+
+dist = array2d(1..C, 1..C,[0,1,1,1,0,1,1,1,0]);
+demand = [35,33,30,35,35];
+prod = [10,12,15];
+skills = array2d(1..S, 1..K,[1,0,0,0,1,1,0,1,1]);
+skills_req = array2d(1..C, 1..K,[1,1,1,0,2,2,1,2,2]);
