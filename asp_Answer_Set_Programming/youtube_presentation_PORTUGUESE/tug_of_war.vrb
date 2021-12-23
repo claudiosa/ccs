@@ -3,9 +3,9 @@
 \begin{block}{}
 \begin{itemize}
 
-  \item ASP is strongly declarative (roots from the logic to attack the problems representation)
+  \item ASP is strongly declarative (roots from the logic to attack the  representation and combinatorial problems)
 
-  \item Generate and test methodology
+  \item A methodology generate and test to developing
 
   \item ASP's workflow, modeling, grounding, solving
     (and optimizing)
