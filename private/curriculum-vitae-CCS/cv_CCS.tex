@@ -48,8 +48,7 @@
 %%% Macros
 %%% ------------------------------------------------------------
 \newlength{\spacebox}
-%%% NUMBER OF CHARs
-\settowidth{\spacebox}{11111111111111111}			% Box to align text
+\settowidth{\spacebox}{8888888888}			% Box to align text
 \newcommand{\sepspace}{\vspace*{0.8em}}		% Vertical space macro
 
 \newcommand{\MyName}[1]{ % Name
@@ -69,10 +68,10 @@
 		\hspace{1.5em} #2 \par}    % Entry value
 
 \newcommand{\SkillsEntry}[2]{      % Same as \PersonalEntry
-		\noindent\hangindent=1em\hangafter=0 % Indentation
+		\noindent\hangindent=2em\hangafter=0 % Indentation
 		\parbox{\spacebox}{        % Box to align text
 		\textit{#1}}			   % Entry name (birth, address, etc.)
-		\hspace{1.2em} #2 \par}    % Entry value	
+		\hspace{1.5em} #2 \par}    % Entry value	
 		
 \newcommand{\EducationEntry}[4]{
 		\noindent \textbf{#1} \hfill      % Study
@@ -112,14 +111,9 @@
 
 \begin{comment}
 My name is Claudio and I am a retired professor of Computer Science in Brazil. So, it is not a conventional CV expected for you, once that I aiming news and different challenges in this new step of my life. It brings only highlights of my professional career, skills, and motivations. Everything in 2 pages \smiley{!}
-
-https://www.indeed.com/
-www.glassdoor.com
-www.monster.com
-
 \end{comment}
 
-I am a retired professor of Computer Science in Brazil after teaching for more than 36 years of courses like introduction to programming, symbolic artificial intelligence, mathematical logic, data structures and so much more. My experience involves mostly constraint programming, first-order logic, multi-paradigm programming, and declarative languages (e.g. PROLOG, PICAT, Haskell, Minizinc, C/C++, Python,  etc.). Now, I wish to start a new chapter of my career and I'm looking to shift towards helping solving industry-oriented real-world problems using the knowledge and expertise I acquired throughout my life. Positions related to academia are also welcome \smiley{!}
+I am a retired professor of Computer Science in Brazil after teaching for more than 35 years courses like introduction to programming, symbolic artificial intelligence, mathematical logic, data structures and so much more. My experience involve mostly constraint programming, first-order logic, multi-paradigm programming and declarative languages (e.g. PROLOG, PICAT, Haskell, Minizinc, C/C++, Python, etc.). Now, I wish to start a new chapter of my career and I'm looking to shift towards helping solving industry-oriented real-world problems using the knowledge and expertise I acquired throughout my life. Please, check the note about my {\em availability} at the end of this CV.
 \sepspace
 
 %%% Personal details
@@ -153,14 +147,17 @@ I am a retired professor of Computer Science in Brazil after teaching for more t
 %%% ------------------------------------------------------------
 \NewPart{Work experience}%{I am describing here, only, the most recent jobs:}
 
-\EducationEntry{Upwork}{2019 -- current}{\url{https://www.upwork.com/}, on-demand}{I had worked as a programmer in languages listed below, my profile is found in: \url{https://www.upwork.com/o/profiles/users/~019017be3783b12815/}. I am putting in hold on.}
+\EducationEntry{WhatsTV}{2021 -- current}{\url{https://www.whatstv.com.br/}}{I had worked technical support for users of our product. As well as, I have been contact/tests with many Web technologies.}
+\sepspace
+
+\EducationEntry{Upwork}{2019 -- 2021}{\url{https://www.upwork.com/} -- Eventually,  on-demand.}{I had worked as a programmer in languages listed below, my profile is found in: \url{https://www.upwork.com/o/profiles/users/~019017be3783b12815/}. I am putting in hold on.}
 \sepspace
 
 \EducationEntry{Modal Institute (Instituto Modal)}{2020--2020}{Full-time -- \url{https://institutomodal.org.br/}}
 {I worked for one month in a project with Prolog, consulting, training a team, and developer.}
 \sepspace
 
-\EducationEntry{Lecturer in Computer Science} {1986 -- 2019}{Many universities in Brazil as Computer Science professor}{During this period I taught and research in many universities in Brazil. The CNPq site brings a detailed CV about myself in: \underline{\url{http://lattes.cnpq.br/2946250323814779}}  This CV provided is strictly with an academic view. It is ommited due its size.}
+\EducationEntry{Lecturer in Computer Science} {1986 -- 2019}{Many universities in Brazil as Computer Science professor}{During this period I taught and research in many universities in Brazil. The CNPq site brings a detailed CV about myself in: \underline{\url{http://lattes.cnpq.br/2946250323814779}}  This CV provided is strictly with an academic view. It is omitted due its size.}
 
 
 %%% Skills
@@ -170,15 +167,15 @@ I am a retired professor of Computer Science in Brazil after teaching for more t
 \SkillsEntry{Operating System:} {\textsc{Windows}, \textsc{Linux}}
 
 \SkillsEntry{Programming:} {\textsc{C++} ($\medstar\hspace{-1mm}\medstar$), \textsc{C} ($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), \textsc{Python} ($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), \textsc{Picat} ($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$),  \textsc{Prolog} 
-($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), EcliPSE
+($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), ASP
 ($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), Haskell 
 ($\medstar\hspace{-1mm}\medstar\hspace{-1mm}\medstar$), BASH ($\medstar\hspace{-1mm}\medstar$) \\ where a $\medstar$: represents domain or fluency}
 
-\SkillsEntry{Solvers:} {\textsc{Minizinc}, \textsc{OPL}, \textsc{ECLiPSe} -- Constraint Logic Programming System}, \textsc{OR-TOOLS},  \textsc{Z3},... 
+\SkillsEntry{Solvers:} {\textsc{Minizinc}, \textsc{OPL},
+ \textsc{OR-TOOLS} and  \textsc{Answer Set Programming -- ASP}}
 
-\SkillsEntry{Text Processors:} {\textsc{LibreOffice}, \LaTeX, \textsc{EMACS}, ...}
+\SkillsEntry{Editors:} {\textsc{LibreOffice}, \LaTeX, \textsc{EMACS}}
 
-\SkillsEntry{Collaborative Tools:}  {\textsc{GitHub}, \textsc{Office365}, \textsc{Dropbox}, \textsc{MEGA}, ...}
 
 
 %%% References
@@ -216,16 +213,20 @@ I am a retired professor of Computer Science in Brazil after teaching for more t
 \SkillsEntry{}{Spanish (good -- except to write)}
 
 
-\NewPart{Availbility}{}
+\NewPart{Availability}{}
 
-At this moment, I am interested in a part-time job and remote. For the future, a changing country can be evaluated.
+Due my many reasons, at this moment, I am interested in a part-time job and remote. So, the consulting tasks has been more suitable for me. But, in the future, a changing country or city can be evaluated.
 
 %%% References
 %%% ------------------------------------------------------------
 \NewPart{Leisures}{}
 
 \SkillsEntry{Swimming:}{Active swimmer in open water competitions in Brazil -- level advanced in according my age!}
+\sepspace
+
+\SkillsEntry{My Youtube channel:} {\url{https://www.youtube.com/channel/UCdXNTAs1Sv7ARPr-TuViEUA}}
 
 \end{document}
+
 
 
