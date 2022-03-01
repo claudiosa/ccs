@@ -1,0 +1,19 @@
+{
+    "pets":   [ 
+        {
+            "name": "Frank",
+            "animal": "Dog",
+            "colour": "Blue"
+        },
+        {
+            "name": "Jim",
+            "animal": "Cat",
+            "colour": "Green"
+        },
+        {
+            "name": "Pam",
+            "animal": "Cow",
+            "colour": "Red"
+        }
+    ]
+}
