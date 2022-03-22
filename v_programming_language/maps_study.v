@@ -1,14 +1,19 @@
-/*
-by CCS
+import rand
 
-$ v  run functions_study.v
+/*
+Exploring maps and functions
+
+by CCS
+$ v  run maps_study.v 
 // Creating a executable
-$ v  functions_study.v -o an_executable.EXE
+$ v  maps_study.v  -o an_executable.EXE
 $ ./an_executable.EXE 
 */
 
+//
 fn my_hello () { println("\n Hello World!!!") }
 
+// an array in the argument
 fn my_ugly_sum (an_array[] int) int {
 	mut n := an_array.len
 	mut s := 0
@@ -18,34 +23,45 @@ fn my_ugly_sum (an_array[] int) int {
 	return s
 }
 
-	
-fn creating_a_map (size int) [  ] string {}   i16  {
-	
-	my_map := map[  ] string {} i16
-	mut temp := 'b'
-	mut key := 'a'
+//creating_a_map
+fn creating_a_map (size i16)  map [string] i32 {
+	mut my_map := map [string] i32 {} 
+	mut the_a := "a"
+	mut the_b := "b"
+	mut key := "a"
 
-	for _ in 1 .. size {
-		my_map[key] = size+100
-		temp = key + temp
-		key = temp
+	for _ in 0 .. size {
+		my_map[key] = rand.i16() % 128  // a random from -128 ... 127
+		key = key + the_b + the_a // concat string
 	}
-    print('\n My map in the function: ${my_map}' )
+    // print('\n My map in the function: ${my_map}' )
 	return my_map
-	
  }
-  
-  
+
+// receving and printing a map
+fn printing_a_map ( my_map map [string] i32) {
+	mut array_of_keys := my_map.keys()
+	// println(m.keys()) // ['one', 'two']
+	println("\n Printing a map:")
+	for i in array_of_keys {
+	  print('\n the key[${i}] has the contents:  ${my_map[i]} ' )
+	}
+    //print('\n My map in the function: ${array_of_keys}' )
+ }
+
 fn main() {	
-	// print('\n MY map: ${creating_a_map(10)}' )
-	// mut my_map := map [string] int{} OK
+    // mut my_map := map [string] int{} OK
 	// mut my_map := map [string] i16{} //OK
+	print('\n Creating map from a function: ${creating_a_map(10)}' )
+	printing_a_map(creating_a_map(4))
     my_hello() 
 	print('\n The ugly sum: ${ my_ugly_sum([4,5,6,7,8,9]) }'  )
-	mut my_map2 := map [string] i16{} //OK
-	my_map2['a'] = 1
-	my_map2['b'] = 2
-	print('\n MY map: ${my_map2}')
+	mut my_map_2 := map [string] i16{} //OK
+	my_map_2['a'] = 1
+	my_map_2['b'] = 2
+	print('\n MY map: ${my_map_2}')
 	println('\n BYE')
-	}
-/***********************************************/
+	
+}
+
+/************************************************************************/
