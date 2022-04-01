@@ -12,10 +12,18 @@ $ ./an_executable.EXE
 
 fn main() {	
 	an_array := ['check', 'whether', 'contains', 'an', 'element']
-	test1 := [rand.i64_in_range(0,64) ?]
-	test2 := [ rand.intn(69) ?]
-	test3 := ( rand.intn(69) )
-	x := ( rand.i64_in_range(0,64) ) 
+	test1 := [rand.i64_in_range(0,64) ?] // as an Option
+	test2 := [ rand.intn(69) ?] // as an Option
+	
+	
+	mut test3 := ( rand.intn(69) )      // ( ) as a function
+	print('\nGuessing :  ${test3} '  )
+	test3 = ( rand.intn(69) ?)
+    print('\nGuessing again:  ${test3} '  )
+	
+	
+	
+	x := ( rand.i64_in_range(0,64) ) // as a function
 	println('x: ${x}')
 	
 	//test3 := (rand.string_from_set({'ax': 'bx': 'cx': } , 2)  ?)
@@ -31,8 +39,7 @@ fn main() {
 	println('A number: ${an_array[rand.intn(an_array.len) ? ]}')
 
    /* println('A string: ${rand.string_from_set({'a','b','c'} , 2) ?}' )*/
-
-
+    
 	println('\n BYE')
 	
 }
