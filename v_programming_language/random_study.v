@@ -18,7 +18,7 @@ fn main() {
 	
 	mut test3 := ( rand.intn(69) )      // ( ) as a function
 	print('\nGuessing :  ${test3} '  )
-	test3 = ( rand.intn(69) ?)
+	test3 = ( rand.intn(69) )
     print('\nGuessing again:  ${test3} '  )
 	
 	
