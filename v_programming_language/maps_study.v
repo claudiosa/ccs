@@ -30,13 +30,16 @@ fn creating_a_map (size i16)  map [string] i32 {
 	mut the_a := "a"
 	mut the_b := "b"
 	mut key := "a"
+	mut a_value := math.abs(rand.i16()  % 69) //[ rand.intn(size)  ? ]
+	//print("\n .... ${a_value}")
 
 	for _ in 0 .. size {
 		//my_map[key] = math.abs(rand.i16()  % 128)  // a random from -128 ... 127
 		//my_map[key] = rand.i64() % 128   // a random from -128 ... 127 
 		//my_map[key] =  i32(rand.intn(size)) //?}  UNCOMPLETE
-		my_map[key] =  math.abs(rand.i16()  % size)  
+		my_map[key] = a_value  //math.abs(rand.i16()  % size)  
 		key = key + the_b + the_a // concat string
+		a_value = math.abs(rand.i16()  % 69) //new random
 	}
     // print('\n My map in the function: ${my_map}' )
 	return my_map
