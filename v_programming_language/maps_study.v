@@ -24,13 +24,20 @@ fn my_ugly_sum (an_array[] int) int {
 	return s
 }
 
+//RANDOM POSITIVE from intn
+fn my_rand_pos (MAX int) ? int {
+ 	return rand.intn(MAX)  
+}
+
+
 //creating_a_map
-fn creating_a_map (size i16)  map [string] i32 {
+fn creating_a_map (size i16)  map [string]  i32 {
 	mut my_map := map [string] i32 {} 
 	mut the_a := "a"
 	mut the_b := "b"
 	mut key := "a"
-	mut a_value := math.abs(rand.i16()  % 69) //[ rand.intn(size)  ? ]
+	//mut a_value := math.abs(rand.i16()  % 69) //[ rand.intn(size)  ? ]
+	mut a_value := ( my_rand_pos (79) )
 	//print("\n .... ${a_value}")
 
 	for _ in 0 .. size {
@@ -39,7 +46,8 @@ fn creating_a_map (size i16)  map [string] i32 {
 		//my_map[key] =  i32(rand.intn(size)) //?}  UNCOMPLETE
 		my_map[key] = a_value  //math.abs(rand.i16()  % size)  
 		key = key + the_b + the_a // concat string
-		a_value = math.abs(rand.i16()  % 69) //new random
+		a_value = ( my_rand_pos (79) )
+		//a_value = math.abs(rand.i16()  % 69) //new random
 	}
     // print('\n My map in the function: ${my_map}' )
 	return my_map
