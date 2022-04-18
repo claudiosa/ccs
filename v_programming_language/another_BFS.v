@@ -7,45 +7,39 @@
 
 fn breadth_first_search_path(graph map[string][]string, start string, target string) []string 
  {
-	mut path := []string{} // ONE PATH with SUCCESS = map
+	mut path := []string{} // ONE PATH with SUCCESS = array
 	mut queue := []string{} // a queue ... many paths
 	//all_nodes := graph.keys() // get a key of this map
-	n_nodes := graph.len // numbers of nodes
+	n_nodes := graph.len // numbers of nodes of this graph
 	mut visited := a_map_nodes_bool (n_nodes) // a map fully
 	//false ... not visited yet: {'A': false, 'B': false, 'C': false, 'D': false, 'E': false}
 	queue << [start] // first arrival
 
-   for (queue.len != 0) // or queue.len > 0
+	for (queue.len != 0) // or queue.len > 0
 	{
-        mut node := departure( mut queue ) // get the front node, but it not deleted
-	    if  visited[ node ] == false
-		{
-          // check if this already visited
-		  // if no ... test if is it a final node?
-		  visited[node] = true
+       mut node := departure( mut queue ) // get the front node and remove it
+	   if  visited[ node ] == false
+		{// check if this node is already visited
+		  // if no ... test it searchinf for a final node
+		  visited[node] = true // means: visit this node
 		  if node == target {
-			//path << node
-            path = build_path_reverse(graph, start, node, visited)
+		    path = build_path_reverse(graph, start, node, visited)
 			return path
 		}
-	// MISSING >>>> whereis the valid path????
-    // expansion of node removed from  queue
+	// expansion of node removed from  queue
 	print("\n Expansion of node ${node} (true/false): ${graph[node]}")
-		for vertex in graph[node]  // take  all nodes from the node
+	for vertex in graph[node]  // take  all nodes from the node
 		{
 		  //println("\n ...${vertex}")	
           if visited[vertex] == false // not explored yet
 		  {
            queue << vertex
 		  }
-      
 		}
 		print("\n QUEUE: ${queue} (only not visited) \n Visited: ${visited}")
 		}
-		
 	} 
-	//[]string{init: vertex}
-    path = ['Path not found, problem in the Graph, start or end nodes! ']
+	path = ['Path not found, problem in the Graph, start or end nodes! ']
 	return path
 }
 
@@ -63,15 +57,14 @@ fn main() {
 	path := breadth_first_search_path(graph, 'A', 'F')
 	println('\n The shortest path from node A to node F is: ${path.reverse()}')
 }
-
 //////////// AUX FUNCTIONS //////////////////
 // Creating a map for VISITED nodes ... 
 // starting by false ===> means this node 
 // was not visited yet
 fn a_map_nodes_bool (size int)  map [string]  bool {
-	mut my_map := map [string] bool {} 
+	mut my_map := map [string] bool {} // look this map ...
 	base := 65
-    mut	key := byte(base).ascii_str()
+	mut	key := byte(base).ascii_str()
 	for i in 0 .. size {
 		key = byte(base+i).ascii_str()
 		my_map[key] = false  
@@ -85,10 +78,10 @@ fn departure (mut queue [] string) string {
     queue.delete(0)
 	//print("\n a queue in the function ${queue}")
     return x
-
 }
-// Based in current node that is final,
-// search for his father, already visited, up to the root
+// Based in the current node that is final,
+// search for his father, already visited, up to the root or
+// start node
 fn build_path_reverse(graph map[string][]string, start string, final string, visited map [string] bool) []string {
 
 print("\n\n Nodes visited (true) or no (false): ${visited}")
