@@ -90,6 +90,8 @@ fn departure (mut queue [] string) string {
 // Based in current node that is final,
 // search for his father, already visited, up to the root
 fn build_path_reverse(graph map[string][]string, start string, final string, visited map [string] bool) []string {
+
+print("\n\n Nodes visited (true) or no (false): ${visited}")
 array_of_nodes := graph.keys()   
 mut current := final
 mut path := []string {}
@@ -110,6 +112,31 @@ return path
 }
 
 /*
+$ v run another_BFS.v 
+Graph: {'A': ['B', 'C'], 'B': ['A', 'D', 'E'], 'C': ['A', 'F'], 'D': ['B'], 'E': ['B', 'F'], 'F': ['C', 'E']}
+
+ Expansion of node A (true/false): ['B', 'C']
+ QUEUE: ['B', 'C'] (only not visited) 
+ Visited: {'A': true, 'B': false, 'C': false, 'D': false, 'E': false, 'F': false}
+ Expansion of node B (true/false): ['A', 'D', 'E']
+ QUEUE: ['C', 'D', 'E'] (only not visited) 
+ Visited: {'A': true, 'B': true, 'C': false, 'D': false, 'E': false, 'F': false}
+ Expansion of node C (true/false): ['A', 'F']
+ QUEUE: ['D', 'E', 'F'] (only not visited) 
+ Visited: {'A': true, 'B': true, 'C': true, 'D': false, 'E': false, 'F': false}
+ Expansion of node D (true/false): ['B']
+ QUEUE: ['E', 'F'] (only not visited) 
+ Visited: {'A': true, 'B': true, 'C': true, 'D': true, 'E': false, 'F': false}
+ Expansion of node E (true/false): ['B', 'F']
+ QUEUE: ['F', 'F'] (only not visited) 
+ Visited: {'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': false}
+
+ Nodes visited (true) or no (false): {'A': true, 'B': true, 'C': true, 'D': true, 'E': true, 'F': true}
+ The shortest path from node A to node F is: ['A', 'C', 'F']
+[ccs@vosges v_programming_language]$ 
+
+
+
 SOME TESTS
 >>> mut queue := []int{}
 >>> queue << [2]
@@ -125,4 +152,8 @@ SOME TESTS
 
 >>> println(graph['F'])
 ['C', 'E']
+ 
+ 
+ 
  */
+
