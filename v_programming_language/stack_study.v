@@ -1,7 +1,4 @@
 
-
-
-
 fn main() {
  
  mut a_stack := []int{}
@@ -26,11 +23,11 @@ print("\n Value of Stack: : ${a_stack} ")
 fn get_from_top(mut a_stack [] int) int{
      mut x := a_stack.first() //a.first() equivalent to a[0]
    //REMOVE IT
-    a_stack.delete(0) // del x positio
+    a_stack.delete(0) // del x position
 	return x
 }
 
-
+// FOR the FUTURE 
 // fn push (mut a_stack [] int , value int) []?{}   {
 //	a_stack.prepend(value)
 //  mut new_stack := a_stack.clone()

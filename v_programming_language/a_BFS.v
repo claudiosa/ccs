@@ -1,8 +1,8 @@
 //
 // Breadth-First Search (BFS) allows you to ﬁnd the shortest distance between two nodes in the graph.
-// Partially inspired from
+// Motivated from a solution in
 // https://github.com/vlang/v/blob/master/examples/bfs.v
-
+//
 // I  follow literally code in C, done many years ago
 
 fn breadth_first_search_path(graph map[string][]string, start string, target string) []string 
@@ -11,10 +11,12 @@ fn breadth_first_search_path(graph map[string][]string, start string, target str
 	mut queue := []string{} // a queue ... many paths
 	//all_nodes := graph.keys() // get a key of this map
 	n_nodes := graph.len // numbers of nodes of this graph
+    // a map to store all the nodes visited to avoid cycles
+	// start all them with False, not visited yet
 	mut visited := a_map_nodes_bool (n_nodes) // a map fully
-	//false ... not visited yet: {'A': false, 'B': false, 'C': false, 'D': false, 'E': false}
+	//false ==> not visited yet: {'A': false, 'B': false, 'C': false, 'D': false, 'E': false}
 	queue << [start] // first arrival
-
+    // WHILE 
 	for (queue.len != 0) // or queue.len > 0
 	{
        mut node := departure( mut queue ) // get the front node and remove it
@@ -26,11 +28,10 @@ fn breadth_first_search_path(graph map[string][]string, start string, target str
 		    path = build_path_reverse(graph, start, node, visited)
 			return path
 		}
-	// expansion of node removed from  queue
+	// Expansion of node removed from  queue
 	print("\n Expansion of node ${node} (true/false): ${graph[node]}")
 	for vertex in graph[node]  // take  all nodes from the node
-		{
-		  //println("\n ...${vertex}")	
+		{ //println("\n ...${vertex}")	
           if visited[vertex] == false // not explored yet
 		  {
            queue << vertex
@@ -92,9 +93,9 @@ path << current
 
 for ( current != start)
 {
-  	for i in array_of_nodes 
+	for i in array_of_nodes 
 	{
-	 if (current in graph[i]) && (visited[i]==true)
+	  if (current in graph[i]) && (visited[i]==true)
 	   { current = i
 		 break // the first ocurrence is enough
 	   }
@@ -143,10 +144,8 @@ SOME TESTS
 >>> print(queue)
 [21, 45, 67, 77]
 
->>> println(graph['F'])
+>>> println(graph['F'])   // very useful
 ['C', 'E']
- 
- 
  
  */
 
