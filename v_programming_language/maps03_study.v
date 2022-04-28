@@ -5,7 +5,7 @@ Exploring maps and functions
 by CCS
 $ v  run maps03_study.v 
 // Creating a executable
-$ v  maps02_study.v  -o an_executable.EXE
+$ v  maps03_study.v  -o an_executable.EXE
 $ ./an_executable.EXE 
 */
 
