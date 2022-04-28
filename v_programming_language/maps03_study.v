@@ -72,6 +72,25 @@ fn remove_node_from_graph(node string, a_map map [string] [] string ) map [strin
 	return new_graph
 }
 
+// input: a map with values, return the key with smallest value
+fn min_degree(a_map map [string] int ) string {
+   mut array_of_keys := a_map.keys() // get a key of this map
+   the_first := array_of_keys.first()
+   mut min := a_map[the_first]
+   mut key_min := the_first
+   // print("\n MIN: ${min} \t  key_min: ${key_min}  ")
+   for i in array_of_keys 
+	{ 
+	   if min > a_map[i] // there is a smaller
+	   {
+         min = a_map[i]
+		 key_min = i
+	   }
+	}
+	return key_min // the key with smallest value
+}
+
+
 fn main() {	
 // A map illustration to use in a graph
 // adjacency matrix
@@ -95,6 +114,7 @@ fn main() {
 	}
     //
 	//printing_a_map(graph)
+	print('\n Small Degree: ${min_degree( in_degree (graph_01) )}' )
 	print('\n Degree of this map:  ${in_degree (graph_01)}')
     print('\n New graph:  ${remove_node_from_graph ('F', graph_02)} ')
     print('\n New graph:  ${remove_node_from_graph ('A', graph_02)} ')
