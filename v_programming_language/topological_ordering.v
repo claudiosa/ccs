@@ -5,15 +5,13 @@ The idea of this algorithm follow :
 https://www.gatevidyalay.com/topological-sort-topological-sorting/
 https://en.wikipedia.org/wiki/Topological_sorting
 */
-//
 
+// the idea is rude: https://www.gatevidyalay.com/topological-sort-topological-sorting/
 fn topological_sort(graph map [string] [] string) [] string
 {
  	n_nodes := graph.len // numbers of nodes of this graph
 	mut top_order := [] string {} // a vector with sequence of nodes visited
-	// ad the end ... reverse it
-	//Ex ['C','A','B'] 
-
+	// ad the end ... 
     mut count := 0 //
 	/*
      IDEA ( a greedy algorythm):
@@ -32,8 +30,8 @@ fn topological_sort(graph map [string] [] string) [] string
    mut small_degree := min_degree(v_degree)
    mut new_graph := remove_node_from_graph(small_degree, graph)
    top_order << small_degree
-
    count++
+
    for(count < n_nodes)
    {
    v_degree = in_degree( new_graph ) //return: map [string] int 
@@ -101,7 +99,7 @@ fn remove_node_from_graph(node string, a_map map [string] [] string ) map [strin
    mut new_graph := a_map.clone() // copy the graph
    new_graph.delete(node)
    mut all_nodes := new_graph.keys() // get all nodes of this graph
-   // FOR THE FUTURE
+   // FOR THE FUTURE with filter
    //for i in all_nodes {
    //	   new_graph[i] = new_graph[i].filter(index(it) != node)	
    // }  
@@ -148,13 +146,11 @@ fn main() {
 		'10': []
 	}
 
-    //
 	//printing_a_map(graph)
 	
-    print('\n The Topological Order of G1:  ${topological_sort( graph_01)} ')
-    print('\n The Topological Order of G2:  ${topological_sort( graph_02)} ')
-	print('\n The Topological Order of G3:  ${topological_sort( graph_03)} ')
-    
-	println('\n BYE')
+    print('\n A Topological Sort of G1:  ${topological_sort( graph_01)} ')
+    print('\n A Topological Sort of G2:  ${topological_sort( graph_02)} ')
+    print('\n A Topological Sort of G3:  ${topological_sort( graph_03)} ')
+  
 }	
 /************************************************************************/
