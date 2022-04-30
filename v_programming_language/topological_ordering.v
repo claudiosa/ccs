@@ -2,28 +2,30 @@
 /*
 
 The idea of this algorithm follow :
-https://www.gatevidyalay.com/topological-sort-topological-sorting/
-https://en.wikipedia.org/wiki/Topological_sorting
+https://www.gatevidyalay.com/topological-sort-topological-sorting/ (GREEDY)
+(no cycles are detected)
+
+(https://en.wikipedia.org/wiki/topog_sort_greedying ... just the input data)
 */
 
 // the idea is rude: https://www.gatevidyalay.com/topological-sort-topological-sorting/
-fn topological_sort(graph map [string] [] string) [] string
+fn topog_sort_greedy(graph map [string] [] string) [] string
 {
  	n_nodes := graph.len // numbers of nodes of this graph
 	mut top_order := [] string {} // a vector with sequence of nodes visited
 	// ad the end ... 
     mut count := 0 //
 	/*
-     IDEA ( a greedy algorythm):
+     IDEA ( a greedy algorythm ):
 
-	 1. choose allways the node with lesser input degree
+	 1. choose allways the node with smallest input degree
 	 2. visit it
 	 3. put it in the output vector
 	 4. remove it from graph
 	 5. update the graph (a new graph)
 	 6. find the vector degree (new)
 	 7. until all nodes has been visited
-
+     Back to step 1
 */
    mut v_degree := in_degree( graph ) //return: map [string] int 
    print("\n V Degree ${v_degree}")
@@ -61,18 +63,17 @@ fn all_fathers (node string , a_map map [string] [] string ) [] string   {
 	 return all_incident
 	}
 
-// input: a map with values, return the key with smallest value
+// Input: a map with input degree values, return the key with smallest value
 fn min_degree(a_map map [string] int ) string {
    mut array_of_keys := a_map.keys() // get a key of this map
-   the_first := array_of_keys.first()
-   mut min := a_map[the_first]
-   mut key_min := the_first
-   // print("\n MIN: ${min} \t  key_min: ${key_min}  ")
+   mut key_min := array_of_keys.first()
+   mut val_min := a_map[key_min]
+   //print("\n MIN: ${val_min} \t  key_min: ${key_min}  \n the map inp_degree: ${a_map}")
    for i in array_of_keys 
 	{ 
-	   if min > a_map[i] // there is a smaller
+	   if val_min > a_map[i] // there is a smaller
 	   {
-         min = a_map[i]
+         val_min = a_map[i]
 		 key_min = i
 	   }
 	}
@@ -103,7 +104,7 @@ fn remove_node_from_graph(node string, a_map map [string] [] string ) map [strin
    //for i in all_nodes {
    //	   new_graph[i] = new_graph[i].filter(index(it) != node)	
    // }  
-   // A HELP FROM V discussion	
+   // A HELP FROM V discussion	 GITHUB - thread
    for key in all_nodes {
      i := new_graph[key].index(node)
      if i >= 0 {
@@ -118,11 +119,10 @@ fn main() {
 // A map illustration to use in a graph
 // adjacency matrix
 	graph_01 := {
-		'A': ['B', 'C','D']
-		'B': ['C','D']
-		'C': ['E']
-		'D': ['E']
-		'E': []
+		'A': ['C', 'B']
+		'B': ['D']
+		'C': ['D']
+		'D': []
 	}
 
 	graph_02 := {
@@ -135,7 +135,7 @@ fn main() {
 		'G': ['H']
 		'H': ['E', 'F','G']
 	}
-//from: https://en.wikipedia.org/wiki/Topological_sorting
+//from: https://en.wikipedia.org/wiki/topog_sort_greedying
 	graph_03 := {
 		'5': ['11']
 		'7': ['11', '8']
@@ -146,11 +146,9 @@ fn main() {
 		'10': []
 	}
 
-	//printing_a_map(graph)
-	
-    print('\n A Topological Sort of G1:  ${topological_sort( graph_01)} ')
-    print('\n A Topological Sort of G2:  ${topological_sort( graph_02)} ')
-    print('\n A Topological Sort of G3:  ${topological_sort( graph_03)} ')
+    print('\n A Topological Sort of G1:  ${topog_sort_greedy( graph_01)} \n')
+    print('\n A Topological Sort of G2:  ${topog_sort_greedy( graph_02)} \n')
+    print('\n A Topological Sort of G3:  ${topog_sort_greedy( graph_03)} \n')
   
 }	
 /************************************************************************/

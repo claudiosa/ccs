@@ -52,7 +52,6 @@ fn in_degree(a_map map [string] [] string ) map [string] int  {
 
 // REMOVE A NODE FROM A GRAPH AND RETURN ANOTHER GRAPH
 fn remove_node_from_graph(node string, a_map map [string] [] string ) map [string] [] string  {
-
    // mut new_graph := map [string] string {}
    mut new_graph := a_map.clone() // copy the graph
    new_graph.delete(node)
@@ -72,18 +71,36 @@ fn remove_node_from_graph(node string, a_map map [string] [] string ) map [strin
 	return new_graph
 }
 
-// input: a map with values, return the key with smallest value
+// REMOVE A EDGE (u -> v ) FROM A GRAPH AND RETURN ANOTHER GRAPH
+fn remove_a_edge_from_graph(u string, v string, a_map map [string] [] string ) map [string] [] string  {
+   // mut new_graph := map [string] string {}
+   mut new_graph := a_map.clone() // copy the graph
+   
+   if (v in new_graph[u]) == false {
+     print('\n ERROR: There is no node from  ${u} to ${v} ')
+	 return new_graph 
+    }
+   
+   mut i := new_graph[u].index(v)
+   if i >= 0 {
+     new_graph[u].delete(i)
+    }
+
+	//print("\n NEW ${new_graph}" )
+	return new_graph
+}
+
+// Input: a map with input degree values, return the key with smallest value
 fn min_degree(a_map map [string] int ) string {
    mut array_of_keys := a_map.keys() // get a key of this map
-   the_first := array_of_keys.first()
-   mut min := a_map[the_first]
-   mut key_min := the_first
-   // print("\n MIN: ${min} \t  key_min: ${key_min}  ")
+   mut key_min := array_of_keys.first()
+   mut val_min := a_map[key_min]
+   //print("\n MIN: ${val_min} \t  key_min: ${key_min}  \n the map inp_degree: ${a_map}")
    for i in array_of_keys 
 	{ 
-	   if min > a_map[i] // there is a smaller
+	   if val_min > a_map[i] // there is a smaller
 	   {
-         min = a_map[i]
+         val_min = a_map[i]
 		 key_min = i
 	   }
 	}
@@ -115,10 +132,16 @@ fn main() {
     //
 	//printing_a_map(graph)
 	print('\n Small Degree: ${min_degree( in_degree (graph_01) )}' )
+	print('\n Small Degree: ${min_degree( in_degree (graph_02) )}' )
 	print('\n Degree of this map:  ${in_degree (graph_01)}')
-    print('\n New graph:  ${remove_node_from_graph ('F', graph_02)} ')
-    print('\n New graph:  ${remove_node_from_graph ('A', graph_02)} ')
-	print('\n New graph:  ${remove_node_from_graph ('H', graph_02)} ')
+    print('\n Remove Edge -> New graph:  ${remove_a_edge_from_graph('B', 'E', graph_02)} ')
+	print('\n Remove Edge -> New graph:  ${remove_a_edge_from_graph('B', 'E', graph_02)} ')
+    //print('\n New graph:  ${remove_node_from_graph ('A', graph_02)} ')
+	//print('\n New graph:  ${remove_node_from_graph ('H', graph_02)} ')
+    
+    print('\n Remove Node -> New graph:  ${remove_node_from_graph ('A', graph_02)} ')
+	print('\n Remove Node -> New graph:  ${remove_node_from_graph ('H', graph_02)} ')
+
 	/*
 	print('\n Degree of this map:  ${in_degree (graph_01)}')
 	print('\n Degree of this map:  ${in_degree (graph_02)}')
