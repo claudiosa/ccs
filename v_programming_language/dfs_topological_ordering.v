@@ -26,6 +26,19 @@ fn dfs_recursive  ( u string ,  mut  visited [] bool, graph map[string][]string,
 }
 
 
+fn a_map_nodes_bool (size int, first_node string)  map [string]  bool {
+	mut my_map := map [string] bool {} // look this map ...
+	mut base := first_node///////AHERE ....
+	mut	key := byte(base).ascii_str()
+	for i in 0 .. size {
+		key = byte(base+i).ascii_str()
+		my_map[key] = false  
+	}
+   	return my_map
+ }
+
+
+
 fn main() {	
 // A map illustration to use in a graph
 // adjacency matrix
