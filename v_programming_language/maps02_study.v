@@ -50,6 +50,18 @@ fn all_fathers (node string , a_map map [string] [] string ) [] string   {
 	 return all_roots
 	}
 
+// to initialize a map with visited nodes .... all with false
+fn visited_init (a_graph map [string] [] string ) map [string]  bool   {
+	mut array_of_keys := a_graph.keys() // get all keys of this map
+	mut temp := map [string] bool {} // attention in these initialization
+	for i in array_of_keys 
+	 {
+	  temp[i] = false 
+	 }
+	 return temp
+}
+
+
 
 fn main() {	
 // A map illustration to use in a graph
@@ -63,12 +75,26 @@ fn main() {
 		'F': ['C', 'E']
 	}
 
+	graph_03 := {
+		'5': ['11']
+		'7': ['11', '8']
+		'3': ['8','10']
+		'11': ['2','9','10']
+		'2': []
+		'9': []
+		'10': []
+	}
     printing_a_map(graph)
 	print('\n Query 01:  ${who_is_father_node ('F' , graph)}')
 	print('\n Query 02:  ${who_is_father_node ('X' , graph)}')
 	print('\n Query 03:  ${all_fathers ('B' , graph)}')
 	print('\n Query 04:  ${all_fathers ('X' , graph)}')
+	mut visited := visited_init (graph)
+	print('\n Visited Initialization:  ${visited}')
+	visited = visited_init (graph_03)
+	//visited['9'] = true
+	print('\n Visited Initialization:  ${visited}')
 
 	println('\n BYE')
-	
-/************************************************************************/
+}	
+/* ********************************************************************** */

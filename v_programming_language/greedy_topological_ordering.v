@@ -1,11 +1,14 @@
-
 /*
-
 The idea of this algorithm follow :
 https://www.gatevidyalay.com/topological-sort-topological-sorting/ (GREEDY)
 (no cycles are detected)
 
-(https://en.wikipedia.org/wiki/topog_sort_greedying ... just the input data)
+https://en.wikipedia.org/wiki/Topological_sorting ... just the input data
+and the Kahn algorithm
+ 
+ 
+ $v run greedy_topological_ordering.v 
+
 */
 
 // the idea is rude: https://www.gatevidyalay.com/topological-sort-topological-sorting/
@@ -135,12 +138,13 @@ fn main() {
 		'G': ['H']
 		'H': ['E', 'F','G']
 	}
-//from: https://en.wikipedia.org/wiki/topog_sort_greedying
+//from: https://en.wikipedia.org/wiki/Topological_sorting
 	graph_03 := {
 		'5': ['11']
 		'7': ['11', '8']
 		'3': ['8','10']
 		'11': ['2','9','10']
+		'8': ['9']
 		'2': []
 		'9': []
 		'10': []
@@ -149,6 +153,9 @@ fn main() {
     print('\n A Topological Sort of G1:  ${topog_sort_greedy( graph_01)} \n')
     print('\n A Topological Sort of G2:  ${topog_sort_greedy( graph_02)} \n')
     print('\n A Topological Sort of G3:  ${topog_sort_greedy( graph_03)} \n')
+	
+	// ['2', '9', '10', '11', '5', '8', '7', '3']
+
   
 }	
 /************************************************************************/
