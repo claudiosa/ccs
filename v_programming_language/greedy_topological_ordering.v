@@ -153,9 +153,7 @@ fn main() {
     print('\n A Topological Sort of G1:  ${topog_sort_greedy( graph_01)} \n')
     print('\n A Topological Sort of G2:  ${topog_sort_greedy( graph_02)} \n')
     print('\n A Topological Sort of G3:  ${topog_sort_greedy( graph_03)} \n')
-	
 	// ['2', '9', '10', '11', '5', '8', '7', '3']
-
   
 }	
-/************************************************************************/
+/* ********************************************************************** */
