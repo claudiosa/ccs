@@ -5,9 +5,6 @@ https://www.gatevidyalay.com/topological-sort-topological-sorting/ (GREEDY)
 
 https://en.wikipedia.org/wiki/Topological_sorting ... just the input data
 and the Kahn algorithm
- 
- 
- $v run greedy_topological_ordering.v 
 
 */
 
@@ -26,9 +23,9 @@ fn topog_sort_greedy(graph map [string] [] string) [] string
 	 3. put it in the output vector
 	 4. remove it from graph
 	 5. update the graph (a new graph)
-	 6. find the vector degree (new)
+	 6. find a new vector degree 
 	 7. until all nodes has been visited
-     Back to step 1
+     Back to step 1 (used the variable count)
 */
    mut v_degree := in_degree( graph ) //return: map [string] int 
    print("\n V Degree ${v_degree}")
@@ -132,11 +129,11 @@ fn main() {
 		'A': ['B', 'C', 'D']
 		'B': ['E']
 		'C': ['F']
-		'D': ['E']
+		'D': ['G']
 		'E': ['H']
 		'F': ['H']
 		'G': ['H']
-		'H': ['E', 'F','G']
+		'H': []
 	}
 //from: https://en.wikipedia.org/wiki/Topological_sorting
 	graph_03 := {

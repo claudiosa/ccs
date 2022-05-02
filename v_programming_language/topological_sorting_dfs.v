@@ -5,16 +5,14 @@ A DFS RECURSIVE ....
 An alternative algorithm for topological sorting is based on depth-first search. The algorithm loops through each node of the graph, in an arbitrary order, initiating a depth-first search that terminates when it hits any node that has already been visited since the beginning 
 of the topological sort or the node has no outgoing edges (i.e. a leaf node)
 
-
 Discussion: https://www.gatevidyalay.com/topological-sort-topological-sorting/
 
 $ v run dfs_topological_ordering.v 
 
-
 */
 
 // THE DFS RECURSIVE .... classical searchig for leaves nodes
-// the arguments in the function avoid global variables....
+// the arguments are used in the function to avoid global variables....
 fn dfs_recursive  ( u string , mut visited map[string] bool, graph map[string] [] string, mut top_sorting[] string)
 {
     print(" Visiting: ${u} -> " )
@@ -44,7 +42,7 @@ fn visited_init (a_graph map [string] [] string ) map [string]  bool   {
 
 fn main() {	
 // A map illustration to use in a graph
-// adjacency matrix
+//the graph: adjacency matrix
 graph_01 := {
 		'A': ['C', 'B']
 		'B': ['D']
@@ -56,11 +54,11 @@ graph_02 := {
 		'A': ['B', 'C', 'D']
 		'B': ['E']
 		'C': ['F']
-		'D': ['E']
+		'D': ['G']
 		'E': ['H']
 		'F': ['H']
 		'G': ['H']
-		'H': ['E', 'F','G']
+		'H': [] // no cycles 
 	}
  //from: https://en.wikipedia.org/wiki/Topological_sorting
 graph_03 := {
@@ -73,36 +71,31 @@ graph_03 := {
 		'9': []
 		'10': []
 	}
-    // for the future ... 
-    // mut all_graphs := ['graph_01', 'graph_02', 'graph_03']
-    // for sample in  all_graphs 
-    //	{ 
-	// print('\n ${sample}')
-	//  graph = sample.clone()
-	// }
-
-    mut graph := map [string] [] string //the graph: adjacency matrix
-	graph = graph_01.clone() // choice your SAMPLE
-	//graph = graph_02.clone() // choice your SAMPLE
-	//graph = graph_03.clone() // choice your SAMPLE
     
-	//mut n_nodes := graph.len   
-    mut visited :=  visited_init(graph)// something as// mut visited := [] bool {len: n_nodes,  init: false}
+    mut graph := map [string] [] string //the graph: adjacency matrix
+	for index , g_value in   [ graph_01 , graph_02, graph_03 ]  //typeof(x).name
+    {
+		println("\n\n Topological sorting for the graph ${index} using a DFS recursive")
+	 	graph = g_value.clone() //graphs_sample[g].clone() // choice your SAMPLE
+	
+		//mut n_nodes := graph.len   
+    	mut visited :=  visited_init(graph)// a map with nodes not visited
    
-    //mut start := (graph.keys()).first() // arbitrary, any node if you wish
-	mut top_sorting := [] string {}
+    	//mut start := (graph.keys()).first() // arbitrary, any node if you wish
+		mut top_sorting := [] string {}
 
-    for i in  graph.keys() // advantages of map
-	{  	
-	if  visited[i] != true
-		{
-		dfs_recursive( i, mut visited, graph, mut top_sorting)
+    	for i in  graph.keys() // advantages of map
+		{  	
+			if  visited[i] != true
+			{
+			dfs_recursive( i, mut visited, graph, mut top_sorting)
+			}
 		}
-	}
-
-    print("\n Toplogical order: ")
+    
+    print('\n A topological sorting of graph ${index} : ')
+	//println(g_value)
 	print(top_sorting.reverse())		
-    //Toplogical order: ['3', '7', '8', '5', '11', '10', '9', '2']
-	//last answer from reference
+	
+	}	// End of for
 }	
 /************************************************************************/
