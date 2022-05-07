@@ -42,8 +42,9 @@ constraint
 
 constraint 
 %%% maximizar o valor   "M O S T"
-  F_MOST = M*1000 + O*100 + S*10 + T;
-
+%  F_MOST = M*1000 + O*100 + S*10 + T; //OR
+  F_MOST = M + O + S + T;
+  
 %solve satisfy;
 solve maximize F_MOST;
 

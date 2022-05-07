@@ -1,5 +1,7 @@
 #### BY CCS to studies
 '''
+# TO RUN:  python3 tsp.py 10_matrix.txt  tsp.py
+
 Problem Formulation 
 % Model from :
 
@@ -306,8 +308,3 @@ if __name__ == '__main__':
     print(f'\n END MAIN ', end="")
     print_t(40)
     # return ###### end function
-
-    
-
-
-    
