@@ -1,0 +1,28 @@
+\frametitle{Perguntas e Agradecimentos}
+
+  \begin{center}
+   \begin{figure} [!ht]
+   \includegraphics[scale=0.56,keepaspectratio]{figures/thank-you-cloud.jpg}
+  % \includegraphics[scale=0.35,keepaspectratio]{figures/test_intelligence01.jpg}
+   \end{figure}
+  \end{center}
+
+\vspace{-1cm}
+
+\begin{block}{}
+  % Keep the summary *very short*.
+  \begin{itemize}
+  %\item \url{http://www.joinville.udesc.br/coca/}
+
+  \item \url{https://github.com/claudiosa}
+
+  \item Email: \url{ccs1664@gmail.com}
+
+  \item Email: \url{claudio@.colmeia.udesc.br}
+
+
+%  \item \textit{Thank you so much}!
+
+  \end{itemize}
+  \end{block}
+

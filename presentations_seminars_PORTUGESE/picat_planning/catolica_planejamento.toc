@@ -1,0 +1,17 @@
+\babel@toc {brazilian}{}
+\beamer@sectionintoc {1}{Introdução}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Histórico}{4}{0}{1}
+\beamer@subsectionintoc {1}{2}{\textit {Links Iniciais}}{8}{0}{1}
+\beamer@subsectionintoc {1}{3}{Estrutura da Linguagem}{9}{0}{1}
+\beamer@subsectionintoc {1}{4}{Multiparadigma}{11}{0}{1}
+\beamer@subsectionintoc {1}{5}{Outros Paradigmas}{14}{0}{1}
+\beamer@subsectionintoc {1}{6}{Comparativo com Outras Linguagens}{30}{0}{1}
+\beamer@subsectionintoc {1}{7}{Acrônimo de \textbf {P.I.C.A.T.}}{35}{0}{1}
+\beamer@subsectionintoc {1}{8}{Usando Picat}{36}{0}{1}
+\beamer@subsectionintoc {1}{9}{ \textit {Alô Mundo!}}{38}{0}{1}
+\beamer@subsectionintoc {1}{10}{Reflexões}{49}{0}{1}
+\beamer@sectionintoc {2}{Planejamento}{52}{0}{2}
+\beamer@sectionintoc {3}{Conclusões}{100}{0}{3}
+\beamer@subsectionintoc {3}{1}{Ficou Faltando}{108}{0}{3}
+\beamer@subsectionintoc {3}{2}{Dicas de Programação}{111}{0}{3}
+\beamer@subsectionintoc {3}{3}{Agradecimentos}{116}{0}{3}

@@ -1,0 +1,13 @@
+\frametitle{Classes de Problemas}
+
+    Problemas de otimização são geralmente divididos em dois tipos: \emph{otimização combinatorial} (\textit{discreta}) e
+    \emph{otimização numérica} (\textit{contínua})
+    \hspace{5em}
+
+
+
+    \begin{description}
+    \item[Combinatorial] Problemas definidos em um espaço de estados finito (ou infinito mas enumerável)
+    \item[Numérica] Definidos em subespaços infinitos e não enumeráveis, como os números
+    reais e complexos
+    \end{description}

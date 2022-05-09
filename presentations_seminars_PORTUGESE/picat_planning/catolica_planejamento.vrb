@@ -1,0 +1,18 @@
+\frametitle{Finalizando ...}
+
+
+\begin{minipage}{0.47\textwidth}
+
+\begin{Large}
+\textbf{\textcolor{magenta}{... espero que\\ tenham gostado\\ e obrigado!}}
+\end{Large}
+
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+\begin{figure}[ht!]
+\begin{center}
+\includegraphics[width=1.2\textwidth, height=0.40\textheight]{figures/logo_picat_alex.jpg}
+\end{center}
+\end{figure}
+\end{minipage}
+

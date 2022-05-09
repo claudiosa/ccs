@@ -1,0 +1,186 @@
+\documentclass[xcolor=table]{beamer}
+%%%https://github.com/hdante/picat-lang/blob/master/doc/predfunc.tex
+%\documentclass[10pt]{beamer} 
+%\usetheme[pageofpages=of,% String used between the current page and the
+          % total page count.
+%          alternativetitlepage=true,% Use the fancy title page.
+          %titlepagelogo=coca,% Logo for the first page.
+%          titleline=true
+%          ]{chameleon}
+%\usetheme{Frankfurt}
+
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+
+%\usecolortheme{chameleon}
+
+\usepackage{graphicx,hyperref,url}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuges,brazilian]{babel}
+%%%\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subfigure}
+%\usepackage{subcaption}
+\usepackage{latexsym}
+\usepackage{amssymb, amsmath}
+\usepackage{multicol}
+\usepackage{pifont}%,bbding}%%,dingbat} %%% ver manual de simbolos
+\usepackage[final]{listings}
+\usepackage{comment}
+\usepackage[misc]{ifsym}
+\usepackage{array}
+\usepackage{blindtext}
+\usepackage{lipsum}
+%\usepackage{enumitem} ====> NEVER 
+%\usepackage[table,xcdraw]{xcolor}
+
+\setbeamertemplate{caption}[numbered]
+
+\definecolor{azulclaro}{rgb}{0.9,0.9,0.9}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+
+%\newcommand{\minizinc}{MiniZinc}
+
+\newenvironment{CustomBlock}[3]{%
+	\setbeamercolor{block body}{#2}
+	\setbeamercolor{block title}{#3}
+	\begin{block}{#1}}{\end{block}}
+
+\lstset{ 
+  %  label={pgm_ex01},
+    backgroundcolor=\color{azulclaro}, 
+    language=erlang, %%Miranda,%%Perl,%%%Python, %%Mercury,
+    showstringspaces=false,
+    basicstyle=\bf\scriptsize\ttfamily,
+%%      basicstyle= \footnotesize %%% TESTAR
+%%      keywordstyle=\bfseries\color{green!40!black},
+    keywordstyle=\textbf{\color{mygreen}}, 
+    otherkeywords={*, \%, array, constraint, solve, output,  show, "/\", satisfy, set, of, if, then, elseif, float, search},
+%%  keywordstyle=\color{blue},       % keyword style
+%%    commentstyle=\itshape\color{purple!40!black},
+      commentstyle=\color{orange},    % comment style
+      identifierstyle=\color{blue},
+      stringstyle=\color{orange},
+      stringstyle=\color{mymauve},
+      numbers=left,  % where to put the line-numbers; possible values are (none, left, right)
+      numbersep=5pt,   % how far the line-numbers are from the code
+      numberstyle=\tiny\color{magenta},
+      keepspaces=true      
+    % %caption={LEGENDA no source PASCAL ficou OK},
+}
+
+
+\graphicspath{{/home/ccs/Dropbox/figs_genericas/}{figuras/}{figures/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+%Global Background must be put in preamble
+%\usebackgroundtemplate{\includegraphics[width=\paperwidth]{amarelinho.pdf}}
+%%% \begin{frame}[allowframebreaks=0.8]
+
+% The log drawn in the upper right corner.
+
+\logo{\centering
+%\includegraphics[height=0.10\paperheight]{figures/logo01-picat.jpg}
+\includegraphics[height=0.11\paperheight]{figures/logo02-picat.jpg}
+\hspace{0.9\paperwidth}
+%\includegraphics[height=0.027\paperheight]{figures/logo01-picat.jpg}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title[Picat]{\fontsize{20}{30}\selectfont \textcolor{black}{PICAT: Uma Linguagem de Programação Multiparadigma\\
+Usando o Modulo \textit{planner}}}
+
+\author[Claudio Cesar de Sá]{Claudio Cesar de Sá
+\\\medskip 
+\Letter \/ {\small \url{ccs1664@gmail.com}}\\
+\Letter \/ {\small \url{ccs1664@yahoo.com}}
+}
+
+\institute[]{
+    Pesquisador Independente \\
+    \url{https://claudiocesar.wordpress.com/}
+
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \include{aula_apresentacao_curso_picat}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+  \begin{frame}[allowframebreaks,c]{Sumário}
+   \tableofcontents
+  \end{frame}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{introducao_picat}
+ \include{planejamento_picat} % 9
+ \include{conclusoes_picat} % 11
+\end{document}

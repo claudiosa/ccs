@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.36pt}
+\select@language {portuges}
+\beamer@sectionintoc {1}{A section}{2}{0}{1}
+\beamer@subsectionintoc {1}{1}{A subsection}{2}{0}{1}
+\beamer@sectionintoc {2}{Another section}{4}{0}{2}
+\beamer@subsectionintoc {2}{1}{Another subsection}{4}{0}{2}
