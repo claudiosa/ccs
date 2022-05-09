@@ -115,8 +115,9 @@
 \begin{itemize}
     \item Prof universitário aposentado -- UDESC
     \item Trabalhei em várias IES: entre elas a UFAL
-    \item Atualmente: avô, estagiário em uma {\em start-up}, jardinagem e maratonista de águas-abertas
+    \item Atualmente: avô, estagiário em uma {\em start-up}, jardinagem e maratonista de águas-abertas 
     \item Interesses: CP, Picat, Linux, V, ARMs, etc
+    \pause
     \item Ou seja, estou no grupo dos inquietos!
 \end{itemize}
 
@@ -127,7 +128,7 @@
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
 
- \frametitle{Programação por Restrições (PR) -- I}
+ \frametitle{Programação por Restrições (PR)}
 
    \begin{block}{}
      \begin{itemize}
@@ -141,6 +142,7 @@
 
       \pause
       \item Uma poderosa teoria (e técnica)  que  contorna a complexidade de certos problemas exponenciais
+      
              
     \end{itemize}
     
@@ -150,11 +152,32 @@
 
 
 
+\begin{frame}[fragile]
+%[fragile, allowframebreaks=0.9]
+
+% \frametitle{Programação por Restrições (PR)}
+
+   \begin{block}{Em termos práticos (e rápido):}
+     \begin{itemize}
+        \item Sim, há muitos casos de uso no Brasil: {\bf ALL} (usa o CPLEX para escalonamento e horário dos trens no sul do Brasil), {\bf TOTVS} (comprou a DATASUL, módulo de planejamento de produção: SICSTUS - PROLOG), mais rescentemente, a {\bf Mercado Livre}, usam a OR-TOOLS para roteamento, logística de depósitos e empacotamento ({\em bin packing} nas vans. Tem uma equipe considerável só neste segmento!
+        
+        \item IBM oferece consultoria e soluções com uma equipe enorme nesta área. Há um custo clássico da IBM.
+        
+        \item O pacote {\em free} de roteamento/escalonamento de veículos da Google, tem feito muitas empresas investirem, nesta direção para agregar valor aos seus  produtos. 
+
+    \end{itemize}
+    
+\end{block}
+    
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
 
-\frametitle{Programação por Restrições (PR) -- II}
+\frametitle{Um Algoritmo da Programação por Restrições (PR)}
 
    \begin{block}{}
      \begin{itemize}
@@ -176,16 +199,14 @@
         \pause
        \item Uma das virtudes da \textcolor{magenta}{PR}: 
        a legibilidade e clareza em construir \textcolor{magenta}{\textbf{modelos} }
-       \item Exemplo: $y = 10x$ tal que $D_x = \{10..20\}$ e $D_y =\{150..170\}$
+       \item Exemplo: $10x = y$ tal que $D_x = \{10..20\}$ e $D_y =\{150..170\}$, logo, a solução aqui é um cartesiano: 
+       \underline {$\{(15,150) , ..., (17,170) \}$ }
        
     \end{itemize}
     
     \end{block}
     
 \end{frame}
-
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
@@ -214,7 +235,7 @@
 \end{figure}
     
 \end{frame}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
@@ -257,7 +278,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile, allowframebreaks=0.9]
 
@@ -295,6 +315,7 @@
     \end{verbatim}
    
   \begin{itemize}    
+    
     \item Na CP '{\em raiz}', não há  "{\texttt if-then-else}", então a {\em reifagem} ({\em reyfing}) contorna esta dificuldade
         
     \item Finalmente:
@@ -304,7 +325,6 @@
     \end{itemize}
     
   
-    
     \item Provadores SAT, provadores lógicos baseado em LPO etc
     
     \item No meio de tudo isto, linguagens declarativas {\em cairam feito luva} $\Rightarrow$ Prolog e seus dialetos
@@ -312,14 +332,14 @@
     \item Resumo: CP é {\bf postar} restrições ({\bf declarar}) afim de {\em encolher} o domínio problema
     
     \item A CP quanto  há um paradigma programação (semântica):\\ $C_1 \bigwedge C_2 \bigwedge ...\bigwedge C_m \vdash \{\blacksquare_1 , ..., \blacksquare_n \} \vee \emptyset $ \\
-    \noindent{\textcolor{magenta}{\rule{6cm}{10pt}}
+    \noindent \textcolor{magenta}{ \rule{6cm}{10pt} }
 
   \end{itemize}
 
-    
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 
 \frametitle{Problemas para CP na indústria}
@@ -367,7 +387,8 @@ Rapidamente:
 \end{figure}
 
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 \frametitle{A CP no Brasil}
 
@@ -380,7 +401,8 @@ Rapidamente:
 \pause
 Sim, um TSP  alcançou dimensões jamais vistas com um ACO (colônia de formigas)
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \begin{frame}[fragile, allowframebreaks=0.85]
@@ -432,6 +454,28 @@ Em resumo: lá fora a área é ativa com várias inserções na indústria, aqui
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]
+%[fragile, allowframebreaks=0.9]
+
+\frametitle{Eventos}
+
+\begin{itemize}
+    \item CP 2022 : Principles and Practice of Constraint Programming -- Haifa -- Israel (capítulos de livros)
+    
+    \item CPAIOR 2022 : International Conference on the Integration of Constraint Programming, Artificial Intelligence, and Operations Research -- Los Angeles -- USA
+\end{itemize}
+
+\begin{center}
+\vfill
+{\bf 
+\textcolor{magenta}{Até 20xx nenhum brasileiro havia publicado nestes 2 eventos!}\\
+Sem qualis ...
+}
+\end{center}
+
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
@@ -451,6 +495,7 @@ Em resumo: lá fora a área é ativa com várias inserções na indústria, aqui
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
 %[fragile, allowframebreaks=0.9]
 
@@ -479,6 +524,7 @@ vizinhos \texttt{não} podem ter a mesma cor.
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile, allowframebreaks=0.9]
 %[fragile, allowframebreaks=0.9]
 
@@ -567,6 +613,13 @@ V & I & O & L & I & N
 
 \textcolor{magenta}{Mas, vamos manter a formulação original!}
 
+\begin{itemize}
+    \item Reversabilidade (exemplo: {\texttt element(Value, L, Index))}
+    \item Simetria (exemplo: n-rainhas) 
+    \item Dualidade ({\em dual view}, problema da cerca -- set covering)
+\end{itemize}
+
+
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile] 
@@ -652,14 +705,18 @@ carry[4] : 1
 {\color[HTML]{303498} \textbf{3a. Sala}}                       & {\color[HTML]{009901} \textbf{{[}1..7{]}}}                      & ...                                        & ...                                        & ...                                                             & ...                                                             \\ \hline
 \multicolumn{1}{|l|}{{\color[HTML]{303498} \textbf{4a. Sala}}} & \multicolumn{1}{l|}{{\color[HTML]{009901} \textbf{{[}1..7{]}}}} & ...                                        & ...                                        & ...                                                             & ...                                                             \\ \hline
 \end{tabular}
-
 \end{table}
-{\bf \textcolor{magenta}{Basicamente, alocar 7 especialidades médicas nestas 4 salas, nestes 5 dias da semana -- {\em assignment problem}}}
+\begin{itemize}
+    
+\item {\bf \textcolor{magenta}{Basicamente, alocar 7 especialidades médicas nestas 4 salas, nestes 5 dias da semana -- {\em assignment problem}}}
 
+\item {\bf 1:oftalmo, 2:otorrino, 3:pediatra,  4:gineco, 5:cardio, 6:dermato, 7:clin\_geral}
 
+\end{itemize}
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile] 
 
@@ -668,8 +725,7 @@ carry[4] : 1
 
 
 \begin{itemize}
-\item Seja um Posto Atendimento Médico, um PA, com 4 consultórios e 7 especialidades
-  médicas
+\item Seja um Posto Atendimento Médico, um PA, com 4 consultórios e 7 especialidades  médicas
 
 
 \item O problema é distribuir estes médicos nestes 4 consultórios
@@ -706,6 +762,7 @@ tal que alguns requisitos sejam atendidos (restrições  satisfeitas)
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
   \frametitle{Matriz de Atribuição}
@@ -730,7 +787,7 @@ O domínio de valores: \texttt{1..7} (7 especialidades médicas)
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile] 
 
 \frametitle{Modelagem -- Comentários}
@@ -747,7 +804,8 @@ O domínio de valores: \texttt{1..7} (7 especialidades médicas)
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]
  \frametitle{Código Completo}
 
@@ -778,8 +836,10 @@ modelo =>
    Quadro :: 1 .. L_dom.len , %% operador len . "eh colado"
 ...
 \end{verbatim}
+
 \end{footnotesize}
-   
+
+{\bf \textcolor{magenta}{As variáveis do problema são em letras MAIÚSCULAS, idem a Prolog}}   
     
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -803,7 +863,8 @@ modelo =>
 \end{footnotesize}
     
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile] 
 
 \frametitle{Código em Partes}
@@ -996,6 +1057,7 @@ sys	0m0,013s
 \end{frame}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame} [fragile]
 \frametitle{Perguntas e Agradecimentos}
   
@@ -1017,7 +1079,7 @@ sys	0m0,013s
   
   \item Email: \url{ccs1664@gmail.com}
   
-  \item Email: \url{claudio@.colmeia.udesc.br}
+  \item Email: \url{claudio@colmeia.udesc.br}
 
 
 %  \item \textit{Thank you so much}!
@@ -1029,7 +1091,6 @@ sys	0m0,013s
 
 
 
-
-
-
 \end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
