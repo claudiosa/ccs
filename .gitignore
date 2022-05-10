@@ -9,7 +9,7 @@
 *.snm
 *.vrb
 *.out
-
+*.toc
 
 # Compiled source #
 ###################
