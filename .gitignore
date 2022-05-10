@@ -5,6 +5,10 @@
 *.aux
 *.log
 *.bak
+*.nav
+*.snm
+*.vrb
+*.out
 
 
 # Compiled source #
