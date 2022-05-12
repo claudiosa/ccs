@@ -1,17 +1,19 @@
 import cp.
 
 %main =>  modelo	.
- main ?=> modelo. 
- main =>  printf("\n FIM").	
+main ?=> modelo. 
+main =>  printf("\n No solutions are found !!!\n").	
 
+%%% MUITAS SOLUCOES AQUI
 %main =>
 %    L = findall(_, $modelo),
 %    writef("\n Total de solucoes:  %d \n", length(L)) .
 
     
 modelo => 
-    Dias = 5, % segunda= 1, ...., sexta-feira = 5
+    Dias = 5, % segunda = 1, ...., sexta-feira = 5
     Consultorio = 4,
+%   to print names and code
     L_dom = [ oftalmo, otorrino, pediatra,  gineco, 
 %                1        2          3         4
               cardio, dermato, clin_geral ],
@@ -30,17 +32,16 @@ modelo =>
         Quadro[4,J] #!= 5
     end,
   
-    %% O medico 6 soh vem na 6a. feira
-    %foreach ( I in 1 .. Consultorio ) 
-    %    Quadro[I,2] #= 6
-    %end, 
-  
-  %% O Clin Geral deve vir o maior numero de dias ... 
-  %% Esta restricao eh matematicamente é HARD
-   foreach ( I in 1 .. Consultorio )
-     member(7,[Quadro[I,J] : J in 1..Dias]) 
+   % O medico 6 soh vem na 2a (1) e 6a. (5) feira
+    count( 6, [Quadro[I,1] : I in 1 .. Consultorio],1),
+    count( 6, [Quadro[I,5] : I in 1 .. Consultorio],1),
+
+  %% O Clin Geral trabalha 2a, 4as e 6as.
+  foreach ( J in {1,3,5} )
+     count(7,[Quadro[I,J] : I in 1 .. Consultorio],1) 
    end,  
-  
+  %sum([ Quadro[I,J] : I in 1 .. Consultorio,  J in 1..Dias , Quadro[I,J] ==7 ]) #= 2,
+
   %% Ninguém trabalha no mesmo consultorio em dias seguidos
   foreach ( J in 1 .. Dias )
       all_different( [Quadro[I,J] : I in 1..Consultorio] )
@@ -51,16 +52,6 @@ modelo =>
       all_different( [Quadro[I,J] : J in 1..Dias] )
    end,  
     
-     % foreach ( J in 1 .. Dias )
-      % count([Quadro[I,J] : I in 1..Consultorio],3)
-       % increasing([Quadro[I,J] : I in 1..Consultorio])
-     %  table_in ([Quadro[I,2] : I in 1..Consultorio], [{1,2}]),
-    % end,  
-    
-   % count(V ,DV ars): The number of times V occurs in DV ars, where DV ars is a list of domain variables.
-   % sum( : I in 1..NumSkiers, 
-   %            XI = X[I], element(XI,SkiHeights,SXI)]),
-   % sum(Quadro[I,J] : I in 1..Consultorio, : J in 1..Dias)
     
 	% A BUSCA
 	solve([ff], Quadro),
@@ -69,7 +60,7 @@ modelo =>
    printf("\n Uma escolha:"),
    print_matrix( Quadro ),
    print_matrix_NAMES( Quadro , L_dom ),
-	 printf("....................................")
+	 printf("....................................\n")
 	.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 print_matrix( M ) =>
