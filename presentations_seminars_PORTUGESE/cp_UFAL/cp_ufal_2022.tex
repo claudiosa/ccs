@@ -63,7 +63,7 @@
 \end{comment}
 
 \title[Combinatorial  Optimization] % (optional, use only with long paper titlebg=blue!20!white,s)
-{Programação por Restrições \\ \textit{Um breve sobrevôo}}
+{Programação por Restrições: \\ \textit{Um breve sobrevôo}\\ UFAL -- Maio -- 2022}
 %\subtitle
 %{About some things}
 \author[Claudio Cesar de Sá] 
@@ -859,7 +859,10 @@ modelo =>
     foreach ( J in 1 .. Dias ) 
         Quadro[4,J] #!= 5
     end,
-...
+
+% O medico 6 soh vem na 2a (1) e 6a. (5) feira
+    count( 6, [Quadro[I,1] : I in 1 .. Consultorio],1),
+    count( 6, [Quadro[I,5] : I in 1 .. Consultorio],1),
 \end{verbatim}
 \end{footnotesize}
     
@@ -873,11 +876,10 @@ modelo =>
 \begin{footnotesize}
 \begin{verbatim}
 
-  %% O Clin Geral deve vir o maior numero de dias ... 
-  %% Esta restricao eh matematicamente é HARD
-   foreach ( I in 1 .. Consultorio )
-     member(7,[Quadro[I,J] : J in 1..Dias]) 
-   end,  
+ %% O Clin Geral trabalha 2a, 4as e 6as.
+ foreach ( J in {1,3,5} )
+    count(7,[Quadro[I,J] : I in 1 .. Consultorio],1) 
+ end, 
   
   %% Ninguém trabalha no mesmo consultorio em dias seguidos
   foreach ( J in 1 .. Dias )
@@ -958,11 +960,11 @@ yes
 
 Picat> main                       
 
- Uma escolha:
-7 1 3 4 5 
-4 7 2 3 1 
-1 3 7 5 2 
-3 2 1 7 4 
+ Uma escolha:    <<< UMA ... hah MUITAS
+ 1 3 4 5 6 
+ 6 2 7 1 3 
+ 7 4 5 2 1 
+ 2 1 3 4 7
 \end{verbatim}
   
 \end{footnotesize}
@@ -977,10 +979,10 @@ Picat> main
 
 \begin{footnotesize}
 \begin{verbatim}
-:clin_geral 	:oftalmo 	:pediatra 	:gineco 	:cardio 	
-:gineco 	:clin_geral 	:otorrino 	:pediatra 	:oftalmo 	
-:oftalmo 	:pediatra 	:clin_geral 	:cardio 	:otorrino 	
-:pediatra 	:otorrino 	:oftalmo 	:clin_geral 	:gineco 	
+:oftalmo 	:pediatra 	:gineco 	:cardio 	:dermato 	
+:dermato 	:otorrino 	:clin_geral 	:oftalmo 	:pediatra 	
+:clin_geral 	:gineco 	:cardio 	:otorrino 	:oftalmo 	
+:otorrino 	:oftalmo 	:pediatra 	:gineco 	:clin_geral 	
 ....................................
 yes
 \end{verbatim}
@@ -995,24 +997,23 @@ yes
 
 \begin{footnotesize}
 \begin{verbatim}
+$ time(picat picat/horario_medico_CP.pi)
 
-$ time(picat horario_medico_CP.pi )
+Uma escolha:
+1 3 4 5 6 
+6 2 7 1 3 
+7 4 5 2 1 
+2 1 3 4 7 
 
- Uma escolha:
-7 1 3 4 5 
-4 7 2 3 1 
-1 3 7 5 2 
-3 2 1 7 4 
-
-:clin_geral 	:oftalmo 	:pediatra 	:gineco 	:cardio 	
-:gineco 	:clin_geral 	:otorrino 	:pediatra 	:oftalmo 	
-:oftalmo 	:pediatra 	:clin_geral 	:cardio 	:otorrino 	
-:pediatra 	:otorrino 	:oftalmo 	:clin_geral 	:gineco 	
+:oftalmo 	:pediatra 	:gineco 	:cardio 	:dermato 	
+:dermato 	:otorrino 	:clin_geral 	:oftalmo 	:pediatra 	
+:clin_geral 	:gineco 	:cardio 	:otorrino 	:oftalmo 	
+:otorrino 	:oftalmo 	:pediatra 	:gineco 	:clin_geral 	
 ....................................
-real	0m0,023s
-user	0m0,007s
-sys	0m0,013s
-[ccs@gerzat picat]$ 
+
+real	0m0,017s
+user	0m0,015s
+sys	0m0,002s
 \end{verbatim}
   
 \end{footnotesize}
