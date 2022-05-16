@@ -37,8 +37,9 @@ fn push_pq <T> (mut prior_queue [] T , data int , priority int ) {
     	temp <<  prior_queue[i]
 		i++
 	}
-
+    // HOW TO IMPROVE THIS RETURN BY REFERENCE???
     prior_queue = temp.clone()
+	// IS IT THE RIGHT WAY?
  	
 }
 
