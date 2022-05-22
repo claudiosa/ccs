@@ -43,6 +43,35 @@ fn push_pq <T> (mut prior_queue [] T , data int , priority int ) {
  	
 }
 
+// change the priority of a value ... exitent in pa
+fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority int ) {		
+  mut i := 0
+  mut lenght_pq := prior_queue.len
+  
+  for i < lenght_pq {
+	if search_data == prior_queue[i].data
+   	{
+	 prior_queue[i] = Node{search_data , NEW_priority} // do the copy in the right place	
+	 break
+	} 
+    i++ //
+	if  i >= lenght_pq // all the list was examined
+   	{
+	 print('\n This data ${search_data} does exist ...\n')
+	 exit(1) // panic(s string)
+	} 
+	}
+}
+
+fn departure_priority <T> (mut prior_queue [] T  ) int {		
+	mut x:= prior_queue[0].data
+    prior_queue.delete(0) // or .delete_many(0, 1 )
+	return x
+}
+
+
+
+
 fn main() {
 /*
  mut x1 := Node{ 11, 22 }
@@ -55,10 +84,15 @@ print('\n After ALL: ${a_queue} --> ${a_queue.len}')
 push_pq(mut a_queue , 13 , 44)
 print('\n Before the push queue: ${a_queue} --> ${a_queue.len}')
 //push_pq(mut a_queue , 3 , 44)
-a_queue.delete(0)
+//a_queue.delete(0)
+updating_priority(mut a_queue, 13, 4)
+
+print('\n a departure ${departure_priority(mut a_queue)}')
 //a_queue.delete(0) // V does not support a exclusion of empty
 print('\n After 1 deletes: ${a_queue} --> ${a_queue.len}')
-  
+//updating_priority(mut a_queue, 9999, 4)
+//print('\n Inexist data: ${a_queue} --> ${a_queue.len}')
+/*  
 push_pq(mut a_queue, 77, 88)
 print('\n Before the push queue: ${a_queue} --> ${a_queue.len}')
 push_pq(mut a_queue, 12, 11)
@@ -72,7 +106,7 @@ print('\n After 2 delete queue: ${a_queue} --> ${a_queue.len}')
 
 a_queue.clear()
 print('\n After ALL clear: ${a_queue}\n ')
-
+*/
 }
 /*
 BUG YET
