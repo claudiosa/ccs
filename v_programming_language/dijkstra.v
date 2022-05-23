@@ -1,10 +1,19 @@
 /*
 Exploring  Dijkstra,
+The data example is from
 https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
+
 by CCS
-Dijkstra's single
-source shortest path algorithm. The program is
-for adjacency matrix representation of the graph
+Dijkstra's single source shortest path algorithm. 
+The program uses an adjacency matrix representation of a graph
+
+This Dijkstra algorithm uses a priority queue to save
+the shortest paths. The queue structure has a data
+which is the number of the node,
+and the priority field which is the shortest distance.
+
+PS: all the pre-requisites of Dijkstra are considered
+
 $ v   run file_name.v 
 // Creating a executable
 $ v  run file_name.v  -o an_executable.EXE
@@ -14,8 +23,11 @@ Code based from : Data Structures and Algorithms Made Easy: Data Structures and 
 pseudo code written in C
 This idea is quite different: it uses a priority queue to store the current
 shortest path evaluted
+The priority queue structure built using a list to simulate 
+the queue. A heap is not used in this case.
 */
 
+// a structure
 struct NODE {
 	mut : 
    	data int 
@@ -23,8 +35,7 @@ struct NODE {
 } 
 
 // Function to push according to priority ... the lower priority is goes ahead
-// do a push always sorted
-//fn push<T> (mut prior_queue [] T , data int , priority int ) [] NODE {	
+// The "push" always sorted in pq
 fn push_pq <T> (mut prior_queue [] T , data int , priority int ) {		
   mut temp := []T{}
   lenght_pq := prior_queue.len
@@ -33,8 +44,8 @@ fn push_pq <T> (mut prior_queue [] T , data int , priority int ) {
    for (i < lenght_pq ) && (priority > prior_queue[i].priority){
 	   	temp << prior_queue[i]
 		i++
-	 }
-	// INSERTING SORTED
+	}
+	// INSERTING SORTED in the queue
 	temp << NODE{data , priority} // do the copy in the right place
 	// copy the another part (tail) of original prior_queue 
 	for i < lenght_pq {
@@ -45,7 +56,7 @@ fn push_pq <T> (mut prior_queue [] T , data int , priority int ) {
 	// IS IT THE RIGHT WAY?
 }
 
-// change the priority of a value ... exist a value, change its priority
+// Change the priority of a value/node ... exist a value, change its priority
 fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority int ) {		
   mut i := 0
   mut lenght_pq := prior_queue.len
@@ -59,7 +70,7 @@ fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority 
     i++ 
 	if  i >= lenght_pq // all the list was examined
    	{
-	 print('\n This data ${search_data} does exist ...\n')
+	 print('\n This data ${search_data} does exist ... PRIORITY QUEUE problem\n')
 	 exit(1) // panic(s string)
 	} 
   } //end for
@@ -73,6 +84,7 @@ fn departure_priority <T> (mut prior_queue [] T  ) int {
 }
 
 // give a NODE v, return a list with all adjacents
+// Take care, only positive EDGES
 fn all_adjacents <T> ( g [][] T, v int ) [] int{
 	mut temp := [] int {} // 
 	for i in 0..(g.len)
@@ -84,49 +96,69 @@ fn all_adjacents <T> ( g [][] T, v int ) [] int{
    return temp
 }
 
+// print the costs from origin up to all nodes
 fn print_solution <T>  (dist [] T) {
     print('Vertex \tDistance from Source')
-      for node in 0 ..(dist.len){
-        print('\n ${node} \t ${dist[node]}')
+      for node in 0 .. (dist.len){
+        print('\n ${node} => \t ${dist[node]}')
        }
 }
-
-
+//print all  paths and their cost or weight
+fn print_paths_dist <T>  (path [] T, dist [] T) {
+    print('\n\n Read the nodes from right to left (a path): \n')
+	
+      for node in 1 ..(path.len){
+		  print('\n ${node} ')
+		  mut i := node
+		  for path[i] != -1 {
+			print(' <= ${path[i]} ')
+			i = path[i]
+       }
+	   print('\t PATH COST: ${dist[node]}')
+  
+}
+}
 
 //check structure from: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
-
+// s: source for all nodes
+// Two results are obtained ... cost and paths
 fn dijkstra( g[][] int , s int) {
  	mut pq_queue := []NODE{} // creating a priority queue
 	push_pq(mut pq_queue, s, 0) // goes s with priority 0
     mut n := g.len 
 
     mut dist := []int{len: n , init:-1} // dist with -1 instead of INIFINITY
+	mut path := []int{len: n , init:-1} // previous node of each shortest paht
+	
 	// Distance of source vertex from itself is always 0
 	dist[s] = 0
 	    
 	for pq_queue.len != 0 {
 		mut v := departure_priority(mut pq_queue)
-		//for all w adjcents vertices of v 
+		//for all W adjcents vertices of v 
 		mut adjs_of_v := all_adjacents(g, v) // all_ADJ of v ....
 		//print('\n ADJ ${v} is ${adjs_of_v}')
+		mut new_dist := 0
 		for w in adjs_of_v {
-			mut new_dist := dist[v] + g[v][w]
+			new_dist = dist[v] + g[v][w]
 			if dist[w] == -1 {
 				dist[w] = new_dist
 				push_pq(mut pq_queue, w, dist[w])
-				//
+				path[w] = v // collecting the previous node -- lowest weight
 			}
 			if dist[w] > new_dist {
 			   dist[w] = new_dist
 			   updating_priority(mut pq_queue, w, dist[w])
-			   //
+			   path[w] = v //
 			}
 		}
 	}		
 
 // print the constructed distance array
     print_solution(dist)
-	//print(dist)
+	//print('\n \n Previous node of shortest path: ${path}')
+	print_paths_dist(path , dist)
+	//print_solution(path)
 }//end function
 
 /*
