@@ -3,7 +3,6 @@ Exploring  Dijkstra,
 The data example is from
 https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
 
-
 by CCS
 
 
@@ -25,7 +24,7 @@ the queue. A heap is not used in this case.
 // a structure
 struct NODE {
 	mut : 
-   	data int 
+   	data int      // number of node
     priority int // Lower values priority indicate ==> higher priority
 } 
 
@@ -65,6 +64,7 @@ fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority 
     i++ 
 	if  i >= lenght_pq // all the list was examined
    	{
+     print('\n Priority Queue:  ${prior_queue}')		   
 	 print('\n This data ${search_data} does exist ... PRIORITY QUEUE problem\n')
 	 exit(1) // panic(s string)
 	} 
@@ -92,22 +92,19 @@ fn all_adjacents <T> ( g [][] T, v int ) [] int{
 }
 
 // print the costs from origin up to all nodes
-fn print_solution  (path [] int , g [][] int ) {
-    print('\n Edge \t Weight\n')
-    for node in 1 .. (path.len){
-     print('\n ${path[node]} -- ${node}  \t ${g[node][path[node]]}')
-    }
-}
-/*
 // A utility function to print the
 // constructed MST stored in parent[]
-void printMST(int parent[], int graph[V][V])
-{
-    cout<<"Edge \tWeight\n";
-    for (int i = 1; i < V; i++)
-        cout<<parent[i]<<" - "<<i<<" \t"<<graph[i][parent[i]]<<" \n";
+fn print_solution  (path [] int , g [][] int ) {
+    print('   Edge \tWeight\n')
+    mut sum := 0
+	for node in 1 .. (path.len){
+     print('\n ${path[node]} --- ${node}\t${g[node][path[node]]}')
+	 sum += g[node][path[node]]
+    }
+	print('\n Minimum Cost Spanning Tree: ${sum}\n\n')
+	
 }
-*/
+/* ================= */
 
 //print all  paths and their cost or weight
 fn print_paths_dist <T>  (path [] T, dist [] T) {
@@ -146,7 +143,8 @@ fn prim_mst( g[][] int , s int) {
 		//print('\n ADJ ${v} is ${adjs_of_v}')
 		mut new_dist := 0
 		for w in adjs_of_v {
-			new_dist =  g[v][w]
+			new_dist = dist[v] + g[v][w]
+			
 			if dist[w] == -1 {
 				dist[w] = new_dist
 				push_pq(mut pq_queue, w, dist[w])
@@ -155,14 +153,13 @@ fn prim_mst( g[][] int , s int) {
 			if dist[w] > new_dist {
 			   dist[w] = new_dist
 			   updating_priority(mut pq_queue, w, dist[w])
-			   path[w] = v //
+			   path[w] = v // father or previous node
 			}
 		}
 	}		
 
-// print the constructed distance array
 	//print('\n \n Previous node of shortest path: ${path}')
-	print_paths_dist(path , dist)
+	//print_paths_dist(path , dist)
 	print_solution(path, g)
 }//end function
 
@@ -177,8 +174,7 @@ Edge   Weight
 
 fn main() {
 //adjacency matrix = cost or weight
-/*
-    graph_01 := [
+graph_01 := [
 		   [0, 4, 0, 0, 0, 0, 0, 8, 0],
            [4, 0, 8, 0, 0, 0, 0, 11, 0],
            [0, 8, 0, 7, 0, 4, 0, 0, 2],
@@ -190,8 +186,7 @@ fn main() {
            [0, 0, 2, 0, 0, 0, 6, 7, 0]
 		   ]
 
-*/
-//g = Graph(5)
+
 graph_02 := [ 
 	[0, 2, 0, 6, 0],
     [2, 0, 3, 8, 5],
@@ -199,6 +194,7 @@ graph_02 := [
     [6, 8, 0, 0, 9],
     [0, 5, 7, 9, 0]
 	]
+// data from https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
 /* The graph:
         2    3
     (0)--(1)--(2)
@@ -208,13 +204,34 @@ graph_02 := [
     (3)-------(4)
          9     
 */
-//g.primMST();
 
-	// to find number of coluns
+ /* Let us create following weighted graph
+ From https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/?ref=lbp
+                   10
+              0--------1
+              |  \     |
+             6|   5\   |15
+              |      \ |
+              2--------3
+                  4       
+				  */
+graph_03 := [ 
+	[0, 10, 6, 5],
+    [10, 0, 0, 15],
+    [6, 0,  0, 4],
+    [5, 15, 4, 0]
+	]
+
+	// To find number of coluns
 	//mut cols := an_array[0].len 
-
-	prim_mst(graph_02, 0)
-	println('\n BYE -- OK')
+    mut graph := [][]int {} // the graph: adjacency matrix
+	for index, g_value in [graph_01, graph_02, graph_03] {
+		println('\n Minimal Spanning Tree of graph ${index+1} using PRIM algorithm')
+		graph = g_value.clone() // graphs_sample[g].clone() // choice your SAMPLE
+        //allways starting by node 0
+		prim_mst(graph, 0)
+	}	
+		println('\n BYE -- OK')
 	
 }
 
