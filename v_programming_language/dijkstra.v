@@ -30,7 +30,7 @@ the queue. A heap is not used in this case.
 // a structure
 struct NODE {
 	mut : 
-   	data int 
+   	data int      // NUMBER OF NODE
     priority int // Lower values priority indicate ==> higher priority
 } 
 
@@ -100,12 +100,13 @@ fn all_adjacents <T> ( g [][] T, v int ) [] int{
 fn print_solution <T>  (dist [] T) {
     print('Vertex \tDistance from Source')
       for node in 0 .. (dist.len){
-        print('\n ${node} => \t ${dist[node]}')
+        print('\n ${node} ==> \t ${dist[node]}')
        }
 }
+
 //print all  paths and their cost or weight
 fn print_paths_dist <T>  (path [] T, dist [] T) {
-    print('\n\n Read the nodes from right to left (a path): \n')
+    print('\n Read the nodes from right to left (a path): \n')
 	
       for node in 1 ..(path.len){
 		  print('\n ${node} ')
@@ -116,8 +117,8 @@ fn print_paths_dist <T>  (path [] T, dist [] T) {
        }
 	   print('\t PATH COST: ${dist[node]}')
   
-}
-}
+      }
+}// end fn
 
 //check structure from: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
 // s: source for all nodes
@@ -177,22 +178,66 @@ Vertex   Distance from Source
 
 fn main() {
 //adjacency matrix = cost or weight
-    graph := [
-		   [0, 4, 0, 0, 0, 0, 0, 8, 0],
-           [4, 0, 8, 0, 0, 0, 0, 11, 0],
-           [0, 8, 0, 7, 0, 4, 0, 0, 2],
-           [0, 0, 7, 0, 9, 14, 0, 0, 0],
-           [0, 0, 0, 9, 0, 10, 0, 0, 0],
-           [0, 0, 4, 14, 10, 0, 2, 0, 0],
-           [0, 0, 0, 0, 0, 2, 0, 1, 6],
-           [8, 11, 0, 0, 0, 0, 1, 0, 7],
-           [0, 0, 2, 0, 0, 0, 6, 7, 0]
-		   ]
+graph_01 := [
+	[0, 4, 0, 0, 0, 0, 0, 8, 0],
+	[4, 0, 8, 0, 0, 0, 0, 11, 0],
+	[0, 8, 0, 7, 0, 4, 0, 0, 2],
+	[0, 0, 7, 0, 9, 14, 0, 0, 0],
+	[0, 0, 0, 9, 0, 10, 0, 0, 0],
+	[0, 0, 4, 14, 10, 0, 2, 0, 0],
+	[0, 0, 0, 0, 0, 2, 0, 1, 6],
+	[8, 11, 0, 0, 0, 0, 1, 0, 7],
+	[0, 0, 2, 0, 0, 0, 6, 7, 0]
+	]
 
-	// to find number of coluns
+graph_02 := [ 
+	[0, 2, 0, 6, 0],
+    [2, 0, 3, 8, 5],
+    [0, 3, 0, 0, 7],
+    [6, 8, 0, 0, 9],
+    [0, 5, 7, 9, 0]
+	]
+// data from https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
+/* The graph:
+        2    3
+    (0)--(1)--(2)
+    |    / \    |
+   6|  8/   \5  |7
+    |  /     \  |
+    (3)-------(4)
+         9     
+*/
+
+ /* Let us create following weighted graph
+ From https://www.geeksforgeeks.org/kruskals-minimum-spanning-tree-algorithm-greedy-algo-2/?ref=lbp
+                   10
+              0--------1
+              |  \     |
+             6|   5\   |15
+              |      \ |
+              2--------3
+                  4       
+				  */
+graph_03 := [ 
+	[0, 10, 6, 5],
+    [10, 0, 0, 15],
+    [6, 0,  0, 4],
+    [5, 15, 4, 0]
+	]
+
+	// To find number of coluns
 	//mut cols := an_array[0].len 
+    mut graph := [][]int {} // the graph: adjacency matrix
+	//for index, g_value in [graph_01, graph_02, graph_03] {
+	for index, g_value in [graph_01, graph_02, graph_03] {	
+		
+		graph = g_value.clone() // graphs_sample[g].clone() // choice your SAMPLE
+        //allways starting by node 0
+		start_node := 0
+        println('\n\n Graph ${index+1} using Dijkstra algorithm (source node: ${start_node})')
+	    dijkstra(graph, start_node)
+	}
 
-	dijkstra(graph, 0)
 	println('\n BYE -- OK')
 	
 }
