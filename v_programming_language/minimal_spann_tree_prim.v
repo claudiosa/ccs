@@ -1,12 +1,9 @@
 /*
-INCOMPLETE 
-
 Exploring  PRIMS,
 The data example is from
 https://www.geeksforgeeks.org/prims-minimum-spanning-tree-mst-greedy-algo-5/
 
 by CCS
-
 
 PS: all the pre-requisites of Dijkstra are considered
 
@@ -66,9 +63,11 @@ fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority 
     i++ 
 	if  i >= lenght_pq // all the list was examined
    	{
-     print('\n Priority Queue:  ${prior_queue}')		   
-	 print('\n These data ${search_data} and ${NEW_priority} do not exist ... PRIORITY QUEUE problem\n')
-	 exit(1) // panic(s string)
+    // print('\n Priority Queue:  ${prior_queue}')		   
+	 // print('\n These data ${search_data} and ${NEW_priority} do not exist ... PRIORITY QUEUE problem\n')
+	 // if it does not find ... then push it
+	 push_pq  (mut prior_queue , search_data , NEW_priority)
+	 //exit(1) // panic(s string)
 	} 
   } //end for
 }
@@ -106,7 +105,7 @@ fn print_solution (path [] int , g [][] int ) {
 	  {print('\n ${node} <== reference or start node')
 	  }
 	  else
-	  {print('\n ${node} <== ${path[node]} \t${g[node][path[node]]}')
+	  {print('\n ${node} <--> ${path[node]} \t${g[node][path[node]]}')
   	  sum += g[node][path[node]]
 	  }	
     }
@@ -114,8 +113,6 @@ fn print_solution (path [] int , g [][] int ) {
 	
 }
 /* ================= */
-
-
 
 //check structure from: https://www.geeksforgeeks.org/dijkstras-shortest-path-algorithm-greedy-algo-7/
 // s: source for all nodes
@@ -135,21 +132,22 @@ fn prim_mst( g[][] int , s int) {
 		mut v := departure_priority(mut pq_queue)
 		//for all W adjcents vertices of v 
 		mut adjs_of_v := all_adjacents(g, v) // all_ADJ of v ....
-		
+		//print('\n :${dist} :: ${pq_queue}')
 		//print('\n ADJ ${v} is ${adjs_of_v}')
 		mut new_dist := 0
 		for w in adjs_of_v {
 			new_dist = dist[v] + g[v][w]
-
+           
 			if dist[w] == -1 {
 				dist[w] = g[v][w]
 				push_pq(mut pq_queue, w,  dist[w])
 				path[w] = v // collecting the previous node -- lowest weight
 			}
+
 			if dist[w] > new_dist {
 			   dist[w] = g[v][w] //new_dist//
-			   updating_priority(mut pq_queue, w, new_dist)
-			   path[w] = v // father or previous node
+			   updating_priority(mut pq_queue, w, dist[w])
+			   path[w] = v // father / previous node
 			}
 		}
 	}		
@@ -177,9 +175,9 @@ graph_01 := [
            [0, 0, 7, 0, 9, 14, 0, 0, 0],
            [0, 0, 0, 9, 0, 10, 0, 0, 0],
            [0, 0, 4, 14, 10, 0, 2, 0, 0],
-           [0, 0, 0, 0, 0, 2, 0, 1, 6],
-           [8, 11, 0, 0, 0, 0, 1, 0, 7],
-           [0, 0, 2, 0, 0, 0, 6, 7, 0]
+           [0, 0, 0, 0, 0,   2, 0, 1, 6],
+           [8, 11, 0, 0, 0,  0, 1, 0, 7],
+           [0, 0, 2, 0, 0, 0,   6, 7, 0]
 		   ]
 
 
@@ -222,10 +220,10 @@ graph_03 := [
 	//mut cols := an_array[0].len 
     mut graph := [][]int {} // the graph: adjacency matrix
 	//for index, g_value in [graph_01, graph_02, graph_03] {
-	for index, g_value in [graph_01, graph_02, graph_03] {	
+	for index, g_value in [ graph_01, graph_02, graph_03] {	
 		println('\n Minimal Spanning Tree of graph ${index+1} using PRIM algorithm')
 		graph = g_value.clone() // graphs_sample[g].clone() // choice your SAMPLE
-        //allways starting by node 0
+        // starting by node x ... see the graphs dimmension
 		start_node := 0
 		prim_mst(graph, start_node)
 	}	
