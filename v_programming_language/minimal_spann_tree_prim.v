@@ -64,8 +64,8 @@ fn updating_priority <T> (mut prior_queue [] T , search_data int , NEW_priority 
 	if  i >= lenght_pq // all the list was examined
    	{
     // print('\n Priority Queue:  ${prior_queue}')		   
-	 // print('\n These data ${search_data} and ${NEW_priority} do not exist ... PRIORITY QUEUE problem\n')
-	 // if it does not find ... then push it
+	// print('\n These data ${search_data} and ${NEW_priority} do not exist ... PRIORITY QUEUE problem\n')
+	// if it does not find ... then push it
 	 push_pq  (mut prior_queue , search_data , NEW_priority)
 	 //exit(1) // panic(s string)
 	} 
