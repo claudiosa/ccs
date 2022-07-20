@@ -1,3 +1,4 @@
+
 :- discontiguous live_away/1. 
 :- discontiguous live_close/1. 
 :- discontiguous drink/2. 
@@ -11,13 +12,13 @@ has_car(jorge).
 /*Aida and Analía live close enough to the party to walk.*/
 live_close(aida).
 live_close(amalia).
-%live_close(X) :-  \+  live_away(X), !.
+%live_close(X) :-  \+  live_away(X).
 
 /* Roberto, Raul, Rodrigo and Ana live too far away.*/
 live_away(roberto).
 live_away(raul).
 live_away(rodrigo).
-live_away(X) :-  \+  (live_close(X)).
+%live_away(X) :-  \+  (live_close(X)).
 
 /* José and Jeremías only drank juice.*/
 drink(jose,juice).
@@ -26,13 +27,13 @@ drink(jeremias,juice).
 /*Anacleta lives far away and is friends with Juan.*/
 live_away(anacleta).
 friends(anacleta,juan).
-friends(X,Y) :- friends(Y,X), !.
+
 
 /* Anastasia lives far away and is friends with José. */
 friends(anacleta,jose).
 
  /* Raúl and José are not friends, but Roberto and Jeremías are friends.*/
-%%%%\+ friends(raul,jose).
+friends(raul,jose) :- false.
 friends(roberto,jeremias).
 
 %Ana is a friend of José.
@@ -40,8 +41,12 @@ friends(ana,jose).
 
 %Analía is a friend of Juan's.
 friends(analia,juan).
+friends(X,Y) :- friends(Y,X),  !.
 
+lst_friends :- friends(X,Y), write(X), write(" <--> "), write(Y), nl, fail.
+lst_friends :- !. 
 %Aida doesn't know anyone.
+
 
 %Juan drank liters of wine.
 drink(juan,wine).
@@ -58,5 +63,9 @@ go_by_ride(X) :-
     has_car(Y),
     live_away(X),
     drink(Y,D),
-    D \== wine, !.
+    D \== wine.
 go_by_ride(_) :- write("NO MORE SOLUTIONS").
+    
+    
+
+
