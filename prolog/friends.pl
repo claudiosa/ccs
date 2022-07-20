@@ -48,16 +48,20 @@ friends(ana,jose).
 friends(analia,juan).
 
 %Aida doesn't know anyone.
+%% HERE YOU CAN SUPPOSE THAT AIDA CAN GO ALONE AND SHE COULD BE INCLUDE IN SET OF sure(X)
+
 
 %Juan drank liters of wine.
 drink(juan,wine).
 
 %Jorge danced.
 dance(jorge).
+%% HERE YOU CAN SUPPOSE THAT JORGE CAN GO ALONE AND SHE COULD BE INCLUDE IN SET OF sure(X) ALSO
+%% if he danced  so he went to party...  look the notes below
 
 %Jorge was the only one who had a car that didn't bring him to the party.
 has_car(jorge).
-
+%% HERE YOU CAN SUPPOSE THAT JORGE CAN GO ALONE AND SHE COULD BE INCLUDE IN SET OF sure(X) ALSO
 
 %% Given the friendship of each of the characters, consider that you can offer your friend a ride home in the car.
 offer_a_ride(X, Y) :- 
@@ -83,9 +87,18 @@ lst_offer_a_ride :-
 
 % PART B -- Create the following rule and give all possible answers, fully reasoning why:
 sure(X) :-  findall((X,Y), offer_a_ride(X, Y), L), 
+            %% IF JORGE AND AIDA go alone by themself ... uncomment these lines
+            % append([(aida,aida)], L, L1),
+    		% append([(jorge,jorge)], L1, L2),
+            % remove_duplicates(L2,X), 
+            % and commment ONLY the NEXT line
             remove_duplicates(L,X), 
+            
             print_pairs(X).
-/*
+
+%%% READ THE NOTES ABOVE ABOUT JORGE AND AIDA ... THEY CAN BE INCLUDE HERE  
+
+ /*
 ?- sure(X), write(X).
 anastacia <--> jose
 roberto <--> jeremias
@@ -96,8 +109,15 @@ X = [(anastacia,jose), (roberto,jeremias), (ana,jose)]
 
 % PART C -- Create the following rule NOT based on the previous one, reasoning it completely:
 not_sure(X)	:-   %%% the driver can drink ANYTHING
-      findall((X,Y), not_safe(X, Y), L), 
+     findall((X,Y), not_safe(X, Y), L), 
+     %% IF JORGE AND AIDA go alone by themself ... uncomment these lines
+     % append([(aida,aida)], L, L1),
+     % append([(jorge,jorge)], L1, L2),
+     % remove_duplicates(L2,X), 
+     % and commment ONLY the NEXT line
+     
       remove_duplicates(L,X), 
+    
       print_pairs(X).
     
 % NOT SAFE ... the driver can drink anything 
