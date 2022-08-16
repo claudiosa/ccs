@@ -36,7 +36,3 @@ area := (input.my_PI * radius) * radius
 
 is_big if area > 10000
 
-/*
-
-test
-*/
