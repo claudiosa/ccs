@@ -1,6 +1,3 @@
-
-#opa eval -i 02_input.json -d 02_example.rego data.my_interaction
-#opa eval -i 02_input.json -d 02_example.rego "data.my_interaction.num_s
 #opa eval -i 02_input.json -d 02_example.rego data.my_interaction
 #opa eval -i 02_input.json -d 02_example.rego "data.my_interaction.num_s
 package my_interaction
@@ -21,7 +18,7 @@ find_a_SOLUTION_1 if {
   
     a_SET := {any_VAL}
 	a_sum := sum(a_SET)
-    (a_sum == 115)
+    (a_sum == 15)
     
 	#a_sum == 15
 	#41 in num_s
@@ -34,11 +31,12 @@ find_a_SOLUTION_2 if {
 	x := input.number
 	b := {x | x % 2 != 0}
 	b != {}
+    print(b)
 }
 
 ## why not is printing b
 Bigger := max( xs )
-SUM := sum( {input.number} )
+SUM := sum({input.number}) #sum( {input.number[0]} )
 
 xs := [2, 2, 4, 8, 11, 13]
 
@@ -48,7 +46,7 @@ rule_EACH if {
 	every x in xs {
 		larger_than_one(x)
 		x % 2 != 0 ### NONE COMMA
+        print(x)
 	}
 }
-
 ## why not is printing x also  
