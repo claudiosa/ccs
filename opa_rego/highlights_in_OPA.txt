@@ -1,0 +1,5 @@
+What is OPA?
+OPA is a lightweight general-purpose policy engine that can be co-located with your service. You can integrate OPA as a sidecar, host-level daemon, or library.
+
+What is the OPA Document Model?
+OPA policies (written in Rego) make decisions based on hierarchical structured data
