@@ -1,3 +1,6 @@
+An online tool: https://play.openpolicyagent.org/
+
+
 What is OPA?
 OPA is a lightweight general-purpose policy engine that can be co-located with your service. You can integrate OPA as a sidecar, host-level daemon, or library.
 
