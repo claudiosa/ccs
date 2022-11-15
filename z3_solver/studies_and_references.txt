@@ -1,0 +1,19 @@
+https://www.programcreek.com/python/example/97293/z3.Solver
+https://www.cs.toronto.edu/~victorn/tutorials/z3_SAT_2019/index.html 
+
+To install:
+
+pip install z3-solver
+Remark that the corresponding package is z3-solver and not z3. Do not install the latter!
+Only this:
+ccs@vosges:~/my_main/CCS/z3_solver$ pip install z3-solver
+Collecting z3-solver
+  Using cached z3_solver-4.11.2.0-py2.py3-none-manylinux1_x86_64.whl (53.8 MB)
+Installing collected packages: z3-solver
+Successfully installed z3-solver-4.11.2.0
+ccs@vosges:~/my_main/CCS/z3_solver$ python3 01example.py 
+sat
+[y = 4, x = 2]
+
+leonardo @ microsoft.com
+https://leodemoura.github.io/about.html
