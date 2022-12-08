@@ -1,5 +1,5 @@
 import os
-import arrays { chunk, sum }
+//import arrays { chunk, sum }
 
 // Covering problem
 fn main() {
