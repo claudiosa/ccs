@@ -1,6 +1,7 @@
 import os
 import arrays { chunk, sum }
 // sum not used
+
 fn main() {
 
 //lines := os.read_lines('inp_test_day03.txt') !
@@ -11,6 +12,7 @@ lines := os.read_lines('day03_inp.txt') !
 mut x, mut y  :=  '', ''
 mut letter_2_sides := [] u8{}
 
+//PART I
 mut sum_pri := 0
 for l in lines {
 	//println(' ==> ${typeof( l ).name }')
@@ -24,7 +26,7 @@ for l in lines {
 println('\n PART I -- SUM : ${sum_pri}')
 
 
-//PART II
+// PART II
     sum_pri = 0
 	mut groups_of_three := chunk(lines, 3)
 	mut in_3_lines  := [] u8{}
@@ -46,8 +48,8 @@ println('\n PART I -- SUM : ${sum_pri}')
 	// print('${letter_2_sides[0].str()} <== \n')
 println('\n PART II -- SUM : ${sum_pri}')
 
-
 } // end main
+
 
 fn divide_line(line  string ) ( string ,  string ) {
 	half := line.len/2
@@ -58,7 +60,7 @@ fn divide_line(line  string ) ( string ,  string ) {
 	{
 	 //print('\n Correct input :${line} LENGHT: ${line.len}')	
 	}
-// part is copied from AoC in V -- repository
+	// part is copied from AoC in V -- repository
 	mut left, mut right  :=  '', ''
 	left = line[0..half]
 	right = line[half..]
@@ -90,32 +92,4 @@ fn convert_prio(byte_val u8) int {
 	return int(r)
 }
 
-/*
-TO FIX IN THE FUTURE ...
-
-mut half := 0
-for l in lines {
-    print('\n Input line: ')
-    half = l.len/2
-	for i in 0..half{
-		print('${l[i].ascii_str()}')
-	}
-	print("--")
-    for i in half..l.len{
-		print('${l[i].ascii_str()}')
-	
-	}    
-
-	/*
-	println('${half} -- ${line}')
-	
-	for i in 0..half{
-		left[i] << line[i]
-	}
-	//: j in half..l.len 
-	for i in  0..half {
-		right[i] = line[i+half]
-	}
-	*/
-  */  
 
