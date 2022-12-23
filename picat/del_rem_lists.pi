@@ -1,0 +1,76 @@
+import util.
+
+main ?=> 
+        X = [['Z','M','P'],['N','C',' '],[' ','D',' ']],
+        Y = a_del(X , ' '),
+        write(Y),
+        a_del_all(['Z','M','P', ' '], ' ') = Z, writeln(Z).
+
+main => println("the end!!!"). 
+
+/*** the input is list of list ****/
+a_del( [] , _ ) = [] =>   true.
+a_del( A , Char ) = Resp =>   
+    %println(A),
+    Resp = [B : Sub_L in A, B = delete_all( Sub_L , Char )].
+
+/* inp [[a,b],[c,d]] => [[b],[d]] */
+% PROLOG like
+rem_first( [] , [] ) :-!.
+rem_first([ [A | B] | C], [B|D] ) :-
+    rem_first( C , D ).
+
+/* ... Picat's function  [[4,7],[5,8],[6,9]] =>  [[7],[8],[9]]
+%% remove the first elements of all lists 
+*/
+rem_fst( [] ) = [] =>  true.
+rem_fst( [ [A | B ] | C ]) = Resp =>
+    Resp = [ B | rem_fst( C ) ].
+
+/* example of patern matching in PICAT .... Xs and Zs ... */
+append(Xs,Ys,Zs) ?=> Xs = [], Ys = Zs.  
+append(Xs,Ys,Zs) => Xs = [X|XsR], Zs = [X|ZsR], append(XsR,Ys,ZsR).  
+
+%    L = [B : B = rem_first([ C ]) ].
+
+
+/** remove All C in [A|T] */
+a_del_all( [] , _ ) = []  => true.    
+a_del_all( [A|T] , C )  = L =>   
+    if (C == A) then
+        L = a_del_all(T ,  C)
+    else
+        L =  [A | a_del_all(T ,  C)]
+    end.    
+
+/*  ================================ */
+
+/*
+Picat>  X = ['Z','M','P',' '], delete_all(X, ' ') = Y, write(Y).
+['Z','M','P']X = ['Z','M','P',' ']
+Y = ['Z','M','P']
+
+Picat>  X = [' ','D',' '], delete_all(X, ' ' ) = Y , write(Y).                               
+['D']X = [' ','D',' ']
+Y = ['D']
+yes
+Picat> X = [['Z','M','P'],['N','C',' '],[' ','D',' ']], L = [Y : K in X, Y=delete_all(K,' ')], nl, write(L).  
+
+[['Z','M','P'],['N','C'],['D']]X = [['Z','M','P'],['N','C',' '],[' ','D',' ']]
+L = [['Z','M','P'],['N','C'],['D']]
+
+
+ [[4,7],[5,8],[6,9]]= X, Y = map(first, X), write(Y), L = [Y : F in Y, K in X, Y=delete(K,F)], nl, write(L).
+
+[[4,7],[5,8],[6,9]]= X, Y = map(first, X), write(Y), L = [Y : F in Y, K in X, Y= map(delete,K,F) ], nl, write(L).
+yes
+
+
+%Stack = [S : S in New_Init[1..New_Init.len].map(to_lowercase)],
+    %Z = New_Init.map(len),
+    %print(Stack),
+   % Z = New_Init.map(to_lowercase),
+   % printf("\n Z: %s %n:", Z),
+
+
+*/

@@ -1,0 +1,105 @@
+/*
+Other examples of using DCGs can be seen at my Picat page (http://hakank.org/picat/ ,  search for "DCG"):. For example_
+* Wordle solver: http://hakank.org/picat/wordle_dcg.pi
+* Generate DCG from a list of words: http://hakank.org/picat/make_dcg.pi (cf my make_regex: http://hakank.org/picat/make_regex.pi)
+* Generating possible accepted string from (simple) regexes: http://hakank.org/picat/regex_generating_strings_v3.pi
+* Solving Regex Crossword (https://regexcrossword.com): http://hakank.org/picat/regex_crossword.pi
+* Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
+
+*/
+import util.
+main =>
+    %File = "sample_dcg.txt",
+    File = "test_day05.txt",
+    Chars = read_file_chars(File),
+    append(Initial_Conf,"\n\n", Moves_Raw, Chars),
+    printf("\n CONF: %n %s" , Initial_Conf),
+    printf("\n Moves_RAW: %n %s" , Moves_Raw),
+    % Process the moves and initial conf
+    parse_moves(Moves,Moves_Raw,[]),
+    print('\n=====================================\n'),
+    print(Moves),
+    states(Stack , Initial_Conf , []),
+    print('\n=====================================\n'),
+    %print(Stack),
+    
+    N_Temp = last(Stack),
+    %last(List) = Termlast(List) = Term
+    N_Stacks = max(N_Temp),
+    New_Init = delete(Stack, N_Temp).reverse(),
+    println(New_Init),
+    %writeln(New_Init),
+    %printf("\n by printf: %w %n:", New_Init),
+    Stacks = populate_stack(New_Init),
+    println(Stacks),
+    print('\n=====================================\n'),
+    printf("\n Number of Stacks: %w %n" , N_Stacks),
+    
+    
+    
+    %once(parse_lines(Lines,Chars,[])),
+    %parse_lines(Lines,Chars,[]),
+    %//printf("\n Lines: %s", Lines),
+    %//printf("\n Chars: %s", Chars),
+    %print( Lines ),
+    %print( Chars),
+    %print_by_line(Lines),
+    print('END').
+%%%%%
+
+%%%% todo transpose
+populate_stack(L) = L_pop =>
+    L_T = transpose(L), %%% DONE it ... 
+    L_pop = [ Y : K in L_T , Y = delete_all( K , [' '])].
+    
+
+
+/*
+TAKE CARE
+
+Picat> X = [['P',' ',' '],['C',' '] ], map(delete_all, X ,[' ']) = Y , write(Y).   
+[['P']]X = [['P',' ',' '],['C',' ']]
+Y = [['P']]
+yes
+
+Picat>  X = [' ','D',' '], delete_all(X, ' ' ) = Y , write(Y).                    
+['D']X = [' ','D',' ']
+Y = ['D']
+yes
+
+Picat>  X = [[' ','D',' ']], delete_all(X, ' ' ) = Y , write(Y).
+[[' ','D',' ']]X = [[' ','D',' ']]
+Y = [[' ','D',' ']]
+ye
+
+*/
+
+
+%
+% DCG for parsing the init state ====> HAKAN
+%
+state([C2]) --> [_C1,C2,_C3].
+
+state_line([State|States]) --> state(State), " ", state_line(States).
+state_line([State]) --> state(State).
+state_line([]) --> [].
+
+states([StateLine|StateLines]) --> state_line(StateLine), "\n", states(StateLines).
+states([StateLine]) --> state_line(StateLine).
+states([]) --> [].
+
+%
+% DCG for parsing the moves.
+%
+
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' '}, seq(Es).
+
+% move 1 from 8 to 1
+parse_move([What,From,To]) --> "move ", seq(What)," from ", seq(From), " to ", seq(To). 
+
+parse_moves([Move|Moves]) --> parse_move(Move), "\n", parse_moves(Moves).
+parse_moves([Move]) --> parse_move(Move).
+parse_moves([]) --> [].
+
+/* ......................... */

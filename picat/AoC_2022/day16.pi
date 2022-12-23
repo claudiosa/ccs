@@ -1,0 +1,75 @@
+/*
+Other examples of using DCGs can be seen at my Picat page (http://hakank.org/picat/ ,  search for "DCG"):. For example_
+* Wordle solver: http://hakank.org/picat/wordle_dcg.pi
+* Generate DCG from a list of words: http://hakank.org/picat/make_dcg.pi (cf my make_regex: http://hakank.org/picat/make_regex.pi)
+* Generating possible accepted string from (simple) regexes: http://hakank.org/picat/regex_generating_strings_v3.pi
+* Solving Regex Crossword (https://regexcrossword.com): http://hakank.org/picat/regex_crossword.pi
+* Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
+
+*/
+main =>
+    %File = "16_test.txt",
+    File = "sample_16.txt",
+    Chars = read_file_chars(File),
+    %once(parse_lines(Lines,Chars,[])),
+    parse_lines(Lines,Chars,[]),
+    %//printf("\n Lines: %s", Lines),
+    %//printf("\n Chars: %s", Chars),
+    %print( Lines ),
+    print('\n=====================================\n'),
+    %print( Chars),
+    print_by_line(Lines),
+    print('END').
+%%%%%
+print_by_line(L) =>
+    FD = open("saida.txt",write),
+    foreach (I in L)
+        %if (membchk('valve(IE)', I)) then
+        print(I),
+        write(FD,I),
+        %end,
+        nl,
+        close(FD)
+    end.
+
+
+
+
+
+
+
+%%% DCG by HAKAN ...
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' ', E != '\n'}, seq(Es).
+
+digits([C|Rest]) --> [C], {ascii_digit(C)}, digits(Rest).
+digits([]) --> [].
+
+seq_list([S|Ss]) --> seq(S), (", " ; " "), seq_list(Ss).
+seq_list([S]) --> seq(S).
+seq_list([]).
+
+% Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+% Valve HH has flow rate=22; tunnel leads to valve GG
+parse_line([valve(Valve),flow_rate(Valve,FlowRate),lead_to(Valve,LeadTo)]) --> "Valve ", seq(Valve),
+                                       " has flow rate=", digits(FlowRate1), {FlowRate1 != "", FlowRate = FlowRate1.to_int},
+                                       "; ", ("tunnels lead to valves" ; "tunnel leads to valve"),
+                                       " ", seq_list(LeadTo).
+
+parse_lines([Line|Lines]) --> parse_line(Line), "\n", parse_lines(Lines).
+parse_lines([Line]) --> parse_line(Line).
+parse_lines([]) --> [].
+
+/*
+Picat> membchk('valve(VJ)', ['valve(VJ)','flow_rate(VJ,0)','lead_to(VJ,[WQ,GU])'] ). 
+
+yes
+
+Picat> membchk("valve(VJ)", ['valve(VJ)','flow_rate(VJ,0)','lead_to(VJ,[WQ,GU])'] ).  
+
+no
+
+Picat> membchk("valve(VJ)", ["valve(VJ)",'flow_rate(VJ,0)','lead_to(VJ,[WQ,GU])'] ). 
+
+ printf("%w %s%n",[a,b,c],"abc").   %n ... jump line
+*/

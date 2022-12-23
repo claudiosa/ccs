@@ -1,0 +1,40 @@
+import util.
+
+main ?=> %Status = command("clear") ,
+         %transpose([[4,5,6],[7,8,9]],A),
+         A = [[4,5,6],[7,8,9]],
+         writeln(['ORIGINAL: ' ,A]),
+         Y = a_transp(A),
+         printf("\n Transpose : %w \n", Y ),
+         printf("\n Calling again : %w \n", a_transp(Y) ),
+         println("The end => YES"). 
+
+main => println("The end => NO"). 
+
+a_transp(X) = [] , membchk('[]', X) => true. %%% nl, writeln(X).
+%a_transp([]) = [] .
+a_transp(A) = T, not(membchk('[]', A)) =>
+    First_Col = map(first, A),
+    Rest = rem_fst(A), %% remove the first element of all list
+    T = [ First_Col |  a_transp( Rest ) ] .
+
+/* ... Picat's function  [[4,7],[5,8],[6,9]] =>  [[7],[8],[9]]
+%% remove the first elements of all lists 
+*/
+rem_fst( [] ) = [] =>  true.
+rem_fst( [ [A | B ] | C ]) = Resp =>
+    Resp = [ B | rem_fst( C ) ].
+
+
+/*
+Picat> [[4,7],[5,8],[6,9]]= X, Y = map(first, X), write(Y).
+
+FROM WEB ... 
+transpose([[]|_], []). 
+transpose(Matrix, [Row|Rows]) :- transpose_1st_col(Matrix, Row, RestMatrix),
+                                 transpose(RestMatrix, Rows).
+transpose_1st_col([], [], []).
+transpose_1st_col([[H|T]|Rows], [H|Hs], [T|Ts]) :- transpose_1st_col(Rows, Hs, Ts).
+
+% ?=>  true.    
+*/

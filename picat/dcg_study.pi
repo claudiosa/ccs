@@ -1,0 +1,115 @@
+/*
+Other examples of using DCGs can be seen at my Picat page (http://hakank.org/picat/ ,  search for "DCG"):. For example_
+* Wordle solver: http://hakank.org/picat/wordle_dcg.pi
+* Generate DCG from a list of words: http://hakank.org/picat/make_dcg.pi (cf my make_regex: http://hakank.org/picat/make_regex.pi)
+* Generating possible accepted string from (simple) regexes: http://hakank.org/picat/regex_generating_strings_v3.pi
+* Solving Regex Crossword (https://regexcrossword.com): http://hakank.org/picat/regex_crossword.pi
+* Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
+
+*/
+import util.
+main =>
+    %File = "sample_dcg.txt",
+    File = "inp1_dcg.txt",
+    Chars = read_file_chars(File),
+    append(Initial_Conf,"\n\n", Moves_Raw, Chars),
+    printf("\n CONF: %n %s" , Initial_Conf),
+    printf("\n Moves_RAW: %n %s" , Moves_Raw),
+    % Process the moves and initial conf
+    parse_moves(Moves,Moves_Raw,[]),
+    print('\n=====================================\n'),
+    print(Moves),
+    states(Stack , Initial_Conf , []),
+    print('\n=====================================\n'),
+    %print(Stack),
+    %print(Stack.reverse()),
+    N_Temp = last(Stack),
+    %last(List) = Termlast(List) = Term
+    N_Stacks = max(N_Temp),
+    New_Init = delete(Stack, N_Temp),
+    print(New_Init.reverse()),
+
+    %Stack = [S : S in New_Init[1..New_Init.len].map(to_lowercase)],New_InitNew_InitNew_InitNew_InitNew_InitNew_Init
+    %Z = New_Init.map(len),
+    %print(Stack),
+   % Z = New_Init.map(to_lowercase),
+   % printf("\n Z: %s %n:", Z),
+
+    %once(parse_lines(Lines,Chars,[])),
+    %parse_lines(Lines,Chars,[]),
+    %//printf("\n Lines: %s", Lines),
+    %//printf("\n Chars: %s", Chars),
+    %print( Lines ),
+    print('\n=====================================\n'),
+    printf("\n Number of Stacks: %w %n" , N_Stacks),
+    %print( Chars),
+    %print_by_line(Lines),
+    print('END').
+%%%%%
+print_by_line(L) =>
+    FD = open("saida.txt",write),
+    foreach (I in L)
+        %if (membchk('valve(IE)', I)) then
+        print(I),
+        write(FD,I),
+        %end,
+        nl,
+        close(FD)
+    end.
+
+/*
+%%% DCG by HAKAN ...
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' ', E != '\n'}, seq(Es).
+
+digits([C|Rest]) --> [C], {ascii_digit(C)}, digits(Rest).
+digits([]) --> [].
+
+seq_list([S|Ss]) --> seq(S), (", " ; " "), seq_list(Ss).
+seq_list([S]) --> seq(S).
+seq_list([]).
+
+%%% build the list
+parse_line([valve(Valve),flow_rate(Valve,FlowRate),lead_to(Valve,LeadTo)]) --> "Valve ", seq(Valve),
+                                       " has flow rate=", digits(FlowRate1), {FlowRate1 != "", FlowRate = FlowRate1.to_int},
+                                       "; ", ("tunnels lead to valves" ; "tunnel leads to valve"),
+                                       " ", seq_list(LeadTo).
+
+parse_lines([Line|Lines]) --> parse_line(Line), "\n", parse_lines(Lines).
+parse_lines([Line]) --> parse_line(Line).
+parse_lines([]) --> [].
+
+*/
+
+%EXAMPLE 2
+%
+% DCG for parsing the init state
+%
+state([C2]) --> [_C1,C2,_C3].
+%state([Z]) --> [_C1,C2,_C3], Z = C2.map(to_lowercase).
+
+
+state_line([State|States]) --> state(State), " ", state_line(States).
+state_line([State]) --> state(State).
+state_line([]) --> [].
+
+states([StateLine|StateLines]) --> state_line(StateLine), "\n", states(StateLines).
+states([StateLine]) --> state_line(StateLine).
+states([]) --> [].
+
+%
+% DCG for parsing the moves.
+%
+
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' '}, seq(Es).
+
+% move 1 from 8 to 1
+parse_move([What,From,To]) --> "move ", seq(What)," from ", seq(From), " to ", seq(To). 
+
+parse_moves([Move|Moves]) --> parse_move(Move), "\n", parse_moves(Moves).
+parse_moves([Move]) --> parse_move(Move).
+parse_moves([]) --> [].
+
+
+/* ......................... */
