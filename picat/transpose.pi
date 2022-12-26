@@ -18,6 +18,20 @@ a_transp(A) = T, not(membchk('[]', A)) =>
     Rest = rem_fst(A), %% remove the first element of all list
     T = [ First_Col |  a_transp( Rest ) ] .
 
+/*** improved by Hakan **/
+a_transp_2(X) = [] , membchk("", X) => true.
+a_transp_2(A) = T,  not(membchk("", A)) =>
+     First_Col = A.map(first),
+     Rest = A.map(tail),  % <----
+     T = [ First_Col |  a_transp_2( Rest ) ] .
+ 
+%%% The second clause can be written shorter, but that makes it hard to understand:
+a_transp_3(A) = [ A.map(first) |  a_transp_3( A.map(tail) ) ],  not(membchk("", A)) => true.
+
+
+
+
+
 /* ... Picat's function  [[4,7],[5,8],[6,9]] =>  [[7],[8],[9]]
 %% remove the first elements of all lists 
 */

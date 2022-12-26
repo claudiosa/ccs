@@ -38,6 +38,9 @@ fn t2 (x string)  {
 
 /*
 println('${typeof(x).name}')
+>>> x:= [`�`, `�`]
+>>> typeof(x).name
+[]rune
 
 >>> print('57'.runes())
 [`5`, `7`]

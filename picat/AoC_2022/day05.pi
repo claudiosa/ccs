@@ -7,44 +7,57 @@ Other examples of using DCGs can be seen at my Picat page (http://hakank.org/pic
 * Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
 
 */
+
 import util.
 main =>
-    %File = "sample_dcg.txt",
-    File = "test_day05.txt",
+    File = "inp_day05.txt",
+    %File = "test_day05.txt",
     Chars = read_file_chars(File),
-    append(Initial_Conf,"\n\n", Moves_Raw, Chars),
-    printf("\n CONF: %n %s" , Initial_Conf),
-    printf("\n Moves_RAW: %n %s" , Moves_Raw),
-    % Process the moves and initial conf
-    parse_moves(Moves,Moves_Raw,[]),
-    print('\n=====================================\n'),
-    print(Moves),
+    append(Initial_Conf, "\n\n", Moves_Raw, Chars),
+    %printf("\n CONF: %n %s" , Initial_Conf),
+    %printf("\n Moves_RAW: %n %w" , Moves_Raw),
+    % Process the moves and initial conf  from HAKAN
+    parse_moves(Moves, Moves_Raw, []),
+    %print(Moves),
     states(Stack , Initial_Conf , []),
-    print('\n=====================================\n'),
+    %print('\n=====================================\n'),
     %print(Stack),
     
     N_Temp = last(Stack),
     %last(List) = Termlast(List) = Term
     N_Stacks = max(N_Temp),
-    New_Init = delete(Stack, N_Temp).reverse(),
-    println(New_Init),
+    New_Init = delete(Stack, N_Temp), %%%% to delete the last line
+    %println(New_Init),
     %writeln(New_Init),
-    %printf("\n by printf: %w %n:", New_Init),
+    printf("\n Initial Stacks: %w %n:", New_Init),
     Stacks = populate_stack(New_Init),
     println(Stacks),
     print('\n=====================================\n'),
     printf("\n Number of Stacks: %w %n" , N_Stacks),
+    Init_Top = flatten( [ F : Item in Stacks , F = first(Item)] ),
+    printf("\n Initials Top (123...) from file: %w \n",  Init_Top),
+
+%%THE PROCESS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+%% IDEA from Neng-Fa to use take and drop for a specific stack indexed
+    printf("\n Initial Stack 1: %w",  Stacks.to_array()),   
+    Final_Stack := do_moves_1(Moves, Stacks.to_array()),
+    %printf("\n Final_Stack : %w", Final_Stack),   
+% THE OUTPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+    All_Top := flatten( [ F : Item in Final_Stack , Item !=[], F = first(Item)] ),
+    printf("\n Final Top - PART I: %w \n",  All_Top),
+    writeln( All_Top ),
+    %print(All_Top),
+%%THE PROCESS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+%% IDEA from Neng-Fa to use take and drop for a specific stack indexed
+    printf("\n Initial Stack 2: %w",  Stacks.to_array()),   
+    Final_Stack := do_moves_2(Moves,  Stacks.to_array()),
+    printf("\n Final_Stack 2: %w", Final_Stack),   
+% THE OUTPUT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+    All_Top := flatten( [ F : Item in Final_Stack , Item !=[], F = first(Item)] ),
+    printf("\n Final Top - PART II: %w \n",  All_Top),
+   % writeln( All_Top_2 ),    
     
-    
-    
-    %once(parse_lines(Lines,Chars,[])),
-    %parse_lines(Lines,Chars,[]),
-    %//printf("\n Lines: %s", Lines),
-    %//printf("\n Chars: %s", Chars),
-    %print( Lines ),
-    %print( Chars),
-    %print_by_line(Lines),
-    print('END').
+    print('\nTHE END \n').
 %%%%%
 
 %%%% todo transpose
@@ -54,7 +67,55 @@ populate_stack(L) = L_pop =>
     
 
 
+%%% IDEA from Neng-Fa  to use take and drop .... in an indexed stack
+do_moves_1(Moves, Stacks ) = New =>
+    foreach( Item in Moves )  
+    [N, From, To] = Item.map(to_int),
+    FromStack = Stacks[From], %% an origin stack 
+    MovedCrates = take(FromStack,N),  %% take N Crates From
+    RemCrates = drop(FromStack,N), %% remove N Crates from Stack
+    Stacks[From] := RemCrates,     %% udpated 
+    Stacks[To] := MovedCrates.reverse() ++ Stacks[To],
+    end,
+
+    New = Stacks.
+do_moves_1([], Stacks ) = Stacks.
+
+do_moves_2(Moves, Stacks ) = New =>
+    foreach( Item in Moves)
+
+%   printf("\n Stacks -> MOVE : %w ->%w->", Item, Stacks),
+    [N, From, To] = Item.map(to_int),
+    FromStack = Stacks[From], %% an origin stack 
+    MovedCrates = take(FromStack,N),  %% take N Crates From
+    RemCrates = drop(FromStack,N), %% remove N Crates from Stack
+    Stacks[From] := RemCrates,     %% udpated 
+    Stacks[To] :=  MovedCrates ++ Stacks[To]  ,
+%%%    printf(" Out: %w", Stacks)
+    end,
+
+    New = Stacks.
+do_moves_2([], Stacks ) = Stacks.
 /*
+Picat> X = ['2','3'], [Y,Z] = X.map(to_int).
+X = ['2','3']
+Y = 2
+Z = 3
+yes
+
+Picat> import util.
+Module util loaded.
+yes
+
+Picat> X = [10,11,12], drop(X, 2) = Y, write(Y). 
+[12]X = [10,11,12]
+Y = [12]
+yes
+
+Picat> X = [10,11,12], take(X, 2) = Y, write(Y). 
+[10,11]X = [10,11,12]
+Y = [10,11]
+
 TAKE CARE
 
 Picat> X = [['P',' ',' '],['C',' '] ], map(delete_all, X ,[' ']) = Y , write(Y).   
@@ -76,7 +137,7 @@ ye
 
 
 %
-% DCG for parsing the init state ====> HAKAN
+% DCG for parsing the init state
 %
 state([C2]) --> [_C1,C2,_C3].
 
@@ -101,5 +162,4 @@ parse_move([What,From,To]) --> "move ", seq(What)," from ", seq(From), " to ", s
 parse_moves([Move|Moves]) --> parse_move(Move), "\n", parse_moves(Moves).
 parse_moves([Move]) --> parse_move(Move).
 parse_moves([]) --> [].
-
 /* ......................... */
