@@ -1,0 +1,64 @@
+/*
+Other examples of using DCGs can be seen at my Picat page (http://hakank.org/picat/ ,  search for "DCG"):. For example_
+* Wordle solver: http://hakank.org/picat/wordle_dcg.pi
+* Generate DCG from a list of words: http://hakank.org/picat/make_dcg.pi (cf my make_regex: http://hakank.org/picat/make_regex.pi)
+* Generating possible accepted string from (simple) regexes: http://hakank.org/picat/regex_generating_strings_v3.pi
+* Solving Regex Crossword (https://regexcrossword.com): http://hakank.org/picat/regex_crossword.pi
+* Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
+
+*/
+import util.
+main =>
+    
+    File = "inp0_dcg.txt",
+    Chars = read_file_chars(File),
+    
+    printf("\n Contents: %n==>%s" , Chars),
+    % Process the moves and initial conf
+    parse_file(Formated,Chars,[]),
+    print('\n=====================================\n'),
+    printf("\n Modified: %n==>%w" , Formated),  
+    print('\n=====================================\n'),
+    
+    print('END').
+%%%%%
+print_by_line(L) =>
+    FD = open("saida.txt",write),
+    foreach (I in L)
+        %if (membchk('valve(IE)', I)) then
+        print(I),
+        write(FD,I),
+        %end,
+        nl,
+        close(FD)
+    end.
+
+
+%%% DCG by HAKAN ...
+
+%
+% DCG for parsing the moves.
+%
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' '}, seq(Es).
+
+% move 1 from 8 to 1
+%%%%%%% 
+parse_file([Move|Moves]) --> parse_line(Move), "\n", parse_file(Moves).
+parse_file([Move]) --> parse_line(Move).
+parse_file([]) --> [].
+
+parse_line([What,From,To]) --> "move ", seq(What)," from ", seq(From), " to ", seq(To). 
+/* ...........
+
+Example 2:
+
+:- [library(dcg/basics)].
+
+courses([Course|Courses]) -->
+    course(Course),
+    courses(Courses), !.
+courses([]) --> [].
+
+
+.............. */
