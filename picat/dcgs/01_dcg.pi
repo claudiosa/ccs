@@ -1,0 +1,29 @@
+
+/*
+Picat> X='#', X != '#'.
+no
+*/
+as --> [].
+as --> [a], as.
+
+
+%%% a DCG ... arity=3
+like(What) --> "I like", list(What), ".", "#", list(_).
+
+
+%like([What|Rest]) -->  list(What), ".", like(Rest).
+%like([What|Rest]) -->  {Rest != '#'}, list(What), like(Rest).
+%like('#') --> [].
+%like([]) --> [].
+
+
+list([]) --> [].
+list([L|Ls]) --> [L], list(Ls).
+
+
+main =>
+    L_inp = "I like THIS YEAR.#The rest is ignored ##",
+    like(L2, L_inp, L3),
+    printf("\nL: ==>%w" , L_inp),
+    printf("\nL2: ==>%w" , L2),
+    printf("\nL3: ==>%w\n" , L3).
