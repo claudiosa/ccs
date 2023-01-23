@@ -1,45 +1,150 @@
-
 /*
-Picat> X='#', X != '#'.
-no
-*/
+A DCG is defined by rules. A DCG rule has the form:
 
+Head --> Body.
+*/
 as --> [].  
 as --> [a], as.
 /*
 Uma GLC do tipo: { S --> vazio,  S --> aS }  
+?- ['01_dcg.pi'].
+true.
+
+?- as(X,[]).
+X = [] ;
+X = [a] ;
+X = [a, a] ;
+X = [a, a, a] ;
+X = [a, a, a, a] ;
+X = [a, a, a, a, a] .
+.....
+?- as(Sent,Gera).
+Sent = Gera ;
+Sent = [a|Gera] ;
+Sent = [a, a|Gera] ;
+Sent = [a, a, a|Gera] ;
+Sent = [a, a, a, a|Gera]
+.....
+?- as("aaa",X).
+X = "aaa".
+.....
+?- as("aaa",[]).
+false.
+.....
+?- as("aa","aa").
+true.
+?-
+.....
+?- as(['a','a','a'],[]).
+true.
+.....
+?- as(['a','a'],['a','a']).
+true .
+
+?-
+
+
+?-
+?- phrase(as, [a,a,a]).
+true.
+
+?- phrase(as, X).
+X = [] ;
+X = [a] ;
+X = [a, a] ;
+X = [a, a, a]
+
 */
-
-
-%%% a DCG ... arity=3
-like(What) --> "I like", list(What), ".", "#", list(_).
-like([]) --> [].
-
-%%% take from @@
-get_rest(Rest) --> list(_), "@@", get_rest( Rest ).
-get_rest([]) --> [].
-
-%%% 
-list([]) --> [].
-list([L|Ls]) --> [L], list(Ls).
 /*
 Uma GLC do tipo: { S --> vazio,  S --> TC, C --> TS,  T --> {a,b,.....}* }  
-Logo, algo precisa ser adaptado devido a recursão infinita
+Logo, algo precisa ser adaptado devido a recursão infinita sim e terá
+
+*/
+
+aSb --> [].  
+aSb --> [a], aSb , [b].
+
+/*
+Uma GLC do tipo: { S --> vazio,  S --> aSb }  
+
+?- phrase(aSb, X).
+X = [] ;
+X = [a, b] ;
+X = [a, a, b, b] ;
+X = [a, a, a, b, b, b] ;
+X = [a, a, a, a, b, b, b, b]
+.... 
+
+?- phrase(aSb,  [a, a, a, a, b, b, b, b]).
+true ;
+false.
+
+?- aSb(X,[]).
+X = [] ;
+X = [a, b] ;
+X = [a, a, b, b] ;
+X = [a, a, a, b, b, b] ;
+X = [a, a, a, a, b, b, b, b]
+
+
+?- aSb(Sent,Rest).
+Sent = Rest ;
+Sent = [a, b|Rest] ;
+Sent = [a, a, b, b|Rest] ;
+Sent = [a, a, a, b, b, b|Rest] ;
+Sent = [a, a, a, a, b, b, b, b|Rest]
+
+*/
+
+% Equivalencias de predicados em Prolog
+
+p_as([]) .
+p_as([a|T]) :- p_as(T) .
+
+/*
+?- p_as(X).
+X = [] ;
+X = [a] ;
+X = [a, a] ;
+X = [a, a, a]
+*/
+
+% já não tão trivial
+p_aSb([]) .
+%p_aSb([a|T]) :- p_aSb(Ts), append(Ts,[b],T) .
+p_aSb([a|T]) :- last(T,b), p_aSb(T).
+
+/*
+?- p_aSb([a, a, b, b]).
+true ;
+
+?- p_aSb(X).
+X = [] ;
+X = [a, b] ;
+X = [a, b] ;
+X = [a, a, b, b] ;
+X = [a, a, b, b] ;
+X = [a, a, a, b, b, b]
 */
 
 
-main =>
-    L_inp = "I like THIS YEAR.#The rest is ignored ##",
-    like(L2, L_inp, L3),
-    printf("\nL_inp: ==>%w" , L_inp),
-    printf("\nL2: ==>%w" , L2),
-    printf("\nL3: ==>%w\n" , L3),
-    rest.
+/*
+Cuidar... tudo são átomos
 
-rest =>
-    L_inp = "I like THIS YEAR. @@   The rest is NOT ignored ##",
-    get_rest(L4, L_inp, L5),
-    printf("\nL_inp: ==>%w" , L_inp),
-    printf("\nL4: ==>%w" , L4),
-    printf("\nL5: ==>%w\n" , L5).
+?- ['a','a']=="aa".
+false.
+
+?- ['a','a']==["a","a"].
+false.
+
+?- [aa]=="aa".
+false.
+
+?- ['aa']=="aa".
+false.
+
+?- ["aa"]=="aa".
+false.
+
+*/
 
