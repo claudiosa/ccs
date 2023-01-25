@@ -20,6 +20,7 @@ main =>
     printf("\n Modified: %n==>%w" , Formated),  
     print('\n=====================================\n'),
     print('END').
+    
 %%%%%
 print_by_line(L) =>
     FD = open("saida.txt",write),
@@ -36,8 +37,9 @@ print_by_line(L) =>
 %%% DCG by HAKAN ...
 
 %
-% DCG for parsing the moves.
+% DCG for parsing the FLIGHTS
 %
+
 seq([])     --> [].
 seq([E|Es]) --> [E], {E != ' '}, seq(Es).
 
@@ -47,6 +49,7 @@ parse_file([Move]) --> parse_line(Move).
 parse_file([]) --> [].
 
 parse_line([What,From,To]) --> "VOO: ", seq(What)," DE_ONDE: ", seq(From), " PARA: ", seq(To). 
+
 /* ...........
 
 Example 2:

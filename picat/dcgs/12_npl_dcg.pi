@@ -1,0 +1,32 @@
+/*
+Ideia: predicado(Frase, Prova ou Filtro)
+Frase: uma entrada
+Prova: um termino ou um terminal Ex: [], aguia etc
+
+*/
+animal_mv -->  nome(X), move(Y).
+
+/* em regras Prologuianas */
+animal_move(S,E) :-
+    nome( X , S, T ),
+    move( Y , T, E),
+    format('\n O animal ~w => ~w ', [X,Y]).
+
+nome(animal(cavalo),[cavalo|E],E).
+nome(animal(aguia),[aguia|E],E).
+
+animal(cavalo,[cavalo|E],E).
+animal(aguia,[aguia|E],E).
+
+move(corre(cavalo), [cavalo|E], E).
+move(voa(aguia), [aguia|E], E).
+
+corre(cavalo, [cavalo|E], E).
+voa(aguia, [aguia|E], E).
+
+/*
+animal_move(animal(X),S,E) :-
+    nome(animal(X), S, T ),
+    move( Z , T, E),
+    format('\n O animal ~w => ~w ', [X,Z]).
+*/

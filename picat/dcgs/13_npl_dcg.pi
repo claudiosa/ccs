@@ -1,0 +1,66 @@
+% http://csciun1.mala.bc.ca:8080/~wesselsd/courses/csci330/code/prolog/grammars.html
+
+% the supported math operators are plus, minus, times, div
+mathop --> [plus]; [minus]; [times]; [div].
+%% 2 argumentos: Input, Rest
+/*
+?- mathop(X,Y).
+X = [plus|Y] ;
+X = [minus|Y] ;
+X = [times|Y] ;
+X = [div|Y].
+logo DOIS argumentos ... um FILTRO mesmo
+
+?- mathop([plus, minus, times], X).
+X = [minus, times] ;
+false.
+
+*/
+
+% an arithmetic expression can be either a single variable or the sum,
+%    difference, product, or division of a variable and an expression,
+%    e.g. f1 plus f2
+%    e.g. f1 minus f3 plus f2
+arithexpr --> variable(_).
+arithexpr --> variable(_), mathop, arithexpr.
+
+% the supported variables are v1, v2, ..., v4 -- 4 numeros
+variable(v1) --> [v1].
+variable(v2) --> [v2].
+variable(v3) --> [v3].
+variable(v4) --> [v4].
+/*
+Aqui, 3 argumentos
+?- variable(X,Y,Z).
+X = v1,
+Y = [v1|Z] ;
+X: eh o argumento, Y a entrada e Z o resto
+?- variable(X,[v1,v2],Y).
+X = v1,
+Y = [v2].
+?- variable(v1,[v3,v1,v2],X).
+false.
+?- variable(v3,[v3,v1,v2],X).
+X = [v1, v2].
+?- variable(X,[v3,v1,v2],[v1,v2]).
+X = v3.
+?- variable(X,[v3,v1,v2,v4],[v1,v2]).
+false
+*/
+% sample queries
+
+%Equivalent to phrase(DCGBody, InputList, []).
+q1 :- phrase(arithexpr, [v2, plus, v3 ], []). % 
+q2 :- phrase(arithexpr, [plus, v3 ], []).
+q3 :- phrase(arithexpr, [ X ,  plus, v3 , minus , v4], []), 
+      (X \== v3 , X \== v4) , nl, format('\n X: ~w',[X]).
+
+/*
+?-  phrase(arithexpr, [ X ,  plus, v3 , minus , v4], []), (X \== v3 , X \== v4) .
+X = v1 ;
+X = v2 ;
+false.
+?-
+*/
+
+

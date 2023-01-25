@@ -1,0 +1,36 @@
+/* nome de animais */
+noun --> [cat].
+noun --> [dog].
+noun --> [pig].
+
+/* uma frase */
+sentence --> noun, verbPhrase.
+
+/* frase verbal */
+verbPhrase --> verb.
+verbPhrase --> verb, adverb.
+
+/* um verbo */
+verb --> [ran].
+verb --> [chased].
+
+/* um adverbio */
+adverb --> [away].
+adverb --> [fast].
+
+/*
+TODAS FRASES POSSIVEIS ACIMA 
+?- phrase(sentence, X, []).
+X = [cat, ran] ;
+..... 
+
+?- phrase(sentence, [dog|X], [cat]).
+X = [ran, cat] ;
+X = [chased, cat] ;
+X = [ran, away, cat] ;
+X = [ran, fast, cat] ;
+X = [chased, away, cat] ;
+X = [chased, fast, cat].
+..... 
+
+*/
