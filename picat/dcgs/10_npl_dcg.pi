@@ -19,6 +19,21 @@ adverb --> [away].
 adverb --> [fast].
 
 /*
+
+?- listing(sentence).
+sentence(A, B) :-
+    noun(A, C),
+    verbPhrase(C, B).
+
+true.
+
+?- listing(verb/2).
+verb([ran|A], A).
+verb([chased|A], A).
+
+true.
+
+
 TODAS FRASES POSSIVEIS ACIMA 
 ?- phrase(sentence, X, []).
 X = [cat, ran] ;

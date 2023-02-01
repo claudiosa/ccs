@@ -1,6 +1,5 @@
 /*
 A DCG is defined by rules. A DCG rule has the form:
-
 Head --> Body.
 */
 as --> [].  
@@ -54,6 +53,15 @@ X = [a] ;
 X = [a, a] ;
 X = [a, a, a]
 
+?- listing(as/2).
+A as B :-
+    A=B.
+[a|A]as B :-
+    A as B.
+
+true.
+
+
 */
 /*
 Uma GLC do tipo: { S --> vazio,  S --> TC, C --> TS,  T --> {a,b,.....}* }  
@@ -94,6 +102,15 @@ Sent = [a, a, b, b|Rest] ;
 Sent = [a, a, a, b, b, b|Rest] ;
 Sent = [a, a, a, a, b, b, b, b|Rest]
 
+
+?- listing(aSb/2).
+aSb(A, B) :-
+    A=B.
+aSb([a|A], B) :-
+    aSb(A, C),
+    C=[b|B].
+
+true.
 */
 
 % Equivalencias de predicados em Prolog

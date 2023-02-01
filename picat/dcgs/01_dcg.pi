@@ -1,26 +1,12 @@
 
 /*
-DCG's
-
-
+Usando as DCG's
+parte inicial da Anny e Markus Triska
 */
-
-as --> [].  
-as --> [a], as.
-/*
-Uma GLC do tipo: { S --> vazio,  S --> aS }  
-*/
-
-aSb --> [].  
-aSb --> [a], aSb , [b].
-/*
-Uma GLC do tipo: { S --> vazio,  S --> aSb }  
-*/
-
-
 
 
 %%% a DCG ... arity=3
+%%% Ignorando o resto
 like(What) --> "I like", list(What), ".", "#", list(_).
 like([]) --> [].
 
@@ -28,16 +14,10 @@ like([]) --> [].
 get_rest(Rest) --> list(_), "@@", get_rest( Rest ).
 get_rest([]) --> [].
 
-%%% 
+%%% Apenas valida se é uma lista
 list([]) --> [].
 list([L|Ls]) --> [L], list(Ls).
 
-
-t_aa => L_inp = "aa",
-        as( L2, L_inp, L3),
-        printf("\nL_inp: ==>%w" , L_inp),
-        printf("\nL2: ==>%w" , L2),
-        printf("\nL3: ==>%w\n" , L3).
 
 main =>
     L_inp = "I like THIS YEAR.#The rest is ignored ##",
@@ -46,6 +26,7 @@ main =>
     printf("\nL2: ==>%w" , L2),
     printf("\nL3: ==>%w\n" , L3),
     rest.
+
 rest =>
     L_inp = "I like THIS YEAR. @@   The rest is NOT ignored ##",
     get_rest(L4, L_inp, L5),
@@ -53,3 +34,4 @@ rest =>
     printf("\nL4: ==>%w" , L4),
     printf("\nL5: ==>%w\n" , L5).
 
+/* Conclua sobre os Tokens e lista */

@@ -1,0 +1,72 @@
+/* uma frase */
+carro --> pneus, cambio, combustivel.
+
+/* Marca de Pneus */
+pneus --> [good_YEAR].
+pneus --> [mICHELIN].
+
+/* Tipo de cambio */
+cambio --> [manual].
+cambio --> [automatico].
+
+/* Tipo de combustivel */
+combustivel --> [gasolina].
+combustivel --> [diesel].
+combustivel --> [eletrico].
+/*
+O operador --> traduz para seguintes clausulas:
+
+carro(A, B) :-
+    pneus(A, C),
+    cambio(C, D),
+    combustivel(D, B).
+
+pneus([good_YEAR|A], A).
+pneus([mICHELIN|A], A).
+
+cambio([manual|A], A).
+cambio([automatico|A], A).
+
+combustivel([gasolina|A], A).
+combustivel([diesel|A], A).
+combustivel([eletrico|A], A).
+
+TESTAR:
+?- carro(X,Y), write(X), write(' <---> '), write(Y), nl.
+equivalente a
+?- phrase(carro,X,Y), write(X), write(' <---> '), write(Y), nl.
+
+?carro(X,[]), write(X), write(' <---> '),  nl.
+
+?- carro(X,[]), member(manual, X), write(X),write(' <---> '),  nl.
+
+adiciona uma palavra a frase na saida
+?- carro(X,[automatico]), write(X), write(' <---> '),  nl.
+
+
+Jah estas frases são invalidas:
+?- carro([X |eletrico],[]), write(X), write(' <---> '),  nl.
+false.
+?- carro([eletrico|X],[]), write(X), write(' <---> '),  nl.
+false.
+
+Contudo esta é bem diferente e acha os carros eletricos
+?- carro(X ,[]), member(eletrico, X),  write(X), write(' <---> '),  nl.
+
+
+UM TRACE para entender:
+
+[trace]  ?- carro(X,[]), write(X), write(' <---> '),  nl.
+   Call: (11) carro(_4080, []) ? creep
+   Call: (12) pneus(_4080, _5758) ? creep
+   Exit: (12) pneus([good_YEAR|_5758], _5758) ? creep
+   Call: (12) cambio(_5758, _7386) ? creep
+   Exit: (12) cambio([manual|_7386], _7386) ? creep
+   Call: (12) combustivel(_7386, []) ? creep
+   Exit: (12) combustivel([gasolina], []) ? creep
+   Exit: (11) carro([good_YEAR, manual, gasolina], []) ? creep
+   Call: (11) write([good_YEAR, manual, gasolina]) ? creep
+[good_YEAR,manual,gasolina]
+
+
+*/

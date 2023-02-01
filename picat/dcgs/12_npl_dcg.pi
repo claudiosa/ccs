@@ -3,15 +3,22 @@ Ideia: predicado(Frase, Prova ou Filtro)
 Frase: uma entrada
 Prova: um termino ou um terminal Ex: [], aguia etc
 
+
 */
-animal_mv -->  nome(X), move(Y).
+
 
 /* em regras Prologuianas */
 animal_move(S,E) :-
     nome( X , S, T ),
     move( Y , T, E),
     format('\n O animal ~w => ~w ', [X,Y]).
+/*
+TESTE:
+?- animal_move(S,E) .
 
+
+?- animal_move(S,[]).
+*/
 nome(animal(cavalo),[cavalo|E],E).
 nome(animal(aguia),[aguia|E],E).
 
@@ -30,3 +37,18 @@ animal_move(animal(X),S,E) :-
     move( Z , T, E),
     format('\n O animal ~w => ~w ', [X,Z]).
 */
+
+% OUTRA VERSAO 
+animal_MV -->  nome_MV, move_MV.
+
+nome_MV --> [cavalo].
+nome_MV --> [aguia].
+
+move_MV --> animal.
+
+animal --> [cavalo, corre].
+animal --> [aguia, voa].
+%% diferente da anterior
+%animal([cavalo, corre|A], A).
+%animal([aguia, voa|A], A).
+
