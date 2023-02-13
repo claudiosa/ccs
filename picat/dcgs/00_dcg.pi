@@ -40,10 +40,6 @@ true.
 ?- as(['a','a'],['a','a']).
 true .
 
-?-
-
-
-?-
 ?- phrase(as, [a,a,a]).
 true.
 
@@ -114,7 +110,7 @@ true.
 */
 
 % Equivalencias de predicados em Prolog
-
+%%% apenas gerando a's
 p_as([]) .
 p_as([a|T]) :- p_as(T) .
 
@@ -127,6 +123,7 @@ X = [a, a, a]
 */
 
 % já não tão trivial
+%%% apenas gerando/validando  ab's
 p_aSb([]) .
 %p_aSb([a|T]) :- p_aSb(Ts), append(Ts,[b],T) .
 p_aSb([a|T]) :- last(T,b), p_aSb(T).
@@ -146,7 +143,7 @@ X = [a, a, a, b, b, b]
 
 
 /*
-Cuidar... tudo são átomos
+Cuidar... tudo são átomos?
 
 ?- ['a','a']=="aa".
 false.

@@ -7,18 +7,43 @@ parte inicial da Anny e Markus Triska
 
 %%% a DCG ... arity=3
 %%% Ignorando o resto
+%like(What) --> "I like", list(What), [.], [#] , list(_).
 like(What) --> "I like", list(What), ".", "#", list(_).
 like([]) --> [].
 
 %%% take from @@
-get_rest(Rest) --> list(_), "@@", get_rest( Rest ).
+get_rest(Rest) --> "@@", get_rest( Rest ).
+%%%list(_), 
 get_rest([]) --> [].
 
-%%% Apenas valida se é uma lista
-list([]) --> [].
+
+%%% Apenas valida se é uma lista -- sequencia de atomos
 list([L|Ls]) --> [L], list(Ls).
+list([]) --> [].
+
+main :- t1, t2, !.
+main :- t1, write("T1").
+main :- t2, write("T2").
+
+t1 :-
+    L_inp = "I like THIS YEAR.# The rest is ignored ##",
+%   L3 = "The rest is ignored ##",
+    like(L2, L_inp, L3),
+    format('\nL_inp: ==>~w' , L_inp),
+    format('\nL2: ==>~w' , [L2]),
+    format('\nL3: ==>~w\n' , [L3]).
+    
+
+t2 :-
+    L_inp = "I like THIS YEAR. @@   The rest is NOT ignored ##",
+    get_rest(L4, L_inp, L5),
+    format('\nL_inp: ==>~w' , L_inp),
+    format('\nL4: ==>~w' , [L4]),
+    format('\nL5: ==>~w\n' , [L5]).
 
 
+
+/*
 main =>
     L_inp = "I like THIS YEAR.#The rest is ignored ##",
     like(L2, L_inp, L3),
@@ -33,5 +58,5 @@ rest =>
     printf("\nL_inp: ==>%w" , L_inp),
     printf("\nL4: ==>%w" , L4),
     printf("\nL5: ==>%w\n" , L5).
-
+*/
 /* Conclua sobre os Tokens e lista */
