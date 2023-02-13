@@ -13,6 +13,10 @@ cambio --> [automatico].
 combustivel --> [gasolina].
 combustivel --> [diesel].
 combustivel --> [eletrico].
+
+%%% eh diferente disto
+%% combustivel --> [gasolina, diesel, eletrico].
+
 /*
 O operador --> traduz para seguintes clausulas:
 
@@ -69,4 +73,48 @@ UM TRACE para entender:
 [good_YEAR,manual,gasolina]
 
 
+TENHA EM MENTE:
+1a. 
+?- phrase(carro, X, Y).
+X: é uma INPUT - frase
+Y: um resto a ser anexado a INPUT, "em
+   geral []". 
+
+2a.
+?- phrase(carro, [good_YEAR, automatico], []).
+false
+Basta ver a árvore sintática ... frase incorreta
+
+3a.
+Toda DCG acresceta 2 argumentos:
+?- listing(carro).
+veja a console
+carro --> pneus, cambio, combustivel.
+
+4a.
+Se árvore percorrida for OK, 
+um resto pode ser adicionado a frase
+?- phrase(carro, [good_YEAR, manual, gasolina, 'bmw 328'] , ['bmw 328']).
+true.
+um resto pode ser adicionado a entrada
+?- phrase(carro, X , ['bmw 328']).
+X = [good_YEAR, manual, gasolina, 'bmw 328'] ;
+X = [good_YEAR, manual, diesel, 'bmw 328'] ;
+
+5a. Regras de listas em Prolog 
+DEVEM SER OBEDECIDAS ....
+isto OK
+?- phrase(carro, [good_YEAR | L] , ['bmw 328']).
+L = [manual, gasolina, 'bmw 328'] ;
+L = [manual, diesel, 'bmw 328'] ;
+
+idem
+?- phrase(carro, [X | L] , ['bmw 328']).
+X = good_YEAR,
+L = [manual, gasolina, 'bmw 328'] ;
+
+MAS:
+?- phrase(carro, [X | gasolina, L ] , ['bmw 328']).
+e
+?- phrase(carro, [X | [gasolina, L] ] , ['bmw 328']).
 */
