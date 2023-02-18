@@ -7,17 +7,16 @@ Other examples of using DCGs can be seen at my Picat page (http://hakank.org/pic
 * Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
 
 */
-import util.
 main =>
     
     File = "02_inp_dcg.txt",
-    Chars = read_file_chars(File),
+    Inp_Chars = read_file_chars(File),
     
-    printf("\n Contents: %n==>%s" , Chars),
-    % Process the moves and initial conf
-    parse_file(Formated,Chars, [] ),
+    printf("\nContents: %n==>\n%s" , Inp_Chars),
+    % Process to deal the input
+    parse_file(Formated , Inp_Chars , [] ),
     print('\n=====================================\n'),
-    printf("\n Modified: %n==>%w" , Formated),  
+    printf("\n Modified: %n==>\n%w" , Formated),  
     print('\n=====================================\n'),
     
     print('END').
@@ -42,15 +41,12 @@ print_by_line(L) =>
 seq([])     --> [].
 seq([E|Es]) --> [E], {E != ' '}, seq(Es).
 
-% move 1 from 8 to 1
-
-%%%%%%% START HERE
+%%%%%%%% START HERE
 parse_file([Move|Moves]) --> parse_line(Move), "\n", parse_file(Moves).
 parse_file([Move]) --> parse_line(Move).
 parse_file([]) --> [].
 
-parse_line([What,From,To]) --> "INICIO ", seq(What)," MEIO ", seq(From), " FIM ", seq(To). 
-
+parse_line( [What,From,To] ) --> "INICIO ", seq(What)," MEIO ", seq(From), " FIM ", seq(To). 
 parse_line( [UM] ) --> "UM_VALOR ", seq(UM). 
 parse_line( [UM,DOIS,TRES] ) --> "TRES_NA_SEQUENCIA ", seq(UM), " ", seq(DOIS), " ", seq(TRES). 
 

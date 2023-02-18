@@ -4,6 +4,8 @@ Usando as DCG's
 parte inicial da Anny e Markus Triska
 */
 
+novo_arg(What) --> "I like", list(What), ".", "#".
+novo_arg([]) --> [].
 
 %%% a DCG ... arity=3
 %%% Ignorando o resto
@@ -18,12 +20,28 @@ get_rest([]) --> [].
 
 
 %%% Apenas valida se é uma lista -- sequencia de atomos
-list([L|Ls]) --> [L], list(Ls).
 list([]) --> [].
+list([L|Ls]) --> [L],  list(Ls).
+%{L != ' '},
+
+%seq([])     --> [].
+%seq([E|Es]) --> [E], {E != ' '}, seq(Es).
+
+
 
 main :- t1, t2, !.
 main :- t1, write("T1").
 main :- t2, write("T2").
+
+t0 :-
+    L_inp = "I like THIS YEAR.# The rest is ignored ##",
+%   L3 = "The rest is ignored ##",
+    novo_arg(L2, L_inp, L3),
+    format('\nL_inp: ==>~w' , L_inp),
+    format('\nL2: ==>~w' , [L2]),
+    format('\nL3: ==>~w\n' , [L3]).
+
+
 
 t1 :-
     L_inp = "I like THIS YEAR.# The rest is ignored ##",
