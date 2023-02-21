@@ -3,6 +3,8 @@ Other examples of using DCGs can be seen at my Picat page (http://hakank.org/pic
 * Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
 
 http://hakank.org/picat/dcg_utils.pi
+
+To run: picat 01_dcg_file.pi
 */
 %import util.
 main =>
@@ -12,11 +14,13 @@ main =>
     
     printf("\nContents of file: %s %n==>\n%s" , File, Inp_Chars),
     % Process to deal the input
+   
     parse_file(Formated , Inp_Chars , [] ),
     print('\n=====================================\n'),
     printf("\n Modified: %n==>\n%w" , Formated),  
     print('\n=====================================\n'),
     print_L(Formated),
+       
     print('END').
     
 %%%%%
@@ -26,42 +30,27 @@ print_L(L) =>
         print(I), nl
     end.
 
-
-print_by_line(L) =>
-    FD = open("saida.txt",write),
-    foreach (I in L)
-        %if (membchk('valve(IE)', I)) then
-        print(I),
-        write(FD,I),
-        %end,
-        nl,
-        close(FD)
-    end.
-
-
 %%% DCG by HAKAN ...
 %
 % DCG for parsing the FLIGHTS
 %
 
+%% QUASE identico ao video anterior
 seq([])     --> [].
 seq([E|Es]) --> [E], {E != ' '}, seq(Es).
-%seq([E|Es]) --> [E], {not membchk(E," \n\t\r")} , seq(Es).
-%seq([E|Es]) --> [E], {not many_of(" \n\t\r")} , seq(Es).
-%seq([E|Es]) --> space, seq(Es).
+
+%% QUASE identico ao video anterior
+space([])     --> [].
+space([E|Es]) --> [E], {E = ' '}, space(Es).
 
 
+/*
 % get and ignore many space characters -- HAKAN
 space --> many_of(" \n\t\r").
-
 
 % Maches many characters in CharList (no capture) -- HAKAN
 many_of(CharList) -->  {membchk(C,CharList)}, many_of(CharList).
 many_of(_CharList) --> [].
-
-/*
-space([E|Es]) --> {membchk(E," \n\t\r")}, space(Es).
-space([])     --> [].
 
 Picat> space(X,"   \n  \r", Y).
 X = '[]'
@@ -69,19 +58,19 @@ Y = [' ',' ',' ','\n',' ',' ','\r']
 yes
 */
 
-%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 parse_file([Move|Moves]) --> parse_line(Move), "\n", parse_file(Moves).
 parse_file([Move]) --> parse_line(Move).
 parse_file([]) --> [].
 
-parse_line([What,From,To]) --> "VOO: ", seq(What)," DE_ONDE: ", seq(From), " PARA: ", seq(To). 
-
-
-
+%%% TAKE care with the spaces predicate and other details
+parse_line([What,From,To]) --> space(_),  "VOO: ",   seq(What),
+                               space(_), " DE_ONDE: ", seq(From),
+                               space(_), " PARA: ", seq(To). 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /* ...........
-
-Exercise 2:
+Exercise :
 
 :- [library(dcg/basics)].
 
@@ -89,6 +78,4 @@ courses([Course|Courses]) -->
     course(Course),
     courses(Courses), !.
 courses([]) --> [].
-
-
 .............. */
