@@ -1,0 +1,175 @@
+
+%   :- use_module(library(clpfd)).
+
+:- use_module(library(dcg/basics)).    %%% modulo importante para ser carregado ...
+
+/* TESTE antes alguns predicados de STRINGS <--> CHARS <--> LISTAS etc 
+
+MUITAS COISAS disponíveis como:
+
+string                 string_codes           string_lower           string_to_list
+string_bytes           string_concat          string_position        string_upper
+string_chars           string_length          string_stack_tripwire  string_without
+string_code            string_lines           string_to_atom         strings
+
+POIS AS ENTRADAS NAS CONSOLES para DCGs funcionam como ATOMOS ... 
+e não são strings diretamente como queremos
+
+*/
+
+%% Novas notações podem ir ocorrendo
+str_lst --> string_to_list.
+str_cod --> string_codes. %% igual a anterior se a entrada for uma string neste formato "xxxxx"
+
+/*
+str_lst("abc ABC", X).
+X = [97, 98, 99, 32, 65, 66, 67].
+
+?- X = [97, 98, 99, 32, 65, 66, 67], str_lst( Y , X ).
+X = [97, 98, 99, 32, 65, 66, 67],
+Y = "abc ABC".
+
+IMPORTANTE ... eh assim que internamente o Prolog trabalha e a DCG
+*/
+
+/*
+Usando as DCG's    ...   parte inicial da Anny e Markus Triska
+*/
+
+%% descrição de um REVERSO SEGUNDO ANNE
+reversal([]) --> [].
+reversal([L|Ls]) --> reversal(Ls), [L].
+
+/*
+?- string_to_list("abcd", Inp), phrase(reversal(Inp), Ls), string_codes(Out,Ls).
+Inp = [97, 98, 99, 100],
+Ls = [100, 99, 98, 97],
+Out = "dcba".
+*/
+
+%%%ultimo([]) --> [].
+ultimo([X]) --> [X].
+ultimo([_|Ls]) --> {length(Ls, C), C > 0} , ultimo(Ls).
+
+/*
+?- string_to_list("abcd", Inp), phrase(ultimo(Inp), Ls), string_codes(Out,Ls).
+Inp = [97, 98, 99, 100],
+Ls = [100],
+Out = "d" ;
+false.
+
+?- string_to_list("", Inp), phrase(ultimo(Inp), Ls), string_codes(Out,Ls).
+false
+*/ 
+
+
+%% describe a sequence of elements => do TRISKA
+%% consumindo TUDO de uma lista qualquer
+seq([])     --> [].
+seq([E|Es]) --> [E], seq(Es).
+
+/*
+?- string_to_list("UMA FRASE QUALQUER !!!!", Inp), phrase(seq(Inp), Ls), string_codes(Out,Ls).
+Inp = Ls, Ls = [85, 77, 65, 32, 70, 82, 65, 83, 69|...],
+Out = "UMA FRASE QUALQUER !!!!".
+
+*/
+
+%% da Anne + CCS
+like_1(What) --> "I like ", seq(What), ".", seq(_) , "#".
+% ORIGINAL "I like it. The rest is ignored"
+t1 :-
+    X = "I like it. The rest is ignored ABC !!!!#" , 
+    str_lst(X, Inp),
+    phrase(like_1(What), Inp, Resto), 
+    str_cod(Char_R, Resto), 
+    str_cod(Char_W, What),
+    %   writeln(X),writeln(Char_W),writeln(Char_R),
+    format('\nEntrada: ==>\n~w' , X),
+    format('\nWhat na frase: ==>~w' , Char_W),  
+    format('\nResto na frase: ==>~w' , Char_R).           
+
+%% OBSERVE o # foi consumido pela  regra like_1
+%% OBSERVE o "." foi consumido pela  regra like_1
+
+
+%%% by CCS
+like_2(What) --> "I like ", seq(_), ".", seq(What), "!".
+t2 :-
+    X = "I like it. The rest is ignored ABC !!!!" , 
+    str_lst(X, Inp),
+    phrase(like_2(What), Inp, Resto), 
+    str_cod(Char_R, Resto), 
+    str_cod(Char_W, What),
+    %   writeln(X),writeln(Char_W),writeln(Char_R),
+    format('\nEntrada: ==>\n~w' , X),
+    format('\nWhat na frase: ==>~w' , Char_W),  
+    format('\nResto na frase: ==>~w' , Char_R).           
+
+%% OBSERVE um ! foi consumido pela  regra like_2
+%% OBSERVE o "." foi consumido pela  regra like_2
+
+
+% adaptado de https://stackoverflow.com/questions/18224717/convert-string-to-list-in-prolog
+%% NAO ESTA FUNCIONANDO LEGAL ... e NEM PRECISA AINDA
+/*
+str_to_lst([], []).
+str_to_lst(C , [E|Es]) :-
+    atom_codes(C, L),
+    [E | Cs ] = L,
+    str_to_lst(Cs, Es).
+*/
+/* UTIL
+
+atom_codes(hello, X).
+?- string_chars("1 2", Out).
+Out = ['1', ' ', '2'].
+
+?- string_chars("abc", X).
+X = [a, b, c].
+
+?- string_chars('1', Out).
+Out = ['1'].
+
+?- string_chars('1 2', Out).
+Out = ['1', ' ', '2'].
+
+string_chars: ROBUSTO e UTIL
+
+*/
+
+
+%  abcdefghijklmnopqrstuvwxyz
+
+
+%%% Apenas valida se é uma lista -- sequencia de atomos
+
+list_1([L|Ls]) --> [L] ,  list_1(Ls).
+list_1([]) --> [].
+
+/*
+?- listing(list_1).
+list_1([], A, B) :-
+    A=B.
+
+O que terminar em VAZIO no primeiro argumento, e algum resto não reconhecido
+na frase de INPUT, vai para o RESTO (3o. argumento)
+
+list_1([A|B], [A|C], D) :-
+    list_1(B, C, D).
+
+Logo, o argumento 1,  vai sendo Analisado com base no 
+o argumento 2, assim INPUT sempre MAIOR que FILTRO
+senão falso
+Ex:
+list_1([1], [1, 2, 33, 44], L3) 
+L2 = [1, 2, 33, 44],
+L1 = [1],
+L3 = [2, 33, 44].
+
+e falso neste caso
+list_1([1, 2, 3], [1, 2], _112188)
+*/
+
+
+/* Conclua sobre os Tokens e lista */

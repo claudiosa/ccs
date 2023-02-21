@@ -1,0 +1,60 @@
+/*
+* Some DCG "utils"/general constructs: http://hakank.org/picat/dcg_utils.pi which is tested by http://hakank.org/picat/dcg_utilstest.pi
+
+*/
+main =>
+    
+    File = "02_inp_dcg.txt",
+    Inp_Chars = read_file_chars(File),
+    
+    printf("\nContents: %n==>\n%s" , Inp_Chars),
+    % Process to deal the input
+    parse_file(Formated , Inp_Chars , [] ),
+    print('\n=====================================\n'),
+    printf("\n Modified: %n==>\n%w" , Formated),  
+    print('\n=====================================\n'),
+    
+    print('END').
+%%%%%
+print_by_line(L) =>
+    FD = open("saida.txt",write),
+    foreach (I in L)
+        %if (membchk('valve(IE)', I)) then
+        print(I),
+        write(FD,I),
+        %end,
+        nl,
+        close(FD)
+    end.
+
+
+%%% DCG by HAKAN ...
+
+%
+% DCG for parsing the moves.
+%
+seq([])     --> [].
+seq([E|Es]) --> [E], {E != ' '}, seq(Es).
+
+%%%%%%%% START HERE
+parse_file([Move|Moves]) --> parse_line(Move), "\n", parse_file(Moves).
+parse_file([Move]) --> parse_line(Move).
+parse_file([]) --> [].
+
+parse_line( [What,From,To] ) --> "INICIO ", seq(What)," MEIO ", seq(From), " FIM ", seq(To). 
+parse_line( [UM] ) --> "UM_VALOR ", seq(UM). 
+parse_line( [UM,DOIS,TRES] ) --> "TRES_NA_SEQUENCIA ", seq(UM), " ", seq(DOIS), " ", seq(TRES). 
+
+/* ...........
+
+Example 2:
+
+:- [library(dcg/basics)].
+
+courses([Course|Courses]) -->
+    course(Course),
+    courses(Courses), !.
+courses([]) --> [].
+
+
+.............. */

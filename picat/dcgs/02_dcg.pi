@@ -1,0 +1,44 @@
+
+%% Exemplo simples .... mas repleto de detalhes.
+
+digit --> ['0'] .
+digit --> ['1'] .
+digit --> ['2'] .
+digit --> ['3'] .
+digit --> ['4'] .
+digit --> ['5'] .
+digit --> ['6'] .
+digit --> ['7'] .
+digit --> ['8'] .
+digit --> ['9'] .
+
+digitos --> digit , digitos .
+digitos --> [].
+
+/*
+string_chars ===> Vamos 
+
+
+?- digit(['1'],[]).
+true.
+
+?- string_chars("1", D), digit(D, N).
+D = ['1'],
+N = [].
+
+?- string_chars("123", D), digit(D, N).
+D = ['1', '2', '3'],   ENTRADA
+N = ['2', '3'].   RESTO
+
+BEM DIFERENTE DE
+?- string_chars("123", D), digitos(D, N).
+D = ['1', '2', '3'],
+N = [] ;
+
+?- string_chars("123", D), phrase(digitos,D, N).
+D = ['1', '2', '3'],
+N = [] ;
+D = ['1', '2', '3'],
+N = ['3'] ;
+*/
+
