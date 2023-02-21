@@ -79,13 +79,14 @@ Out = "UMA FRASE QUALQUER !!!!".
 like_1(What) --> "I like ", seq(What), ".", seq(_) , "#".
 % ORIGINAL "I like it. The rest is ignored"
 t1 :-
-    X = "I like it. The rest is ignored ABC !!!!#" , 
-    str_lst(X, Inp),
+    Frase = "I like it. The rest is ignored ABC !!!!#" , 
+    str_lst(Frase, Inp),
     phrase(like_1(What), Inp, Resto), 
+
     str_cod(Char_R, Resto), 
     str_cod(Char_W, What),
     %   writeln(X),writeln(Char_W),writeln(Char_R),
-    format('\nEntrada: ==>\n~w' , X),
+    format('\nEntrada: ==>\n~w' , Frase),
     format('\nWhat na frase: ==>~w' , Char_W),  
     format('\nResto na frase: ==>~w' , Char_R).           
 
@@ -96,18 +97,37 @@ t1 :-
 %%% by CCS
 like_2(What) --> "I like ", seq(_), ".", seq(What), "!".
 t2 :-
-    X = "I like it. The rest is ignored ABC !!!!" , 
-    str_lst(X, Inp),
+    Frase = "I like it. The rest is ignored ABC !@!@!@$$$##" , 
+    str_lst(Frase, Inp),
     phrase(like_2(What), Inp, Resto), 
+
     str_cod(Char_R, Resto), 
     str_cod(Char_W, What),
     %   writeln(X),writeln(Char_W),writeln(Char_R),
-    format('\nEntrada: ==>\n~w' , X),
+    format('\nEntrada: ==>\n~w' , Frase),
     format('\nWhat na frase: ==>~w' , Char_W),  
     format('\nResto na frase: ==>~w' , Char_R).           
 
 %% OBSERVE um ! foi consumido pela  regra like_2
 %% OBSERVE o "." foi consumido pela  regra like_2
+
+
+%%% by CCS ... pegando mais de um argumento
+like_3([What1,What2]) --> "I like ", seq(What1), ".", seq(_), "and ", seq(What2), " #", seq(_).
+t3 :-
+    Frase = "I like THIS.       The rest is ignored  and ALSO #  !@!@!@$$$##" , 
+    str_lst(Frase, Inp),
+    phrase(like_3([What1,What2]), Inp, Resto), 
+
+    str_cod(Char_R, Resto), 
+    str_cod(Char_W1, What1),
+    str_cod(Char_W2, What2),
+    %   writeln(X),writeln(Char_W),writeln(Char_R),
+    format('\nEntrada: ==>\n~w' , Frase),
+    format('\nWhat 1 na frase: ==>~w' , Char_W1),  
+    format('\nWhat 2 na frase: ==>~w' , Char_W2),      
+    format('\nResto na frase: ==>~w' , Char_R).           
+
 
 
 % adaptado de https://stackoverflow.com/questions/18224717/convert-string-to-list-in-prolog
