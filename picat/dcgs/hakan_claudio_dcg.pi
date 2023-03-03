@@ -1,0 +1,96 @@
+/* 
+
+  in Picat.
+
+  From Claudio
+  """
+  
+What I was looking for is simplified in this example:
+
+https://github.com/claudiosa/CCS/blob/master/picat/dcgs/01_dcg_file.pi
+
+For an unformatted input such:
+ VOO: 111         DE_ONDE: paris PARA: bruxelas
+VOO: 333    DE_ONDE: salvador PARA: sao_paulo
+     VOO: 222    DE_ONDE: sao_paulo PARA: floripa
+ VOO: 123  DE_ONDE: rio_de_janeiro     PARA: joinville
+
+with blank spaces et all
+
+  """
+
+  Here's the result:
+    [111,paris,bruxelas]
+    [333,salvador,sao_paulo]
+    [222,sao_paulo,floripa]
+    [123,rio_de_janeiro,joinville]
+
+  Note:
+  * Since there might be a lot of spaces, it's best to use
+    once/1 when parsing the input. Otherwise it might yield
+    a lot of different parses on backtrack, e.g. if something else
+    in the program fails.
+  * The digits are converted to ints in the DCG (in {...}).
+
+  This program was created by Hakan Kjellerstrand, hakank@gmail.com
+  See also my Picat page: http://www.hakank.org/picat/
+
+*/
+
+import util.
+main => go.
+
+go =>
+  % Chars = read_file_chars("claudio_dcg.txt"),
+  Chars = " VOO: 111         DE_ONDE: paris PARA: bruxelas
+VOO: 333    DE_ONDE: salvador PARA: sao_paulo
+     VOO: 222    DE_ONDE: sao_paulo PARA: floripa
+ VOO: 123  DE_ONDE: rio_de_janeiro     PARA: joinville",
+
+  println(Chars),
+  % Since we might have empty spaces it can match a lot
+  % of different string. It's best to use once/1 here
+  once(p(Lines,Chars,[])),
+  println(lines=Lines),
+  nl,
+  foreach(Line in Lines)
+    println(Line)
+  end,
+  nl,
+  fail, % checking what's happens on backtracking
+  nl.
+
+/*
+ VOO: 111         DE_ONDE: paris PARA: bruxelas
+VOO: 333    DE_ONDE: salvador PARA: sao_paulo
+     VOO: 222    DE_ONDE: sao_paulo PARA: floripa
+ VOO: 123  DE_ONDE: rio_de_janeiro     PARA: joinville
+
+*/
+
+% A string, except " "
+seq([])     --> [].
+seq([E|Es]) --> [E], seq(Es).
+
+% one or many " "
+space --> " " ; " ", space.
+space --> []. % end of sequence
+
+% Parse digits
+digits([C|Rest]) --> [C], {ascii_digit(C)}, digits(Rest).
+digits([]) --> [].
+
+% The details of a line.
+% Note the conversion to int of the digits (must be an non empty line)
+p1([Ds,S1,S2]) --> space, "VOO: ", space, digits(Ds1), {Ds1 != "", Ds = Ds1.to_int},
+                   space, "DE_ONDE: ", seq(S1), space, "PARA: ", space, seq(S2).
+% End of the sequence.
+p1([]) --> [].
+
+% Parse a line. There are three cases:
+%  - a line "\n" the rest of the line
+p([L|Ls]) --> p1(L), {L != ""}, "\n", p(Ls).
+% - a single (last) line which is not an empty line
+p([L]) --> p1(L), {L != ""}.
+%  - end of the sequence
+p([]) --> [].
