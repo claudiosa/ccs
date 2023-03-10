@@ -28,8 +28,7 @@ print_by_line(L) =>
     end.
 
 
-%%% DCG by HAKAN ...
-
+%%% 
 %
 % DCG for parsing the moves.
 %
@@ -37,24 +36,22 @@ seq([])     --> [].
 seq([E|Es]) --> [E], {E != ' '}, seq(Es).
 
 %%%%%%%% START HERE
-parse_file([Move|Moves]) --> parse_line(Move), "\n", parse_file(Moves).
-parse_file([Move]) --> parse_line(Move).
+parse_file([Line|Lines]) --> parse_line(Line), "\n", parse_file(Lines).
+parse_file([Line]) --> parse_line(Line).
 parse_file([]) --> [].
 
+% Layout diferente ... 3 tipos de linhas para serem lidas
 parse_line( [What,From,To] ) --> "INICIO ", seq(What)," MEIO ", seq(From), " FIM ", seq(To). 
 parse_line( [UM] ) --> "UM_VALOR ", seq(UM). 
 parse_line( [UM,DOIS,TRES] ) --> "TRES_NA_SEQUENCIA ", seq(UM), " ", seq(DOIS), " ", seq(TRES). 
 
 /* ...........
-
 Example 2:
 
 :- [library(dcg/basics)].
 
-courses([Course|Courses]) -->
-    course(Course),
-    courses(Courses), !.
-courses([]) --> [].
-
-
+nomes([Course|Courses]) -->
+    um_nome(Course),
+    nomes(Courses), !.
+nomes([]) --> [].
 .............. */

@@ -1,9 +1,9 @@
 
 %   :- use_module(library(clpfd)).
-
 :- use_module(library(dcg/basics)).    %%% modulo importante para ser carregado ...
 
-/* TESTE antes alguns predicados de STRINGS <--> CHARS <--> LISTAS etc 
+/* 
+TESTE antes alguns predicados de STRINGS <--> CHARS <--> LISTAS etc 
 
 MUITAS COISAS disponíveis como:
 
@@ -17,9 +17,10 @@ e não são strings diretamente como queremos
 
 */
 
-%% Novas notações podem ir ocorrendo
+%% Novas notações podem ir ocorrendo a partir de predicados NATIVOS do SWI-PROLOG
 str_lst --> string_to_list.
-str_cod --> string_codes. %% igual a anterior se a entrada for uma string neste formato "xxxxx"
+str_cod --> string_codes. 
+%% igual a anterior se a entrada for uma string neste formato "xxxxx"
 
 /*
 str_lst("abc ABC", X).
@@ -36,11 +37,22 @@ IMPORTANTE ... eh assim que internamente o Prolog trabalha e a DCG
 Usando as DCG's    ...   parte inicial da Anny e Markus Triska
 */
 
-%% descrição de um REVERSO SEGUNDO ANNE
+%%% descrição de um REVERSO SEGUNDO ANNE
 reversal([]) --> [].
 reversal([L|Ls]) --> reversal(Ls), [L].
 
 /*
+?- Inp = ['a', 'b'], reversal(Inp, Ls, Rest).
+Inp = [a, b],
+Ls = [b, a|Rest].
+
+?- Inp = ['a', 'b'], reversal(Inp, Ls, []).
+Inp = [a, b],
+Ls = [b, a].
+
+DETALHE: ['a', 'b'] == "ab" mas NAO IGUAL
+
+
 ?- string_to_list("abcd", Inp), phrase(reversal(Inp), Ls), string_codes(Out,Ls).
 Inp = [97, 98, 99, 100],
 Ls = [100, 99, 98, 97],
@@ -49,9 +61,17 @@ Out = "dcba".
 
 %%%ultimo([]) --> [].
 ultimo([X]) --> [X].
-ultimo([_|Ls]) --> {length(Ls, C), C > 0} , ultimo(Ls).
+ultimo([_|Ls]) -->  { length(Ls, C) , C > 0} , ultimo(Ls).
 
 /*
+?- Inp = ['a', 'b'], ultimo(Inp, Ls, Rest).
+Inp = [a, b],
+Ls = [b|Rest] 
+
+?- Inp = ['a', 'b'], ultimo(Inp, Ls, []).
+Inp = [a, b],
+Ls = [b] 
+
 ?- string_to_list("abcd", Inp), phrase(ultimo(Inp), Ls), string_codes(Out,Ls).
 Inp = [97, 98, 99, 100],
 Ls = [100],
@@ -67,6 +87,8 @@ false
 %% consumindo TUDO de uma lista qualquer
 seq([])     --> [].
 seq([E|Es]) --> [E], seq(Es).
+%%% no proximo vídeo vamos melhorar um pouco esta regra
+
 
 /*
 ?- string_to_list("UMA FRASE QUALQUER !!!!", Inp), phrase(seq(Inp), Ls), string_codes(Out,Ls).
@@ -76,6 +98,7 @@ Out = "UMA FRASE QUALQUER !!!!".
 */
 
 %% da Anne + CCS
+% REGRA: like_1
 like_1(What) --> "I like ", seq(What), ".", seq(_) , "#".
 % ORIGINAL "I like it. The rest is ignored"
 t1 :-
@@ -95,6 +118,7 @@ t1 :-
 
 
 %%% by CCS
+% REGRA: like_2
 like_2(What) --> "I like ", seq(_), ".", seq(What), "!".
 t2 :-
     Frase = "I like it. The rest is ignored ABC !@!@!@$$$##" , 
@@ -112,8 +136,9 @@ t2 :-
 %% OBSERVE o "." foi consumido pela  regra like_2
 
 
+% REGRA: like_3
 %%% by CCS ... pegando mais de um argumento
-like_3([What1,What2]) --> "I like ", seq(What1), ".", seq(_), "and ", seq(What2), " #", seq(_).
+like_3( [What1,What2] ) --> "I like ", seq(What1), ".", seq(_), "and ", seq(What2), " #", seq(_).
 t3 :-
     Frase = "I like THIS.       The rest is ignored  and ALSO #  !@!@!@$$$##" , 
     str_lst(Frase, Inp),
@@ -163,7 +188,6 @@ string_chars: ROBUSTO e UTIL
 
 
 %%% Apenas valida se é uma lista -- sequencia de atomos
-
 list_1([L|Ls]) --> [L] ,  list_1(Ls).
 list_1([]) --> [].
 
@@ -191,5 +215,4 @@ e falso neste caso
 list_1([1, 2, 3], [1, 2], _112188)
 */
 
-
-/* Conclua sobre os Tokens e lista */
+/* ****************************************  */
