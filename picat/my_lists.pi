@@ -70,6 +70,13 @@ uniao_02( [], X ) = X.
 uniao_02( [X|L1], L2 ) = L3 => L3 = [X | uniao_02( L1, L2 )].
 
 
+%disjunctive logic predicate
+disjunto([],_) ?=> true, !. 
+disjunto([A | L1], L2) =>
+        not membchk(A, L2),
+        disjunto(L1, L2).
+
+
 %% adiciona X no inicio da lista se este não estiver na lista
 add_X_lista_01(X, [ ], Z )  ?=> Z = [X]. 
 add_X_lista_01(X, Y, Z) ?=>
