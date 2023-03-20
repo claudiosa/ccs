@@ -1,0 +1,182 @@
+
+/*
+Problem:
+
+Select some sets disjoint formed from line number, respecting:
+a) a line must be contain a zero
+b) a number lesser than -100
+c) a number bigger than 100
+
+(other conditions could be added ... any conditions)
+
+Notes:
+
+a) in one line can be contain these 3 conditions
+b) can contain repeated values
+c) none position (to become easier) is considered for these values
+d) in some line none these values can be present
+
+Finally, many other conditions (I am not sure if "constraint" is suitable to use) 
+can be  added ...
+
+
+*/
+import cp,util.
+
+% SAMPLE
+diamonds(Data) => 
+    Data = 
+        [   [  19, 0, 22, 25, -112, 31, -111 ], % 1
+            [  12, 15, 19, 222, 0, 34, 2 ], % 2
+            [  10, 19, 24, 26, 30, 32, 3 ], % 3
+            [  222, 25, 28, 32, 0, 32, 0 ], % 4
+            [  22, 23, 27, -111, -1128, 32, -5 ]  % 5
+        ].
+
+%%% NUMBER OF CONDITIONS ...
+patterns(C) => C = [1,2,3].
+    % m = 5, n=7
+
+main => 
+    Status = command("clear") ,
+    printf("====================================== %d OK", Status),
+    
+    Num_SOL = 10, % take only 10 solutions
+    All_Sol = findall( Selection, $model(Selection)),
+    take(All_Sol,Num_SOL) = List,
+    foreach( X in List )
+        %print_matrix(X)
+        printf("\n A solution: %w", build_set_matrix(X))
+    end,
+    printf("\n\n SOLUTIONS showed: %d", Num_SOL),
+    printf("\n Total of SOLUTIONS: %d\n END", All_Sol.len).
+   
+ 
+model(Selection) =>
+    diamonds(Data),
+    M_Diamonds = Data.length,
+    N_Atribs = Data[1].length,
+    %printf("\n%w  \n%w" , M_Diamonds, N_Atribs ),
+
+    New_Data = new_array(M_Diamonds, N_Atribs), 
+    /*
+     Changing the initial data... instead number, values to select
+     1: has a 0 in the cell
+     2: has a negative value lesser then -100 
+     3: has a positive value bigger then  100 
+     0: this value is discarded   
+    */
+     % Building the conditions or restrictions
+    foreach(I in 1..M_Diamonds , J  in 1..N_Atribs)
+        if  (to_int(Data[I,J]) == 0) then
+            New_Data[I,J] = 1
+
+        elseif (to_int(Data[I,J]) < -100) then
+            New_Data[I,J] = 2
+
+        elseif (to_int(Data[I,J]) > 100) then
+            New_Data[I,J] = 3
+
+        else
+            New_Data[I,J] = 0
+        end,  %%% End if
+        
+    end, %%% End foreach
+ 
+   % printf("\n This matrix I was think to work ... "),
+   % print_matrix(New_Data),
+    patterns(C),
+    N_Conditions = C.length,
+    Matrix_Conditions = new_array(M_Diamonds, N_Conditions), 
+     
+
+    foreach(I in 1..M_Diamonds , J  in 1..N_Atribs)
+        if (to_int(New_Data[I,J]) != 0) then
+            Matrix_Conditions[I, New_Data[I,J] ] = 1
+   
+        end,
+    end, 
+
+    foreach(I in 1..M_Diamonds , J  in 1..N_Conditions)
+        if  ( var(Matrix_Conditions[I,J]) )  then
+             Matrix_Conditions[I, J] = 0
+        end,
+    end,
+
+    printf("\n Matrix of conditions or <=> number of requisites: %d" , N_Conditions),
+    %print(Matrix_Conditions),
+    print_matrix(Matrix_Conditions),
+
+
+    %%% Output: a list with values indicating which SET 
+    %%% One or more diamond can respect for these 3 conditions
+    %%% THIS DECISION VARIABLE 
+    Selection = new_array(M_Diamonds, N_Conditions), 
+    Selection :: 0..1,
+
+    %%% ONLY THE COLUMS ARE INTEREST
+    %%% IF an attribute is not suitable ... so receives 0
+    foreach(J in 1..N_Conditions)
+       foreach(I in 1..M_Diamonds)
+        if  ( Matrix_Conditions[I,J] == 0 )  then
+          Selection[I,J] #= 0
+        end,
+       end,
+     end,
+
+    %% MINIMAL SETS ... 
+    foreach(J in 1..N_Conditions) 
+        sum( [ Matrix_Conditions[I,J] * Selection[I,J] : I in 1..M_Diamonds] ) #= 1
+    end,
+
+    solve( Selection ).
+
+    %print_matrix(Selection).
+    
+
+
+    /*
+    %% EXAMPLE of Valid output:  [1, 1, 0, 2, 2] ... Diamonds 1 and 2  in Set 1. Diamonds 4 and 5 Set 2, 
+    and Diamond 3 was not selected
+     SET 1: { 1 , 2}
+     SET 2: { 4 , 5}
+
+    OTHER COMBINATIONS ARE ALLOWED ... NONE OPTMIZATION YET!
+     */
+    model( _ ) =>  printf("\n bye").
+/************************************************************************/
+
+
+    print_matrix( M ) =>
+        L = M.length,
+        C = M[1].length,
+        nl,
+        foreach(I in 1  .. L)
+            printf("Item %d:  ", I),
+            foreach(J in 1  ..  C)
+            printf("%d " , M[I,J] )
+           %% printf("(%d,%d): %w " , I, J, M[I,J] ) -- OK
+            end,
+          nl
+        end.   
+/************************************************************************/        
+      
+
+%disjunctive logic predicate
+disjunto([],_) ?=> true, !. 
+disjunto([A | L1], L2) =>
+        not membchk(A, L2),
+        disjunto(L1, L2).      
+
+%% build sets from matrix solution
+build_set_matrix( M ) = S =>
+        L = M.length,
+        C = M[1].length,
+         
+        Temp  = [],
+        foreach(I in 1  .. L, J in 1  ..  C)
+          if  ( M[I,J] == 1 )  then
+            Temp := Temp ++ [I]
+           end,
+        end,
+        S = remove_dups(Temp).  

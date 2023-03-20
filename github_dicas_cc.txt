@@ -1,0 +1,40 @@
+
+
+git status
+Aqui voce ve  o que modificaste no seu branch
+branch master é o branch "padrão" quando você cria um repositório.
+
+git add dicas_git.txt
+git commit -m "dicas do git" 
+git push origin master
+Username for 'https://github.com': claudiosa
+Password for 'https://claudiosa@github.com': 
+
+MSG de OK
+Delta compression using up to 4 threads.
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 426 bytes | 0 bytes/s, done.
+Total 4 (delta 2), reused 0 (delta 0)
+To https://github.com/claudiosa/minizinc
+   ce7b299..556d969  master -> master
+
+
+Procedimento padrao
+
+1. Apagar local ou o master (no seu pc) ... 
+2. git clone https://github.com/claudiosa/minizinc
+git clone -- copia um repositorio
+orign do GITHUB é aqui no site
+
+git pull -- volta o orign para o master .... atualiza
+
+%%% deletando varios remotamente -- Exemplo
+git rm *.fzn
+git commit -m "fzn were deleted" 
+ git push origin master
+%%%%%%%%%%%%%%%%%
+outro exemplo
+git rm fence_sum.mzn
+git commit -m "old fence was deleted"
+git push origin master
+*************************************************************
