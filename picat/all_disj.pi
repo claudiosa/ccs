@@ -1,0 +1,49 @@
+%%% IT is working but not properly
+example_partitions(X) :- 
+    X = [[4,5], [2,4,5], [2,4,5], [2,5], [1,4], [1,2,4],  [1,2]].
+%, 
+%        [1,2,4], [1,2], [1,4,5], [1,2,5], [1,4], [1,2]].
+
+%disjunctive logic predicate ... two sets
+disj_A_B([],_) :- !. 
+disj_A_B([A | L1], L2) :-
+        not( member(A, L2)),
+        disj_A_B(L1, L2).  
+
+/* a set with a list of SETs */
+is_disj(_, []) :- !.
+is_disj(A, [B| L]) :- 
+    disj_A_B(A,B),
+    is_disj( A, L).
+
+%all_set_disj([], []) :- !. 
+%% ALL SETs DISJUNCTs of FIRST element or SET
+all_set_disj([A], [A]) :- !. 
+all_set_disj([A, B|L1], [B|L2] ) :- 
+    disj_A_B(A,B),   %%% here are disjunctives
+    all_set_disj([A|L1] , L2).
+
+all_set_disj([A, B|L1] , L2) :- 
+    not( disj_A_B(A,B)),
+    all_set_disj([A|L1] , L2).
+
+/**** a findall on input list ****/
+find_ALL([],[]):-!.
+find_ALL([A|L1],[Set_A| L2]) :-
+    all_set_disj([A|L1] , Set_A ),
+    find_ALL( L1, L2).
+
+
+
+
+/*
+all_set_disj([], []) :- !. 
+%all_set_disj([A], [A]) :- !. 
+all_set_disj([A|L1], [A|L2] ) :- 
+    is_disj(A,L1),
+    all_set_disj(L1 , L2).
+
+all_set_disj([A | L1] , L2) :- 
+    not( is_disj(A , L1) ),
+    all_set_disj(L1 , L2).
+*/

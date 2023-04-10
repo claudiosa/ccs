@@ -41,14 +41,17 @@ main =>
     Status = command("clear") ,
     printf("====================================== %d OK", Status),
     
-    Num_SOL = 10, % take only 10 solutions
+    Num_SOL = 7, % take only 7 solutions
     All_Sol = findall( Selection, $model(Selection)),
-    take(All_Sol,Num_SOL) = List,
+   
+    take(All_Sol ,Num_SOL) = List,
     foreach( X in List )
         %print_matrix(X)
-        printf("\n A solution: %w", build_set_matrix(X))
+        printf("\n ==> %w \t %w", build_set_matrix(X), X)
+        %printf("\n A solution: %w", build_set_matrix(X))
     end,
     printf("\n\n SOLUTIONS showed: %d", Num_SOL),
+    %printf("\n All SOLUTIONS: %w\n", All_Sol),
     printf("\n Total of SOLUTIONS: %d\n END", All_Sol.len).
    
  
@@ -66,7 +69,7 @@ model(Selection) =>
      3: has a positive value bigger then  100 
      0: this value is discarded   
     */
-     % Building the conditions or restrictions
+     % Building the conditions or restrictions -- EXAMPLE
     foreach(I in 1..M_Diamonds , J  in 1..N_Atribs)
         if  (to_int(Data[I,J]) == 0) then
             New_Data[I,J] = 1
@@ -85,7 +88,7 @@ model(Selection) =>
  
    % printf("\n This matrix I was think to work ... "),
    % print_matrix(New_Data),
-    patterns(C),
+    patterns(C), %% C = number of conditions
     N_Conditions = C.length,
     Matrix_Conditions = new_array(M_Diamonds, N_Conditions), 
      
@@ -172,7 +175,7 @@ disjunto([A | L1], L2) =>
 build_set_matrix( M ) = S =>
         L = M.length,
         C = M[1].length,
-         
+        
         Temp  = [],
         foreach(I in 1  .. L, J in 1  ..  C)
           if  ( M[I,J] == 1 )  then
