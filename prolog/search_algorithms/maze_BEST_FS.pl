@@ -1,6 +1,6 @@
-%%% A - star: f = g + h
+%%% 
 %%% BEST : f = g (heuristic to the END)
-%%% IMPLEMENT BEST FIRST ALGORITHM
+%%% IMPLEMENT BEST FIRST ALGORITHM <==> GREEDY improved
 %%% Problem: find the best path
 %%% swipl -q -t main -f maze_BEST_FS.pl 
 %%% INITIAL CODE FROM https://stackoverflow.com/questions/16076778/prolog-maze-solving-algorithm

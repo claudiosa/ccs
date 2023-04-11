@@ -1,7 +1,25 @@
-/* va : origin   vg: target
-   
-*/
+/* 
+va : origin   vg: target
+*/  
 
+%%% GRAPH #1 from NOTES in PDF
+edge(vs, vc, 1).
+edge(vs, vd, 2).
+edge(vs, vf, 3).
+
+edge(vc, ve, 1).
+edge(vd, vk, 5).
+edge(vd, vj, 7).
+
+edge(vk, vf,  4).
+edge(vf, vh,  2).
+edge(vk, vh,  3).
+edge(vg, vj,  2).
+edge(vk, vj,  1).
+
+/*
+
+%%% OTHER GRAPH #2
 edge(va, vb, 40).
 edge(va, vh, 40).
 edge(va, vi, 90).
@@ -67,14 +85,19 @@ edge(vp, vi, 60).
 edge(vp, vh, 120).
 edge(vp, vn, 80).
 
+UNCOMMENT for graph #2
+*/
+
 %%% the edges are duplicates ...
 %%% you can use the getedge to avoid this
 getedge(V1, V2, Cost) :- edge(V1, V2, Cost).
 getedge(V1, V2, Cost) :- edge(V2, V1, Cost).
 
 
-
 %%% position of each vertex in cartesian system
+coordinate(vs, 90, 160). %%% kick
+
+
 coordinate(va, 90, 160).
 coordinate(vb, 70, 140).
 coordinate(vc, 40, 80).
