@@ -108,7 +108,12 @@ def my_print_VARS( x, y, duration, solver_OUT):
     print('Duration Time :', [(duration[i]) for i in range(n)] )
     print('End Time : ', [solver_OUT.Value(y[i]) for i in range(n)] )
        
-    print("\n ===================================")
+    for i in range(n):
+        print(' Task:', i+1, 'start in:', solver_OUT.Value(x[i]), end=" ")
+        print(' duration:', duration[i], end=" "),
+        print(' ends in:', solver_OUT.Value(y[i]))
+
+    print("\n ===================================\n")
     
     ####### HEADLINE -- TOP of matrix
     

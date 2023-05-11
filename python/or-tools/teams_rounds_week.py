@@ -34,109 +34,127 @@ from ortools.sat.python import cp_model
 
 def f_data():
 
-        # define the problem (use smaller numbers of players for testing)
-    n_players = 44
-    n_days = 4
-    players_per_group = 4
- 
+    # define the problem (use smaller numbers of players for testing)
+    n_players = 15 #35
+    n_days = 5
+    players_per_group = 3
+    return n_players, n_days, players_per_group 
+
 # these will come in handy
-    n_groups = n_players // players_per_group
-    players = list(range(n_players))
-    days = list(range(n_days))
-    groups = list(range(n_groups))
 ''' 
-attention
+   Attention
 >>> n_days = 4
 >>> days = list(range(n_days))
 >>> print(days)
 [0, 1, 2, 3]
 '''
 
-    return ..... todo
+    
 
 # model_most_money
-def model_teams():
+def model_social_golfers():
     t = 'model_assignment'  ### onde usar isto ....
     ## creating a model
     the_model = cp_model.CpModel()
     # DATA 
     ### should be come from a file
+    n_players, n_days, players_per_group = f_data()
+
+    n_groups = n_players // players_per_group
+    
+    players = list(range(n_players)) 
+    days = list(range(n_days))
+    groups = list(range(n_groups))
 
 
     ### Many tricks to a sum of a MATRIX           
-    MAX = sum(sum(cost,[])) ### an additional constant
+    #MAX = sum(sum(cost,[])) ### an additional constant
     
     #### VARIABLES
     # define variables --- other trick -- Classical
+    # Decision variables
+    # 0-1 decisions variables: x[gf][w][gr]=1 if golfer gf is in group gr on week w
     x = {}
     for i in range(n_players): 
         for j in range(n_days):
             for k in range(n_groups):
-            x[(i,j,k)] = the_model.NewIntVar(0, 1, 'x[i][j][k]' )
-        
+    #   OR         x[(i,j,k)] = the_model.NewIntVar(0, 1, 'x[i][j][k]' )
+              x[i,j, k] = the_model.NewIntVar(0, 1, 'x[%i,%i,%i]' % (i, j, k))
+     #x = [[[model.bool() for gf in range(nb_golfers)]
+     #     for gr in range(nb_groups)] for w in range(nb_weeks)]    
     ### range(start, range ) --- start in specific index   
     ### index accept ... only "i" .... WHY ....
     # 
 
+    # Each week, each golfer is assigned to exactly one group
+    # each player must be in a single group on each day
+    #for i in range(n_players): 
+    #    for j in range(n_days):
+    #        the_model.Add( sum( x[i,j,indx_group] for indx_group in range(n_groups)) == 1) 
 
-
-
-    f_objective = the_model.NewIntVar (0, MAX, 'cost function')
+    # Each week, each group contains exactly group_size golfers
+    #for j in range(n_days):
+    #    for k in range(n_groups):
+    #        the_model.Add( sum( x[indx_player,j,k] for indx_player in range(n_players)) == 1) 
     
+    for p1, p2 in range(n_players): 
+        if p1 < p2:
+            continue;
+            for j in range(n_days):
+                for k in range(n_groups):
+                    the_model.Add( ( x[p1,j,indx_group] for indx_group in range(n_groups)) == 1) 
+
+
     # CONSTRAINTS ADDED of the problem
     '''
-      % exacly one assignment per row, all rows must be assigned
-        constraint  
-        forall(i in 1..rows) (
-                sum(j in 1..cols) (x[i,j]) = 1
+      INCOMPLETE ....
+    
     '''
-    ### For Line - ROWS
-    for i in range(rows):
-        the_model.Add( sum(x[i][j] for j in range(cols)) == 1 )
-        
-    ### For Cols --- there are more cols than rows -- TAKE CARE HERE
-    for j in range(cols):
-        the_model.Add( sum(x[i][j] for i in range(rows)) <= 1 )
-    
-    ### Objective Function
-    the_model.Add(
-        f_objective == sum(
-            (cost[i][j] * x[i][j]) \
-            for i in range(rows) \
-            for j in  range(cols)
-            )### of sum 
-        )## of Add
-    
-    ### optmization  function or objective function 
-    # OR:  the_model.Maximize(-less_DIF) 
-    the_model.Minimize(f_objective)
+    # % Each member of each group must be distinct. 
+    #for j in range(n_days):
+    #    the_model.AllDifferent(x[(indx_player , j, indx_group)] for indx_player in range(n_players) for indx_group in range(n_groups) )  
 
+
+    
+    ## SEARCH or OPTIMIZATION
+    #the_model.AddDecisionStrategy(x, cp_model.CHOOSE_FIRST,cp_model.SELECT_MIN_VALUE)
+    
+    # Force the solver to follow the decision strategy exactly.
+    #solver_OUT.parameters.search_branching = cp_model.FIXED_SEARCH
+
+    #the_model.Minimize(f_objective)
     ### data_from_model = call the solver for model s
     # code calls the solver
     solver_OUT = cp_model.CpSolver()
     solver_OUT.parameters.max_time_in_seconds = 10
     status = solver_OUT.Solve(the_model)
 
+    #solution_printer = SimpleSolutionCounter(2)
+    #solution_printer = SolutionPrinter(x)
+    #status = solver_OUT.SearchForAllSolutions(cp_model, solution_printer)
+
     if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         raise ValueError("No solution was found for the given input values")
     else :
-        my_print_VARS( x , rows, cols,  f_objective, solver_OUT )
+        my_print_VARS( x , n_players, n_days, n_groups,  solver_OUT )
+        #print( x , end='\n')
+        #print('x = %i' % solver_OUT.Value(x))
+        #print(f'x = {solver_OUT.Value(x)}')
         print("\n END SOLVER and Model ")
         print_t(40)
 
     return ###### end function
 
-
 ### PRINTING FUNCTION
 ## learning Python
-def my_print_VARS( x, m, n, f_objective, solver_OUT  ):
-
-    print('Min sum of x : %i' % solver_OUT.Value(f_objective))
+def my_print_VARS( x, m, n, l,  solver_OUT  ):
+    #print('Min sum of x : %i' % solver_OUT.Value(f_objective))
     
     print("\n  ================= Matrix X =================")
     for i in range(m): 
         for j in range(n): 
-            print(f' x[%i][%i] : %i\t' % (i+1, j+1, solver_OUT.Value( x[i][j] ) ), end =  '' )
+            for k in range(l): 
+                print(f' x[%i][%i][%i] : %i\t' % (i+1, j+1, k+1, solver_OUT.Value( x[(i,j,k)] ) ), end =  '' )
         print("\n ======================")
 ## learning Python            
         
@@ -158,8 +176,7 @@ def print_t(n):
 
 if __name__ == '__main__':
     print("\n =============== RESULTS ====================")
-    model_assignment()
-    #print(f'\n END MAIN \n %s' % print_t(40))
+    model_social_golfers()
     print(f'\n END MAIN ')
     print_t(40)
     # return ###### end function 
