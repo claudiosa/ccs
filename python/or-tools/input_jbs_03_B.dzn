@@ -1,0 +1,27 @@
+% Problem taken from "A Comparison of Genetic Algorithms for the Dynamic
+% Job Shop Scheduling Problem" by Vasquez and Whitley.
+n_jobs = 3;
+n_machines = 3;
+%%
+job_sequence = array2d(jobs, machines, [
+	1, 2, 3,
+	1, 3, 2,
+	2, 1, 3
+]);
+job_time = array2d(jobs, machines, [
+	3, 3, 3,
+	2, 3, 4,
+    3, 2, 1
+]);
+%%% From http://www.kecl.ntt.co.jp/as/members/yamada/galbk.pdf
+/*
+Chapter 7: Job-shop scheduling (pp. 134–160)
+Genetic algorithms in engineering systems
+Edited by A.M.S. Zalzala and P.J. Fleming
+IEE control engineering series 55
+
+1997: The Institution of Electrical Engineers, ISBN: 0 85296 902 3
+Chapter 7
+Job-shop scheduling
+Takeshi Yamada and Ryohei Nakano
+*/

@@ -1,0 +1,53 @@
+
+com SEQUENCE
+
+Machine:  1
+ Task/job: 1 starts: 145  Duration: 76 
+========================
+ Task/job: 2 starts: 0  Duration: 73 
+========================
+ Task/job: 3 starts: 73  Duration: 72 
+========================
+
+ Machine:  2
+ Task/job: 1 starts: 68  Duration: 56 
+========================
+ Task/job: 2 starts: 124  Duration: 74 
+========================
+ Task/job: 3 starts: 0  Duration: 68 
+========================
+
+ Machine:  3
+ Task/job: 1 starts: 55  Duration: 56 
+========================
+ Task/job: 2 starts: 0  Duration: 55 
+========================
+ Task/job: 3 starts: 111  Duration: 56 
+========================
+
+
+
+ Machine:  1
+ Task/job: 1 starts: 145  Duration: 76 
+========================
+ Task/job: 2 starts: 72  Duration: 73 
+========================
+ Task/job: 3 starts: 0  Duration: 72 
+========================
+
+ Machine:  2
+ Task/job: 1 starts: 0  Duration: 56 
+========================
+ Task/job: 2 starts: 124  Duration: 74 
+========================
+ Task/job: 3 starts: 56  Duration: 68 
+========================
+
+ Machine:  3
+ Task/job: 1 starts: 55  Duration: 56 
+========================
+ Task/job: 2 starts: 0  Duration: 55 
+========================
+ Task/job: 3 starts: 111  Duration: 56 
+========================
+
