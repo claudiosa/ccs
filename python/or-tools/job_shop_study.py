@@ -18,7 +18,7 @@ def model_job_shop():
     the_model = cp_model.CpModel()
     
     # Input Data
-    end_VALUE =  9999
+    
     jobs = 3
     machines = 3
     # jobs j in machine i
@@ -41,6 +41,16 @@ def model_job_shop():
 	    [ 56, 55, 56]
         ]
 
+    # Computes horizon dynamically as the sum of all durations.
+    end_VALUE = sum(map(sum, duration)) ### TWO FORs
+    print("\nHorizont max", end_VALUE)
+    '''
+    temp = 0
+    for i in range(jobs):
+        for j in range(machines):
+            temp += duration[i][j]  
+    print("\nHorizont max", temp)
+    '''
     #### VARIABLES
     # when the job i starts on machine j?
     job_start = [
@@ -96,8 +106,30 @@ def model_job_shop():
                 the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
     
     
+    for i in range(machines) :  
+        for j in range(jobs):
+            for k in range(jobs):
+                if j == k:
+                    continue;
+                the_model.AddBoolOr( sum( [ x[i][j][k] ] ) == 2 ) . OnlyEnforceIf (x[i][j][k])
+                the_model.AddBoolOr( sum( [ x[i][j][k] ]) == 2 ) . OnlyEnforceIf (x[i][j][k].Not())
+        #sum(shift_requests[n][d][s] * shifts[(n, d, s)] for n in all_nurses
+        #for d in all_days for s in all_shifts))                   
+            #the_model.AddBoolXOr( [(sum( [ x[i][j][k] for k in range(jobs) if j != k] ) == 1 ),
+            #                      (sum( [ x[i][k][j] for k in range(jobs) if j != k] ) == 1 ) 
+            #]
+            #)  
+                                
+    
+    #the_model.AddBoolXOr([(job_start[i][k] > job_start[i][j] + duration[i][j]) == True, 
+    #                                (job_start[i][j] > job_start[i][k] + duration[i][k]) == True
+                                    
+                                     
 
-    # hakank: Ensure that the jobs does not have overlapping machines
+
+    '''
+    
+        # hakank: Ensure that the jobs does not have overlapping machines
     #    #         i.e. the "transpose" of the constraints above
     for j in range(jobs):
         for m1 in range(machines) :            
@@ -106,20 +138,7 @@ def model_job_shop():
                     continue;
                 the_model.Add(job_start[m1][j] >= job_start[m2][j] + duration[m2][j]) . OnlyEnforceIf (y[m1][m2][j]  )
                 the_model.Add(job_start[m2][j] >= job_start[m1][j] + duration[m1][j]) . OnlyEnforceIf (y[m1][m2][j].Not()  )
-
-    '''
-    for j in range(jobs):
-       for k in range(jobs):
-            if j != k:
-                #continue;
-                the_model.Add( sum(x[i][j][k] for i in range(machines) ) <= 1 )
-               
-
-    the_model.AddBoolXOr([(job_start[i][k] > job_start[i][j] + duration[i][j]) == True, 
-                                    (job_start[i][j] > job_start[i][k] + duration[i][k]) == True
-                                    ]
-                                    ) 
-              
+          
     FROM PICAT ... of HAKAN
      % handle EndTimes
   foreach(M in 1..NumMachines, J in 1..NumJobs)
