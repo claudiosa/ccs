@@ -61,8 +61,9 @@ def or_exclusive_example():
       print_output_VARS(solver.Value(x), solver.Value(y), solver.Value(b1_var)
                        , solver.Value(b2_var))
     
-    #####
+    ##################################################
     print('\n\n** Final Statistics **')
+    print('  - status from solver : %s' % solver.StatusName(status))
     print('  - conflicts : %i' % solver.NumConflicts())
     print('  - branches  : %i' % solver.NumBranches())
     print('  - wall time : %f s' % solver.WallTime())
