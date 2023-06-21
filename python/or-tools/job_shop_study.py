@@ -43,6 +43,7 @@ def model_job_shop():
 
     # Computes horizon dynamically as the sum of all durations.
     end_VALUE = sum(map(sum, duration)) ### TWO FORs
+    High_Value = end_VALUE
     print("\nHorizont max", end_VALUE)
     '''
     temp = 0
@@ -100,19 +101,86 @@ def model_job_shop():
     for i in range(machines) :
         for j in range(jobs):
             for k in range(jobs):
-                if j == k:
-                    continue;
-                the_model.Add(job_start[i][k] >= job_start[i][j] + duration[i][j]) . OnlyEnforceIf (x[i][j][k]) 
-                the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
+                #if j == k:
+                #    continue;
+                if j < k:                    
+                    the_model.Add(job_start[i][k] >= job_start[i][j] + duration[i][j]) . OnlyEnforceIf (x[i][j][k]) 
+                    the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
+
+
+    for i in range(machines):
+        for j in range(jobs):
+            for k in range(jobs):
+                #if j == k:
+                #    continue;
+                if j < k:  ### MORE EFFICIENT
+                    the_model.Add(job_start[i][j] - job_start[i][k] <= (-duration[i][j] + High_Value*(1 - x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k]) 
+                    the_model.Add(job_start[i][j] - job_start[i][k] <= (-duration[i][j] + High_Value*(1 - x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k].Not()) 
+
+    for i in range(machines):
+        for j in range(jobs):
+            for k in range(jobs):
+                #if j == k:
+                #    continue;
+                if j < k:  ### MORE EFFICIENT
+                    the_model.Add(job_start[i][k] - job_start[i][j] <= (-duration[i][k] + High_Value*(x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k]) 
+                    the_model.Add(job_start[i][k] - job_start[i][j] <= (-duration[i][k] + High_Value*(x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k].Not()) 
+        
+
+    '''
+        s =[the_model.NewIntVar(0,1,'s_t[i]') \
+          for i in range(machines) 
+       ]
     
     
     for i in range(machines) :  
-        for j in range(jobs):
-            for k in range(jobs):
-                if j == k:
-                    continue;
-                the_model.AddBoolOr( sum( [ x[i][j][k] ] ) == 2 ) . OnlyEnforceIf (x[i][j][k])
-                the_model.AddBoolOr( sum( [ x[i][j][k] ]) == 2 ) . OnlyEnforceIf (x[i][j][k].Not())
+        #for j in range(jobs):
+            s[i] == sum( [ x[i][j][k] for j in range(jobs) for k in range(jobs) if j < k ] )
+            the_model.Add(s[i] == 1)
+
+
+
+            #s_j[j] == sum( [ x[i][j][k] for k in range(jobs) if j < k] )
+            #s_k[j] == sum( [ x[i][k][j] for k in range(jobs) if j > k] )
+            #a, b = s_j[j], s_k[j]
+            #the_model.AddBoolXOr([ a ,  b])
+            #the_model.AddBoolXOr([s_j[j] ,  s_k[j]])
+            #the_model.Add((s_j[j] + s_k[j]) == 1)
+    
+            #the_model.Add(s_j[j] == 1).OnlyEnforceIf(s_j[j])
+            #the_model.Add(s_j[j] == 1).OnlyEnforceIf(s_j[j].Not())
+            #the_model.Add(s_k[j] == 1).OnlyEnforceIf(s_k[j])
+            #the_model.Add(s_k[j] == 1).OnlyEnforceIf(s_k[j].Not())
+    
+            ###the_model.AddBoolXOr([s_j[j]==1,  s_k[j] == 1])
+
+    s_1 = the_model.NewIntVar(0,jobs, 's_1')
+    s_2 = the_model.NewIntVar(0,jobs, 's_2')
+     
+    s_1 = sum([s_j[j] for j in range(jobs)])
+    s_2 = sum([s_k[j] for j in range(jobs)])
+
+    
+    s =[the_model.NewIntVar(0,1,'s_j[i]') \
+          for i in range(machines) 
+       ] 
+    
+    print("............\n")
+    for i in range(machines) :  
+            s[i] == sum( [ x[i][j][k] for j in range(jobs) for k in range(jobs) if j < k ] )
+            the_model.Add(s[i] == 1). OnlyEnforceIf (s[i]) 
+            the_model.Add(s[i] == 1). OnlyEnforceIf (s[i].Not()) 
+
+    # print("s_1  s_2", s_1, s_2)
+    # the_model.AddBoolXOr( [s_1 == 1, s_2 == 1])
+    # the_model.Add(s_1 >= 1).OnlyEnforceIf(s_1)
+    # the_model.Add( s_1 == 1).OnlyEnforceIf().not()
+    # the_model.Add( s_2 == 1).OnlyEnforceIf()
+            #for k in range(jobs):
+            #    if j == k:
+            #       continue;
+            #    the_model.AddBoolOr( sum( [ x[i][j][k] ] ) == 2 ) . OnlyEnforceIf (x[i][j][k])
+            #    the_model.AddBoolOr( sum( [ x[i][j][k] ]) == 2 ) . OnlyEnforceIf (x[i][j][k].Not())
         #sum(shift_requests[n][d][s] * shifts[(n, d, s)] for n in all_nurses
         #for d in all_days for s in all_shifts))                   
             #the_model.AddBoolXOr( [(sum( [ x[i][j][k] for k in range(jobs) if j != k] ) == 1 ),
@@ -124,14 +192,10 @@ def model_job_shop():
     #the_model.AddBoolXOr([(job_start[i][k] > job_start[i][j] + duration[i][j]) == True, 
     #                                (job_start[i][j] > job_start[i][k] + duration[i][k]) == True
                                     
-                                     
-
-
-    '''
     
         # hakank: Ensure that the jobs does not have overlapping machines
-    #    #         i.e. the "transpose" of the constraints above
-    for j in range(jobs):
+        #    #         i.e. the "transpose" of the constraints above
+        for j in range(jobs):
         for m1 in range(machines) :            
             for m2 in range(machines):
                 if m1 == m2:
@@ -139,33 +203,19 @@ def model_job_shop():
                 the_model.Add(job_start[m1][j] >= job_start[m2][j] + duration[m2][j]) . OnlyEnforceIf (y[m1][m2][j]  )
                 the_model.Add(job_start[m2][j] >= job_start[m1][j] + duration[m1][j]) . OnlyEnforceIf (y[m1][m2][j].Not()  )
           
-    FROM PICAT ... of HAKAN
-     % handle EndTimes
-  foreach(M in 1..NumMachines, J in 1..NumJobs)
-      JobEnd[M,J] #= JobStart[M,J] + JobTimes[M,J]
-  end,
-
-  % check the job order
-  foreach(M in 1..NumMachines)
-     foreach(J1 in 1..NumJobs, J2 in 1..NumJobs, J1 < J2) 
-        if JobOrder[M,J1] < JobOrder[M,J2] then
-           before(JobEnd[M,J1], JobStart[M,J2])
-        else 
-           after(JobStart[M,J1], JobEnd[M,J2])
-        end
-     end
-  end,
-  '''  
+   
+    '''  
     # ORDERING OR SEQUENCE from sequence matrix
     for i in range(machines) :
         for j in range(jobs):
             for k in range(jobs):
-                if j == k:
-                    continue;
-                if( (sequence[i][j] < sequence[i][k]) ):    
-                    the_model.Add(job_end[i][j] <= job_start[i][k] ) 
-                else:
-                    the_model.Add(job_end[i][j] > job_start[i][k] ) 
+                #if j == k:
+                #    continue;
+                if j < k:  ### MORE EFFICIENT
+                    if( (sequence[i][j] < sequence[i][k]) ):    
+                        the_model.Add(job_end[i][j] <= job_start[i][k] ) 
+                    else:
+                        the_model.Add(job_end[i][j] > job_start[i][k] ) 
     
     ###
     ### optmization  function or objective function 
@@ -188,8 +238,9 @@ def model_job_shop():
     solver_OUT = cp_model.CpSolver()
     solver_OUT.parameters.max_time_in_seconds = 100
     status = solver_OUT.Solve(the_model)
-   
-    
+    print('The status is:' , solver_OUT.StatusName(status))
+    #print("s_1  s_2:::", solver_OUT.Value(s_1), solver_OUT.Value(s_2))
+
     if status in (cp_model.OPTIMAL , cp_model.FEASIBLE):
        # print(solver_OUT.Value(job_end))
        
@@ -198,7 +249,7 @@ def model_job_shop():
        
         
     elif (status == cp_model.INFEASIBLE) :   ##nao é UNFEASIBLE 
-        print(" INSATISFATIVEL ")
+        print(" INFEASIBLE ")
         raise ValueError("No solution was found for the given input values")
 
     elif (status == cp_model.UNKNOWN) :

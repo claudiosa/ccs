@@ -90,10 +90,11 @@ def model_job_shop():
     for i in range(machines) :
         for j in range(jobs):
             for k in range(jobs):
-                if j == k:
-                    continue;
-                the_model.Add(job_start[i][k] >= job_start[i][j] + duration[i][j]) . OnlyEnforceIf (x[i][j][k]) 
-                the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
+            #if j == k:
+            #    continue;
+                if j < k:  ### MORE EFFICIENT
+                    the_model.Add(job_start[i][k] >= job_start[i][j] + duration[i][j]) . OnlyEnforceIf (x[i][j][k]) 
+                    the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
     
     
 
@@ -141,12 +142,13 @@ def model_job_shop():
     for i in range(machines) :
         for j in range(jobs):
             for k in range(jobs):
-                if j == k:
-                    continue;
-                if( (sequence[i][j] < sequence[i][k]) ):    
-                    the_model.Add(job_end[i][j] <= job_start[i][k] ) 
-                else:
-                    the_model.Add(job_end[i][j] > job_start[i][k] ) 
+                 #if j == k:
+                #    continue;
+                if j < k:  ### MORE EFFICIENT
+                    if( (sequence[i][j] < sequence[i][k]) ):    
+                        the_model.Add(job_end[i][j] <= job_start[i][k] ) 
+                    else:
+                        the_model.Add(job_end[i][j] > job_start[i][k] ) 
     
     ###
     ### optmization  function or objective function 
