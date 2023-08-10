@@ -24,7 +24,7 @@ fn main() {
 		'H': ['E', 'F', 'G']
 	}
 	// println('Graph: $graph')
-	path_01 := depth_first_search_path(graph_01, 'A', 'F')
+	path_01 := depth_first_search_path(graph_01, 'A', 'E')
 	println('\n Graph_01: a first path from node A to node F is: $path_01.reverse()')
 	path_02 := depth_first_search_path(graph_02, 'A', 'H')
 	println('\n Graph_02: a first path from node A to node F is: $path_02.reverse()')
@@ -84,7 +84,7 @@ fn visited_init(a_graph map[string][]string) map[string]bool {
 
 // Based in the current node that is final, search for his parent, that is already visited, up to the root or start node
 fn build_path_reverse(graph map[string][]string, start string, final string, visited map[string]bool) []string {
-	print('\n\n Nodes visited (true) or no (false): $visited')
+	print('\n\n Nodes visited (except the start node): $visited')
 	array_of_nodes := graph.keys()
 	mut current := final
 	mut path := []string{}
