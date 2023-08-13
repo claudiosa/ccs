@@ -123,13 +123,14 @@ fn neighbours_not_visited(a_graph map[string][]string, current string, visited m
 fn visited_init(a_graph map[string] [] string ) map[string]bool {
 	
 	mut map_with_nodes := a_graph.keys() // get all keys of this map ... NODES in this case
-	print('\nNodes of this graph: ${map_with_nodes} \n')
+	print('\n\n Nodes of this graph: ${map_with_nodes}')
+	print('\n This graph: ${a_graph} \n')
 	
 	mut visited_array := map[string]bool{} // attention in these initializations with maps
 		for node in map_with_nodes {
 		visited_array[node] = false
 	}
-	print('Not visited yet in this graph: ${visited_array} \n\n')
+	print(' Not visited in this graph (INITIALIZATION): ${visited_array} \n')
 	return visited_array
 }
 
