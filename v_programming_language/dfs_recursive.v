@@ -15,7 +15,7 @@ Depth-First-Search( MazeCell c )
         Mark c "Visited"
 End procedure
 
-OR
+OR (from wiki)
 
 procedure DFS(G, v) is
     label v as discovered
@@ -74,25 +74,30 @@ fn main() {
 	// println('Graph: $graph')
 	mut visited := visited_init(graph_01) // a map fully with false in all vertex
 	// false ... not visited yet: {'A': false, 'B': false, 'C': false, 'D': false, 'E': false}
-	dfs_recursive(mut visited, graph_01, 'A', 'E')
+	dfs_recursive(mut visited, graph_01, 'A', 'E') 
+	//print('\n Visited ... all true: ${visited} \n')
 
 	visited = visited_init(graph_02) // a map fully with false in all vertex
-	dfs_recursive(mut visited, graph_02, 'A', 'H')
-
+	dfs_recursive(mut visited, graph_02, 'A', 'H') 
+		
 	visited = visited_init(graph_03) // a map fully with false in all vertex
 	dfs_recursive(mut visited, graph_03, '5', '8')
-}
+	
+	exit(1)
+} // END MAIN
 
 // Depth-First Search (BFS) allows you to find a path between two nodes in the graph.
-fn dfs_recursive(mut visited map[string]bool, graph map[string][]string, current string, target string) {
+fn dfs_recursive(mut visited map[string]bool, graph map[string][]string, current string, target string)  {
 	if visited[current] == false {
 		visited[current] = true
 		// print('\t Visiting: ${current} ')
 		print(' => ${current} ||')
 		if current == target {
 			print('\n The node target was found:  ${target} \n')
-			// exit(1)
+			//return 1
+			//exit(1)
 		}
+		
 	}
 	// mut adjacent_nodes_not_visited := [] string {}
 	adjacent_nodes_not_visited := neighbours_not_visited(graph, current, visited)
@@ -101,12 +106,14 @@ fn dfs_recursive(mut visited map[string]bool, graph map[string][]string, current
 	for node in adjacent_nodes_not_visited {
 		dfs_recursive(mut visited, graph, node, target)
 	}
+	//return 0
 }
 
 // END of recursive DFS
 
+// get all nodes adjacents not visited yet
 fn neighbours_not_visited(a_graph map[string][]string, current string, visited map[string]bool) []string {
-	mut not_visited := []string{} // [type ] string with empty
+	mut not_visited := []string{} // [ type ] string with empty
 	all_adjacents := a_graph[current] // all nodes adjacents from current node because it is map
 	// print('\n => Adjacents of ${current} \t and ${all_adjacents}')
 	for node in all_adjacents {
@@ -119,7 +126,7 @@ fn neighbours_not_visited(a_graph map[string][]string, current string, visited m
 }
 
 // Creating a map to initialize with of visited nodes .... all with false in the init
-// so these nodes are NOT VISITED YET
+// so these nodes are NOT VISITED YET and marked with false
 fn visited_init(a_graph map[string] [] string ) map[string]bool {
 	
 	mut map_with_nodes := a_graph.keys() // get all keys of this map ... NODES in this case
