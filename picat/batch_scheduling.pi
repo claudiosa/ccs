@@ -1,0 +1,93 @@
+import cp.
+
+
+main => 
+%%% INPUT DATA
+    Daily_targets = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
+%%% 20 products
+    Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
+    M_days = 30,
+    N_products = Daily_targets.length,
+    Hours_DAY = 16 * 60 * 60, %%% in seconds
+
+%% LATER is a vector
+    Span_Time = 14, %%% in seconds -- Later we can put an array
+    Setup_Time = 10, %%% in seconds -- Later we can put an array
+% [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+Min_Dom = min(Daily_targets), %#fd_min(Daily_targets),
+Max_Dom = max(Daily_targets), %#fd_max(Daily_targets),
+%%% created the sol matrix VAR ... which is batch production
+Matrix_Sol = new_array(M_days, N_products), 
+Matrix_Sol  :: 1..Max_Dom,
+ 
+%% Each day must respect  until 16 hours worked
+%% in EACH DAY sum the production time of ALL PRODUCTS
+foreach(I in 1..1..M_days) 
+    prod([ sum( [ Matrix_Sol[I,J]  : J in 1..N_products] ) + Setup_Time , Span_Time ] )  #<= Hours_DAY
+end,
+
+
+%%% the min time per day - 6 hours
+foreach(I in 1..1..M_days) 
+    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
+end,
+
+
+%% the sum of ALL DAYS of one product must be respect its month target
+foreach(J in 1..N_products) 
+        sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
+end,
+
+%% In  ALL DAYS of one product its value must be respect a MAX for that day
+foreach(I in 1..M_days)   
+    foreach(J in 1..N_products) 
+        Matrix_Sol[I,J]   #=< Daily_targets[J]
+    end,
+end,    
+
+/*
+%%% all days ... all products must be produced
+foreach(I in 1..M_days)   
+    foreach(J in 1..N_products) 
+        Matrix_Sol[I,J]   #!= 0
+    end,
+end,    
+*/
+
+solve(Matrix_Sol),
+
+printf("\n Daily target - min: %w", Daily_targets),
+printf("\n Month target - min: %w\n", Monthly_targets),
+
+print_matrix(Matrix_Sol),
+printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
+sum_COL(Matrix_Sol).
+
+
+/*
+Picat> X = prod([ sum([3,4]) + 7, 2]).
+X = 28
+yes
+*/
+
+sum_COL( M ) =>
+    L = M.length,
+    C = M[1].length,
+    foreach(J in 1..C) 
+        printf("||%w", sum( [ M[I,J]  : I in 1..L] ))
+    end.
+
+
+ print_matrix( M ) =>
+    L = M.length,
+    C = M[1].length,
+    nl,
+    foreach(I in 1  .. L)
+        printf("Day %d:  ", I),
+        foreach(J in 1  ..  C)
+        printf("%w " , M[I,J] )
+           %% printf("(%d,%d): %w " , I, J, M[I,J] ) -- OK
+        end,
+        nl
+    end.   
