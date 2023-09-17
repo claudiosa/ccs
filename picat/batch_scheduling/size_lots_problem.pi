@@ -1,0 +1,183 @@
+import sat.
+%import cp.
+
+main => 
+%%% INPUT DATA and PARAMETERS
+   T = 5, %%25, 20 days worked ,  number of periods
+   
+   % demand for product i in a periodo t (DAY in our case) ===>  Demands_targets per day - daily demand
+   D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
+   %%% 20 products
+   N = D_i.length, %% number of products    
+
+   %Setup_Time = 10, %%% in seconds -- Later we can put an array
+   S = 10,  
+   
+   
+   %% UNITARY COST in inventory
+   C_i = [14 : I in 1..N],
+   %%% fixed cost UNITARY associated of product i in period t (day)
+
+   %%% 
+   %H_u = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
+   % Unit inventory holding cost of product i at the end of period t (day)
+ 
+   %% UNITARY TIME ..... TIME IS DIFFERENT OF COST
+   TP_i = [14 : I in 1..N],%%% Tempo de Produção do item i
+   
+   %%% Unitary production  cost of product i in period t (day)
+   CP_t = [16*60*60  : I in 1..T], %%% production capacity of one machine on a day
+
+    %%% NOT USED ....
+    Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
+    % quantity expected for ALL periods = Example: 1 month
+    M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
+
+%%% VARIABLES
+
+    Min_Dom = min(D_i), %#fd_min(Daily_targets),
+    Max_Dom = max(D_i), %#fd_max(Daily_targets),
+    %%% created the sol matrix VAR ... which is batch production
+    %% production of day i on day t
+    X_it = new_array(N, T),  %%% units of product i in period t (day) -- quantity produced of product it in time t
+    X_it :: 0 .. Max_Dom,
+ 
+   %% SETUP ... BINARY VARIABLES
+    Y_it = new_array(N, T),   %%% units of product i in period t (day)
+    % if exists setup for product i on day t
+    Y_it  :: 0 .. 1,
+   
+    I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
+    I_it :: 0..Max_Dom, %% INVENTORY
+
+% CONSTRAINTS
+
+%%% C1: a balance between inventory and product - key constraint
+foreach(I in 1..N)   
+    foreach(J in 1..T-1) 
+        (X_it[I,J] + I_it[I, J] - D_i[I]) #= I_it[I, J+1]
+    end
+end,    
+% DARU: model += (X_it[i, t] + I_it[i, t] - D_i[i] == I_it[i, t+1])
+
+
+%% C2: In  ALL DAYS of one product its value must be respect a MAX for that day capacity
+%% constraint of capacity for period ... the max production of a  product i in any period t
+%% production cost more setup time if happens
+ foreach(J in 1 ..T) 
+    sum( [ (X_it[I,J] * TP_i[I]) + (S * Y_it[I, J]) : I in 1..N] ) #<= CP_t[J]
+ end,
+
+%%%model += lpSum([X_it[i, t] * TP_i[i] + S * Y_it[i,t] for i in range(N)]) <= CP_t[t]
+
+%%% C3: the production happen only if exist a setup (change of product)
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        X_it[I,J] #<= (M_BIG * Y_it[I,J])
+    end
+end,    
+
+/* the constraints from here ... are not necessary  ....*/
+
+%C4: positive production
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        X_it[I,J] #>= 0
+    end
+end,    
+    
+%C5: positive inventory
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        I_it[I,J] #>= 0
+    end
+end,    
+
+
+%C6: Binary domain for setup variable
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+    (Y_it[I,J] #= 0)
+    #\/      %%% OR
+    (Y_it[I,J] #= 1)
+    end
+end, 
+
+% C7: month production -- FOR 30 DAYS ... not for 5 or less....
+foreach(I in 1 ..N) 
+    sum( [ (X_it[I,J] ) : J in 1 ..T] ) #< Monthly_targets[I]
+end,
+
+
+%% Each day must respect  until 16 hours worked
+%% in EACH DAY sum the production time of ALL PRODUCTS
+
+Cost #= sum([ (S * Y_it[I,J]) + (C_i[I] * I_it[I,J]) : I in 1..N , J  in 1..T] ),
+
+%%% the min time per day - 6 hours
+%    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
+
+%% the sum of ALL DAYS of one product must be respect its month target
+%    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
+
+VAR = [X_it , Y_it , I_it],   
+%VAR = X_it ++ Y_it ++ I_it,   
+solve([$min(Cost)], VAR),
+%solve(VAR),
+%printf("\n X_it: ~w", X_it  ).
+print_matrix(X_it) .
+
+%print_matrix(Matrix_Sol),
+%printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
+%sum_COL(Matrix_Sol).
+
+
+/*
+Picat> X = prod([ sum([3,4]) + 7, 2]).
+X = 28
+yes
+*/
+
+sum_COL( M ) =>
+    L = M.length,
+    C = M[1].length,
+    foreach(J in 1..C) 
+        printf("||%w", sum( [ M[I,J]  : I in 1..L] ))
+    end.
+
+
+ print_matrix( M ) =>
+    L = M.length,
+    C = M[1].length,
+    nl,
+    foreach(I in 1  .. L)
+        printf("Product %d:  ", I),
+        foreach(J in 1  ..  C)
+        printf("%w " , M[I,J] )
+           %% printf("(%d,%d): %w " , I, J, M[I,J] ) -- OK
+        end,
+        nl
+    end.   
+
+
+
+/*
+
+
+%%% Some statistics -- what's is the weight daily and montly of each product?
+
+Daily_sum = sum(Daily_targets),
+Monthly_sum = sum(Monthly_targets),
+printf("\n All demands of a day: %d" ,   Daily_sum),
+printf("\n All demands of month: %d" ,   Monthly_sum),
+%Weight_product_day = new_array(N_products),
+
+Weight_product_day = findall(W,(member(P,Daily_targets), W = truncate(100*(P/Daily_sum)))), 
+printf("\n Weight_product_day: %w" ,   Weight_product_day),
+
+Weight_product_month = findall(W,(member(P,Monthly_targets), W = truncate(100*(P/Monthly_sum)))), 
+printf("\n Weight_product_month: %w" ,   Weight_product_month),
+
+
+*/
+

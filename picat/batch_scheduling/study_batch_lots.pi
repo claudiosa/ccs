@@ -10,6 +10,24 @@ main =>
     N_products = Daily_targets.length,
     Hours_DAY = 16 * 60 * 60, %%% in seconds
 
+%%% Some statistics -- what's is the weight daily and montly of each product?
+
+Daily_sum = sum(Daily_targets),
+Monthly_sum = sum(Monthly_targets),
+printf("\n All demands of a day: %d" ,   Daily_sum),
+printf("\n All demands of month: %d" ,   Monthly_sum),
+%Weight_product_day = new_array(N_products),
+
+Weight_product_day = findall(W,(member(P,Daily_targets), W = truncate(100*(P/Daily_sum)))), 
+printf("\n Weight_product_day: %w" ,   Weight_product_day),
+
+Weight_product_month = findall(W,(member(P,Monthly_targets), W = truncate(100*(P/Monthly_sum)))), 
+printf("\n Weight_product_month: %w" ,   Weight_product_month),
+
+
+
+
+
 %% LATER is a vector
     Span_Time = 14, %%% in seconds -- Later we can put an array
     Setup_Time = 10, %%% in seconds -- Later we can put an array
@@ -60,7 +78,7 @@ solve(Matrix_Sol),
 printf("\n Daily target - min: %w", Daily_targets),
 printf("\n Month target - min: %w\n", Monthly_targets),
 
-print_matrix(Matrix_Sol),
+%print_matrix(Matrix_Sol),
 printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
 sum_COL(Matrix_Sol).
 
