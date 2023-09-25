@@ -33,6 +33,8 @@ main =>
     % quantity expected for ALL periods = Example: 1 month
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
+    Max_setup_per_day = [ 13  : I in 1..T ],
+
 %%% VARIABLES
 
     Min_Dom = min(D_i), %#fd_min(Daily_targets),
@@ -77,7 +79,20 @@ foreach(I in 1..N)
     end
 end,    
 
-/* the constraints from here ... are not necessary  ....*/
+
+% C7: month production -- FOR 30 DAYS ... not for 5 or less....
+%foreach(I in 1 ..N) 
+%    sum( [ (X_it[I,J] ) : J in 1 ..T] ) #> Monthly_targets[I]
+%end,
+% nao funciona porque nao eh 30 dias
+
+foreach(J in 1 ..T) 
+    sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Max_setup_per_day[J]
+end,
+
+
+/*
+ the constraints from here ... are not necessary  ....
 
 %C4: positive production
 foreach(I in 1..N)   
@@ -102,17 +117,13 @@ foreach(I in 1..N)
     (Y_it[I,J] #= 1)
     end
 end, 
-
-% C7: month production -- FOR 30 DAYS ... not for 5 or less....
-foreach(I in 1 ..N) 
-    sum( [ (X_it[I,J] ) : J in 1 ..T] ) #< Monthly_targets[I]
-end,
+*/
 
 
 %% Each day must respect  until 16 hours worked
 %% in EACH DAY sum the production time of ALL PRODUCTS
 
-Cost #= sum([ (S * Y_it[I,J]) + (C_i[I] * I_it[I,J]) : I in 1..N , J  in 1..T] ),
+Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) : I in 1..N , J  in 1..T] ),
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -125,7 +136,8 @@ VAR = [X_it , Y_it , I_it],
 solve([$min(Cost)], VAR),
 %solve(VAR),
 %printf("\n X_it: ~w", X_it  ).
-print_matrix(X_it) .
+print_matrix(X_it),
+print_matrix(Y_it) .
 
 %print_matrix(Matrix_Sol),
 %printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
