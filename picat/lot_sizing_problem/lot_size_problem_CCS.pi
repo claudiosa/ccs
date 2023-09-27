@@ -26,14 +26,16 @@ main =>
    TP_i = [14 : I in 1..N],%%% Tempo de Produção do item i
    
    %%% Unitary production  cost of product i in period t (day)
-   CP_t = [16*60*60  : I in 1..T], %%% production capacity of one machine on a day
+   Sixty_hour = 16*60*60 ,
+   CP_t = [ Sixty_hour  : I in 1..T], %%% production capacity of one machine on a day
+   
 
     %%% NOT USED ....
     Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
     % quantity expected for ALL periods = Example: 1 month
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
-    Max_setup_per_day = [ 13  : I in 1..T ],
+    Max_setup_per_day = [ 17  : I in 1..T ],
 
 %%% VARIABLES
 
@@ -51,6 +53,10 @@ main =>
    
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
+
+    Empty_day = new_array(T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
+    Empty_day :: 0..Sixty_hour, %% INVENTORY
+
 
 % CONSTRAINTS
 
@@ -86,11 +92,23 @@ end,
 %end,
 % nao funciona porque nao eh 30 dias
 
+%foreach(J in 1 ..T) 
+%    sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Max_setup_per_day[J]
+%end,
+
 foreach(J in 1 ..T) 
-    sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Max_setup_per_day[J]
+    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
 end,
 
 
+%foreach(J in 1 ..T-1) 
+%    sum( [ Y_it[I, J]  : I in 1..N] ) #!=  sum( [ Y_it[I, J+1]  : I in 1..N] )
+%end,
+
+
+
+%Total_of_Setups #= sum([ Y_it[I,J]  : I in 1..N , J  in 1..T] ),
+ 
 /*
  the constraints from here ... are not necessary  ....
 
@@ -122,8 +140,12 @@ end,
 
 %% Each day must respect  until 16 hours worked
 %% in EACH DAY sum the production time of ALL PRODUCTS
+% original formulation as literature
+%Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
 
-Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) : I in 1..N , J  in 1..T] ),
+Cost #= sum([ (Y_it[I,J] + I_it[I,J] + Empty_day[J] )  : I in 1..N , J  in 1..T] ),  
+
+% +   Total_of_Setups,
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -131,7 +153,7 @@ Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) : I in 1..N , J  in 1..T] ),
 %% the sum of ALL DAYS of one product must be respect its month target
 %    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
 
-VAR = [X_it , Y_it , I_it],   
+VAR = [X_it , Y_it , I_it, Empty_day],   
 %VAR = X_it ++ Y_it ++ I_it,   
 solve([$min(Cost)], VAR),
 %solve(VAR),
