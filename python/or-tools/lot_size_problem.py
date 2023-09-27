@@ -1,4 +1,5 @@
 from ortools.linear_solver import pywraplp
+# Feito por Daru, modificado por CCS
 # from pulp import LpMinimize, LpProblem, LpVariable, lpSum
 import pandas as pd
 # Parâmetros e Dados de Entrada
