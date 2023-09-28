@@ -35,7 +35,6 @@ def model_lotsizing():
     for i in range(N):
         for t in range(T):
             X_it[i, t] = the_model.NewIntVar(0, M_BIG, f'X_{i}_{t}')
-            #Y_it[i, t] = the_modelBoolVar(f'Y_{i}_{t}')
             Y_it[i, t] = the_model.NewIntVar(0, 1, f'Y_{i}_{t}')
             I_it[i, t] = the_model.NewIntVar(0, M_BIG, f'I_{i}_{t}')
 
@@ -73,6 +72,7 @@ def model_lotsizing():
 
     #for i in range(N):    
     #    for t in range(T):
+    ## Objetive function ... to be improved
     the_model.Add(f_objective == sum((Y_it[i,t]*S + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) )
 
     the_model.Minimize(f_objective)

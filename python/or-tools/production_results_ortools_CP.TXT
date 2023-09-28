@@ -1,0 +1,688 @@
+=============== RESULTS ====================
+
+ STATUS 4
+Solution:
+Objective value = 145794
+Product: 1 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 2 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 4 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 6 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 8 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 10 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 12 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 14 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 16 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 18 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 20 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 22 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 24 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 26 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 27 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 1 || Day: 29 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 1 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 2 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 2 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 3 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 5 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 7 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 9 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 11 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 13 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 15 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 17 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 19 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 21 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 23 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 25 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 26 || Production: 600 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 2 || Day: 28 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 29 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 2 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 3 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 360
+Product: 3 || Day: 2 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 3 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 4 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 5 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 6 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 7 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 8 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 9 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 10 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 11 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 12 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 13 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 14 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 15 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 16 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 17 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 18 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 19 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 20 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 21 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 22 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 23 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 24 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 25 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 26 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 27 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 28 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 29 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 3 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 4 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 360
+Product: 4 || Day: 2 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 3 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 4 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 5 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 6 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 7 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 8 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 9 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 10 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 11 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 12 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 13 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 14 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 15 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 16 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 17 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 18 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 19 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 20 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 21 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 22 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 23 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 24 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 25 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 26 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 27 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 28 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 29 || Production: 360 || Setup: 1 || Inventory: 0
+Product: 4 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 5 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 340
+Product: 5 || Day: 2 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 3 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 4 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 5 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 6 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 7 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 8 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 9 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 10 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 11 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 12 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 13 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 14 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 15 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 16 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 17 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 18 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 19 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 20 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 21 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 22 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 23 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 24 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 25 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 26 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 27 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 28 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 29 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 5 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 6 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 340
+Product: 6 || Day: 2 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 3 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 4 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 5 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 6 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 7 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 8 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 9 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 10 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 11 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 12 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 13 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 14 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 15 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 16 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 17 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 18 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 19 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 20 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 21 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 22 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 23 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 24 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 25 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 26 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 27 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 28 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 29 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 6 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 7 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 340
+Product: 7 || Day: 2 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 3 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 4 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 5 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 6 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 7 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 8 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 9 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 10 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 11 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 12 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 13 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 14 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 15 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 16 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 17 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 18 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 19 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 20 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 21 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 22 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 23 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 24 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 25 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 26 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 27 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 28 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 29 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 7 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 8 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 340
+Product: 8 || Day: 2 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 3 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 4 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 5 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 6 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 7 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 8 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 9 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 10 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 11 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 12 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 13 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 14 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 15 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 16 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 17 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 18 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 19 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 20 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 21 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 22 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 23 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 24 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 25 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 26 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 27 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 28 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 29 || Production: 340 || Setup: 1 || Inventory: 0
+Product: 8 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 9 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 2 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 4 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 6 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 8 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 10 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 12 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 14 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 16 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 18 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 20 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 22 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 24 || Production: 312 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 208
+Product: 9 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 27 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 9 || Day: 29 || Production: 104 || Setup: 1 || Inventory: 0
+Product: 9 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 10 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 207
+Product: 10 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 4 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 7 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 10 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 13 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 16 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 19 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 22 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 25 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 10 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 28 || Production: 138 || Setup: 1 || Inventory: 0
+Product: 10 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 10 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 11 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 2 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 4 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 6 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 8 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 10 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 12 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 14 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 16 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 18 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 20 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 22 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 24 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 26 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 28 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 11 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 11 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 12 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 208
+Product: 12 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 3 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 5 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 7 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 9 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 11 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 13 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 15 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 17 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 19 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 21 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 23 || Production: 312 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 208
+Product: 12 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 26 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 28 || Production: 208 || Setup: 1 || Inventory: 0
+Product: 12 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 104
+Product: 12 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 13 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 3 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 6 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 9 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 12 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 15 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 18 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 21 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 24 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 27 || Production: 207 || Setup: 1 || Inventory: 0
+Product: 13 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 138
+Product: 13 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 69
+Product: 13 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 14 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 2 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 4 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 6 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 8 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 10 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 12 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 14 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 16 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 18 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 20 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 22 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 24 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 26 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 28 || Production: 228 || Setup: 1 || Inventory: 0
+Product: 14 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 114
+Product: 14 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 15 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 2 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 4 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 6 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 8 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 10 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 12 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 14 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 16 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 18 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 20 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 22 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 24 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 26 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 28 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 15 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 15 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 16 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 320
+Product: 16 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 3 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 5 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 7 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 9 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 11 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 13 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 15 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 17 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 19 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 21 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 23 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 25 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 27 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 16 || Day: 29 || Production: 160 || Setup: 1 || Inventory: 0
+Product: 16 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 17 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 17 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 17 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 17 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 17 || Day: 5 || Production: 108 || Setup: 1 || Inventory: 0
+Product: 17 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 17 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 17 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 17 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 17 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 17 || Day: 11 || Production: 108 || Setup: 1 || Inventory: 0
+Product: 17 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 17 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 17 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 17 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 17 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 17 || Day: 17 || Production: 108 || Setup: 1 || Inventory: 0
+Product: 17 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 17 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 17 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 17 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 17 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 17 || Day: 23 || Production: 126 || Setup: 1 || Inventory: 0
+Product: 17 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 108
+Product: 17 || Day: 25 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 17 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 17 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 17 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 17 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 17 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 18 || Day: 1 || Production: 54 || Setup: 1 || Inventory: 72
+Product: 18 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 108
+Product: 18 || Day: 3 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 18 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 18 || Day: 5 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 18 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 18 || Day: 7 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 18 || Day: 8 || Production: 108 || Setup: 1 || Inventory: 0
+Product: 18 || Day: 9 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 18 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 18 || Day: 11 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 18 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 18 || Day: 13 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 18 || Day: 14 || Production: 108 || Setup: 1 || Inventory: 0
+Product: 18 || Day: 15 || Production: 0 || Setup: 0 || Inventory: 90
+Product: 18 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 18 || Day: 17 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 18 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 18 || Day: 19 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 18 || Day: 20 || Production: 90 || Setup: 1 || Inventory: 0
+Product: 18 || Day: 21 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 18 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 18 || Day: 23 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 18 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 18 || Day: 25 || Production: 90 || Setup: 1 || Inventory: 0
+Product: 18 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 72
+Product: 18 || Day: 27 || Production: 0 || Setup: 0 || Inventory: 54
+Product: 18 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 36
+Product: 18 || Day: 29 || Production: 0 || Setup: 0 || Inventory: 18
+Product: 18 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 19 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 320
+Product: 19 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 3 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 5 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 7 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 9 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 11 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 13 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 15 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 17 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 19 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 21 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 23 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 25 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 27 || Production: 320 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 160
+Product: 19 || Day: 29 || Production: 160 || Setup: 1 || Inventory: 0
+Product: 19 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+Product: 20 || Day: 1 || Production: 0 || Setup: 0 || Inventory: 300
+Product: 20 || Day: 2 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 3 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 4 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 5 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 6 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 7 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 8 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 9 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 10 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 11 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 12 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 13 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 14 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 15 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 16 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 17 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 18 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 19 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 20 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 21 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 22 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 23 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 24 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 25 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 26 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 27 || Production: 300 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 28 || Production: 0 || Setup: 0 || Inventory: 150
+Product: 20 || Day: 29 || Production: 150 || Setup: 1 || Inventory: 0
+Product: 20 || Day: 30 || Production: 0 || Setup: 0 || Inventory: 0
+
+ Product 1: 
+ 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 300 600 0 300 0
+ Product 2: 
+ 0 300 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 600 0 300 600 0 300 300 0
+ Product 3: 
+ 0 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 0
+ Product 4: 
+ 0 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 360 0
+ Product 5: 
+ 0 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 0
+ Product 6: 
+ 0 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 0
+ Product 7: 
+ 0 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 0
+ Product 8: 
+ 0 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 340 0
+ Product 9: 
+ 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 312 0 0 208 0 104 0
+ Product 10: 
+ 0 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 138 0 0
+ Product 11: 
+ 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 0
+ Product 12: 
+ 0 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 208 0 312 0 0 208 0 208 0 0
+ Product 13: 
+ 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 207 0 0 0
+ Product 14: 
+ 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 228 0 0
+ Product 15: 
+ 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 0
+ Product 16: 
+ 0 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 160 0
+ Product 17: 
+ 0 0 0 0 108 0 0 0 0 0 108 0 0 0 0 0 108 0 0 0 0 0 126 0 0 0 0 0 0 0
+ Product 18: 
+ 54 0 0 0 0 0 0 108 0 0 0 0 0 108 0 0 0 0 0 90 0 0 0 0 90 0 0 0 0 0
+ Product 19: 
+ 0 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 320 0 160 0
+ Product 20: 
+ 0 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 300 0 150 0
+ NUMBER of SETUPS per DAY:
+
+ Day 1:  1
+ Day 2:  12
+ Day 3:  12
+ Day 4:  12
+ Day 5:  12
+ Day 6:  12
+ Day 7:  12
+ Day 8:  12
+ Day 9:  12
+ Day 10:  12
+ Day 11:  12
+ Day 12:  12
+ Day 13:  12
+ Day 14:  12
+ Day 15:  12
+ Day 16:  12
+ Day 17:  12
+ Day 18:  12
+ Day 19:  12
+ Day 20:  12
+ Day 21:  12
+ Day 22:  12
+ Day 23:  12
+ Day 24:  12
+ Day 25:  12
+ Day 26:  12
+ Day 27:  12
+ Day 28:  12
+ Day 29:  12
+ Day 30:  0
+=======
+MAX SETUP DAY:  12
+Total F_OBJECTIVE:  145794
+END SOLVER and MODEL 
+Results saved to production_results_ortools_CP.xlsx
+
+ END MAIN 
+real	1m35,947s
+user	11m54,894s
+sys	0m1,659s

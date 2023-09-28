@@ -113,6 +113,6 @@ for i in range(N):
             "Inventory": I_it[i, t].solution_value()
         })
 df = pd.DataFrame(rows)
-df.to_excel("production_results_ortools.xlsx", index=False)
-print("Results saved to production_results_ortools.xlsx")
+df.to_excel("production_results_ortools_LP.xlsx", index=False)
+print("Results saved to production_results_ortools_LP.xlsx")
 '''
