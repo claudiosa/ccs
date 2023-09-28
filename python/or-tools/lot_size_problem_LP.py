@@ -24,8 +24,8 @@ I_it = {}
 for i in range(N):
     for t in range(T):
         X_it[i, t] = solver.NumVar(0, solver.infinity(), f'X_{i}_{t}')
-        #Y_it[i, t] = solver.BoolVar(f'Y_{i}_{t}')
-        Y_it[i, t] = solver.NumVar(0, 1, f'Y_{i}_{t}')
+        Y_it[i, t] = solver.BoolVar(f'Y_{i}_{t}')
+        #Y_it[i, t] = solver.NumVar(0, 1, f'Y_{i}_{t}')
         I_it[i, t] = solver.NumVar(0, solver.infinity(), f'I_{i}_{t}')
 
 f_objective = solver.NumVar (0, solver.infinity(), f'cost function')
