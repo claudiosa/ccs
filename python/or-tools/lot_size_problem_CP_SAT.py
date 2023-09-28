@@ -81,7 +81,7 @@ def model_lotsizing():
 
     # Resolve o problema
     solver_OUT = cp_model.CpSolver()
-    solver_OUT.parameters.max_time_in_seconds = 1000
+    solver_OUT.parameters.max_time_in_seconds = 10000
     status = solver_OUT.Solve(the_model)
     print("\n STATUS", status)
 
@@ -93,9 +93,9 @@ def model_lotsizing():
         print(f'Objective value =', solver_OUT.Value(f_objective))
         for i in range(N):
             for t in range(T):
-                print(f'Product %i, Day %i: Production =  %i \t' % (i+1, t+1, solver_OUT.Value(X_it[i, t])), end =  '')
-                print(f'Setup = %i' % (solver_OUT.Value(Y_it[i, t])), end =  '')
-                print(f'Inventory = %i' % (solver_OUT.Value(I_it[i, t])))
+                print(f'Product: %i || Day: %i || Production: %i || ' % (i+1, t+1, solver_OUT.Value(X_it[i, t])), end =  '')
+                print(f'Setup: %i || ' % (solver_OUT.Value(Y_it[i, t])), end =  '')
+                print(f'Inventory: %i' % (solver_OUT.Value(I_it[i, t])))
 
         
     elif (status == cp_model.INFEASIBLE) :   ##não é UNFEASIBLE 
@@ -110,8 +110,6 @@ def model_lotsizing():
     
        
        ### end of if ....
-   
-       
            
 
     # OUTPUT
@@ -120,11 +118,29 @@ def model_lotsizing():
         for t in range(T):
             print(f' %i' % (solver_OUT.Value(X_it[i, t])), end="")
 
-    
+    print("\n NUMBER of SETUPS per DAY:")
+    for t in range(T):
+        print(f'\n Day %i:  ' % (t+1),  end =  '')
+        print( sum([solver_OUT.Value(Y_it[i,t]) for i in range(N)]),  end =  '')
+
     print(("\n======="))
     print(f'MAX SETUP DAY:  %i' % (MAX_SETUP_DAY)) 
     print(f'Total F_OBJECTIVE:  %i' % (solver_OUT.Value(f_objective)))
     print("END SOLVER and MODEL ")
+    # Salvando os resultados em um arquivo Excel
+    rows = []
+    for i in range(N):
+        for t in range(T):
+            rows.append({
+                "Product": i + 1,
+                "Day": t + 1,
+                "Production": solver_OUT.Value(X_it[i, t]),
+                "Setup": solver_OUT.Value(Y_it[i, t]),
+                "Inventory": solver_OUT.Value(I_it[i, t])
+            })
+    df = pd.DataFrame(rows)
+    df.to_excel("production_results_ortools_CP.xlsx", index=False)
+    print("Results saved to production_results_ortools_CP.xlsx")
     return ###### end function
   
 
