@@ -25,7 +25,7 @@ def model_lotsizing():
     Upper_Value = max(Demandas_mensais)+1
     M_BIG = sum(Demandas_mensais) * 2
 
-    MAX_SETUP_DAY = 17
+    MAX_SETUP_DAY = 13
     MIN_SETUP_DAY = 11
 
     ## creating a model
@@ -88,9 +88,10 @@ def model_lotsizing():
     #    for t in range(T):
     ## Objetive function ... to be improved
     the_model.Add(f_objective == \
-                  sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) \
-                  + \
-                  sum( Free_Usage_t[t] for t in range(T)) )
+                  sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) )
+             #     \
+             #     + \
+             #     sum( Free_Usage_t[t] for t in range(T)) )
 
     the_model.Minimize(f_objective)
 
