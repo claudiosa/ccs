@@ -17,12 +17,16 @@ def model_lotsizing():
     S = 10  # Tempo de Setup (em segundos)
     C_i = [14 for i in range(N)]  # Custos de Carregamento/Excesso
     TP_i = [14 for i in range(N)]  # Tempo de Produção do item i
-    Sixty_hours = 16 * 60 * 60
-    CP_t = [Sixty_hours for t in range(T)]  # Capacidade de Produção no dia t
+    Hours_in_Day = 16 * 60 * 60
+    CP_t = [Hours_in_Day for t in range(T)]  # Capacidade de Produção no dia t
     Demandas_mensais = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750]
+    
+    # to limit the MAX value in the Domain
+    Upper_Value = max(Demandas_mensais)+1
     M_BIG = sum(Demandas_mensais) * 2
 
-    MAX_SETUP_DAY = 12
+    MAX_SETUP_DAY = 17
+    MIN_SETUP_DAY = 11
 
     ## creating a model
     the_model = cp_model.CpModel()
@@ -32,24 +36,28 @@ def model_lotsizing():
     X_it = {}
     Y_it = {}
     I_it = {}
+    Free_Usage_t ={}
     for i in range(N):
         for t in range(T):
-            X_it[i, t] = the_model.NewIntVar(0, M_BIG, f'X_{i}_{t}')
+            X_it[i, t] = the_model.NewIntVar(0, Upper_Value, f'X_{i}_{t}')
             Y_it[i, t] = the_model.NewIntVar(0, 1, f'Y_{i}_{t}')
-            I_it[i, t] = the_model.NewIntVar(0, M_BIG, f'I_{i}_{t}')
+            I_it[i, t] = the_model.NewIntVar(0, Upper_Value, f'I_{i}_{t}')
+            ## Time losted in the production day
+            Free_Usage_t[t] = the_model.NewIntVar(0, Hours_in_Day, f'Free_Usage_t{t}')
 
-    f_objective = the_model.NewIntVar (0, 99999999, f'cost function')
+
+    f_objective = the_model.NewIntVar (0, 9999999, f'cost function')
 
     
 
     # Adiciona restrições
 
-    ## BALANCO
+    ## BALANCE EQUATION - Day, Inventory and Production
     for i in range(N):
         for t in range(T - 1):
             the_model.Add(X_it[i, t] + I_it[i, t] - D_i[i] == I_it[i, t + 1])
 
-    ##Demanda mensal    
+    ##Monthly Demand 
     for i in range(N):    
         the_model.Add(sum([X_it[i, t] for t in range(T)]) >= Demandas_mensais[i])
 
@@ -67,13 +75,22 @@ def model_lotsizing():
     for t in range(T):
         the_model.Add(sum( [ Y_it[i,t] for i in range(N) ] )  <=  MAX_SETUP_DAY )
 
+    for t in range(T):
+       the_model.Add(sum( [ Y_it[i,t] for i in range(N) ] )  >=  MIN_SETUP_DAY )        
+
+    for t in range(T):
+        the_model.Add( Hours_in_Day -(sum( [ (X_it[i, t] * TP_i[i]) for i in range(N) ]))  ==  Free_Usage_t[t] )
+
     # Adiciona a função objetivo
     
 
     #for i in range(N):    
     #    for t in range(T):
     ## Objetive function ... to be improved
-    the_model.Add(f_objective == sum((Y_it[i,t]*S + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) )
+    the_model.Add(f_objective == \
+                  sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) \
+                  + \
+                  sum( Free_Usage_t[t] for t in range(T)) )
 
     the_model.Minimize(f_objective)
 
@@ -120,11 +137,11 @@ def model_lotsizing():
 
     print("\n NUMBER of SETUPS per DAY:")
     for t in range(T):
-        print(f'\n Day %i:  ' % (t+1),  end =  '')
+        print(f'\t Day %i: ' % (t+1),  end =  '')
         print( sum([solver_OUT.Value(Y_it[i,t]) for i in range(N)]),  end =  '')
 
     print(("\n======="))
-    print(f'MAX SETUP DAY:  %i' % (MAX_SETUP_DAY)) 
+    #print(f'MAX SETUP DAY:  %i' % (MAX_SETUP_DAY)) 
     print(f'Total F_OBJECTIVE:  %i' % (solver_OUT.Value(f_objective)))
     print("END SOLVER and MODEL ")
     # Salvando os resultados em um arquivo Excel
