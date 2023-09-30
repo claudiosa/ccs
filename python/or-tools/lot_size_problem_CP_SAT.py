@@ -19,14 +19,14 @@ def model_lotsizing():
     TP_i = [14 for i in range(N)]  # Tempo de Produção do item i
     Hours_in_Day = 16 * 60 * 60
     CP_t = [Hours_in_Day for t in range(T)]  # Capacidade de Produção no dia t
-    Demandas_mensais = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750]
+    Monthly_Demand = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750]
     
     # to limit the MAX value in the Domain
-    Upper_Value = max(Demandas_mensais)+1
-    M_BIG = sum(Demandas_mensais) * 2
+    Upper_Value = max(Monthly_Demand) + 1
+    M_BIG = sum(Monthly_Demand) * 2
 
-    MAX_SETUP_DAY = 13
-    MIN_SETUP_DAY = 11
+    MAX_SETUP_DAY = 15
+    MIN_SETUP_DAY = 10
 
     ## creating a model
     the_model = cp_model.CpModel()
@@ -59,12 +59,12 @@ def model_lotsizing():
 
     ##Monthly Demand 
     for i in range(N):    
-        the_model.Add(sum([X_it[i, t] for t in range(T)]) >= Demandas_mensais[i])
+        the_model.Add(sum([X_it[i, t] for t in range(T)]) >= Monthly_Demand[i])
 
     # se há produção ... esta é positiva
     for i in range(N):    
         for t in range(T):
-            the_model.Add(X_it[i, t] <= M_BIG * Y_it[i, t])
+            the_model.Add(X_it[i, t] <= (M_BIG * Y_it[i, t]))
 
     # produçao dia ...
     for t in range(T):
@@ -78,24 +78,24 @@ def model_lotsizing():
     for t in range(T):
        the_model.Add(sum( [ Y_it[i,t] for i in range(N) ] )  >=  MIN_SETUP_DAY )        
 
+    # Breaking symmetric -- Becomes Slow
+    #for t in range(T-1):
+    #   the_model.Add(sum([ Y_it[i,t] for i in range(N) ]) != sum( [ Y_it[i,t+1] for i in range(N)]) )        
+
+   # THINK LATER THIS OPTMAL STRATEGY  
     for t in range(T):
-        the_model.Add( Hours_in_Day -(sum( [ (X_it[i, t] * TP_i[i]) for i in range(N) ]))  ==  Free_Usage_t[t] )
+        the_model.Add( Hours_in_Day - (sum( [ (X_it[i, t] * TP_i[i]) for i in range(N) ]))  ==  Free_Usage_t[t] )
 
-    # Adiciona a função objetivo
-    
-
+   
     #for i in range(N):    
     #    for t in range(T):
-    ## Objetive function ... to be improved
+    ## Objetive function ... under improvements
     the_model.Add(f_objective == \
-                  sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) ) )
-             #     \
-             #     + \
-             #     sum( Free_Usage_t[t] for t in range(T)) )
+            sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) )   \
+            + \
+            sum( Free_Usage_t[t] for t in range(T)) )
 
     the_model.Minimize(f_objective)
-
- 
 
     # Resolve o problema
     solver_OUT = cp_model.CpSolver()
@@ -133,8 +133,12 @@ def model_lotsizing():
     # OUTPUT
     for i in range(N):
         print(f"\n Product {i+1}: ")
+        temp = 0
         for t in range(T):
             print(f' %i' % (solver_OUT.Value(X_it[i, t])), end="")
+            temp = temp + solver_OUT.Value(X_it[i, t])
+        print(f'\n Produced: %i Demand: %i' % (temp , Monthly_Demand[i]), end="" )
+                                           
 
     print("\n NUMBER of SETUPS per DAY:")
     for t in range(T):
