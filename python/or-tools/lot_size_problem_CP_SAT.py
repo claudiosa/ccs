@@ -1,42 +1,38 @@
 
 from ortools.sat.python import cp_model
+# Produced originally by Gilsiley Daru, modified and extended by CCS
 
-# Feito por Daru, modificado por CCS
-# from pulp import LpMinimize, LpProblem, LpVariable, lpSum
 import pandas as pd
-# Parâmetros e Dados de Entrada
-
-
 
 def model_lotsizing():
 
-
+# Parameters and Input Data
     T = 30  # Número de períodos
     D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18, 160, 150]
     N = len(D_i)  # Número de Produtos
     S = 10  # Tempo de Setup (em segundos)
     C_i = [14 for i in range(N)]  # Custos de Carregamento/Excesso
-    TP_i = [14 for i in range(N)]  # Tempo de Produção do item i
+    TP_i = [14 for i in range(N)]  # Tempo de Produção do item i -- Production Time
     Hours_in_Day = 16 * 60 * 60
     CP_t = [Hours_in_Day for t in range(T)]  # Capacidade de Produção no dia t
     Monthly_Demand = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750]
     
-    # to limit the MAX value in the Domain
+    # to limit the MAX value in the Domain for CP
     Upper_Value = max(Monthly_Demand) + 1
     M_BIG = sum(Monthly_Demand) * 2
 
     MAX_SETUP_DAY = 15
-    MIN_SETUP_DAY = 10
+    MIN_SETUP_DAY = 11
 
-    ## creating a model
+    ## creating a CP model
     the_model = cp_model.CpModel()
 
-
-    # Adiciona variáveis
+    # Creating CP variables
     X_it = {}
     Y_it = {}
     I_it = {}
-    Free_Usage_t ={}
+    Free_Usage_t = {}
+    Diff_Prod_i = {}
     for i in range(N):
         for t in range(T):
             X_it[i, t] = the_model.NewIntVar(0, Upper_Value, f'X_{i}_{t}')
@@ -44,11 +40,11 @@ def model_lotsizing():
             I_it[i, t] = the_model.NewIntVar(0, Upper_Value, f'I_{i}_{t}')
             ## Time losted in the production day
             Free_Usage_t[t] = the_model.NewIntVar(0, Hours_in_Day, f'Free_Usage_t{t}')
+            ## Diff of production demanded and produced ...
+            Diff_Prod_i[i] = the_model.NewIntVar(0, Upper_Value, f'Diff_Prod_i{i}')
 
 
-    f_objective = the_model.NewIntVar (0, 9999999, f'cost function')
-
-    
+    f_objective = the_model.NewIntVar (0, M_BIG, f'cost function')
 
     # Adiciona restrições
 
@@ -82,18 +78,23 @@ def model_lotsizing():
     #for t in range(T-1):
     #   the_model.Add(sum([ Y_it[i,t] for i in range(N) ]) != sum( [ Y_it[i,t+1] for i in range(N)]) )        
 
-   # THINK LATER THIS OPTMAL STRATEGY  
-    for t in range(T):
-        the_model.Add( Hours_in_Day - (sum( [ (X_it[i, t] * TP_i[i]) for i in range(N) ]))  ==  Free_Usage_t[t] )
+   # THINK LATER THIS OPTIMAL STRATEGY -- it becomes slow 
+    #for t in range(T):
+    #    the_model.Add( Hours_in_Day - (sum( [ (X_it[i, t] * TP_i[i]) for i in range(N) ]))  ==  Free_Usage_t[t] )
 
-   
+    # OTHER IDEA -- minimize the difference between production and Monthly_Demand of product i
+    for i in range(N):
+        #  AddAbsEquality(x, (y1-y2)) <--> x = abs((y1-y2))
+        the_model.AddAbsEquality( Diff_Prod_i[i] , (sum([ X_it[i, t] for t in range(T) ]) - Monthly_Demand[i]) )
+
     #for i in range(N):    
     #    for t in range(T):
     ## Objetive function ... under improvements
     the_model.Add(f_objective == \
-            sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) )   \
-            + \
-            sum( Free_Usage_t[t] for t in range(T)) )
+        sum(((Y_it[i,t]*S) + I_it[i,t] + X_it[i,t]) for i in range(N) for t in range(T) )  \
+        + \
+        sum(Diff_Prod_i[i] for i in range(N))   )
+        # sum( Free_Usage_t[t] for t in range(T)) )
 
     the_model.Minimize(f_objective)
 
@@ -116,7 +117,7 @@ def model_lotsizing():
                 print(f'Inventory: %i' % (solver_OUT.Value(I_it[i, t])))
 
         
-    elif (status == cp_model.INFEASIBLE) :   ##não é UNFEASIBLE 
+    elif (status == cp_model.INFEASIBLE) :   ##INFEASIBLE ----- UNFEASIBLE 
         print(" UNSATISFATIBLE ")
         raise ValueError("No solution was found for the given input values")
 
@@ -163,7 +164,7 @@ def model_lotsizing():
     df = pd.DataFrame(rows)
     df.to_excel("production_results_ortools_CP.xlsx", index=False)
     print("Results saved to production_results_ortools_CP.xlsx")
-    return ###### end function
+    return ###### end model function
   
 
 
@@ -175,25 +176,6 @@ if __name__ == '__main__':
     #print(f'\n END MAIN \n %s' % print_t(40))
     print(f'\n END MAIN ', end="")
     
-    # return ###### end function
+    # return ###### end main
+#####################################################################
 
-
-
-'''
-DEPOIS
-
-# Salvando os resultados em um arquivo Excel
-rows = []
-for i in range(N):
-    for t in range(T):
-        rows.append({
-            "Product": i + 1,
-            "Day": t + 1,
-            "Production": X_it[i, t].solution_value(),
-            "Setup": Y_it[i, t].solution_value(),
-            "Inventory": I_it[i, t].solution_value()
-        })
-df = pd.DataFrame(rows)
-df.to_excel("production_results_ortools.xlsx", index=False)
-print("Results saved to production_results_ortools.xlsx")
-'''
