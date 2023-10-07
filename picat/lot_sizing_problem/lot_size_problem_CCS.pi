@@ -96,8 +96,14 @@ end,
 
 %%% a Channeling Constraint ....
 foreach(J in 1 ..T) 
-    sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Setups_Day[J]
+    sum( [ Y_it[I, J]  : I in 1..N] ) #<= Max_Setup_Day
+    % Setups_Day[J]
 end,
+
+%sum( [ Setups_Day[J] : J in 1..T] ) #<= (Max_Setup_Day * N),
+foreach(J in 1 ..T) 
+    Setups_Day[J]  #<= sum( [ Y_it[I, J]  : I in 1..N] )
+end,    
 
 %foreach(J in 1 ..T) 
 %    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
@@ -140,7 +146,7 @@ end,
 %% in EACH DAY sum the production time of ALL PRODUCTS
 % original formulation as literature
 %Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
-
+% + Setups_Day[J]
 Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I]) + Setups_Day[J] )  : I in 1..N , J  in 1..T] ),  
 
 %%% the min time per day - 6 hours
@@ -156,7 +162,7 @@ solve([$min(Cost)], VAR),
 %printf("\n X_it: ~w", X_it  ).
 print_matrix(X_it),
 print_matrix(Y_it),
-nl,
+
 print(Setups_Day) .
 
 %print_matrix(Matrix_Sol),
