@@ -1,9 +1,10 @@
-import sat.
+%import sat.
 %import cp.
+import mip.
 
 main => 
 %%% INPUT DATA and PARAMETERS
-   T = 5, %%25, 20 days worked ,  number of periods
+   T = 30, %% it becomes proibhitive for 10,25, 20 days worked ,  number of periods
    
    % demand for product i in a periodo t (DAY in our case) ===>  Demands_targets per day - daily demand
    D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
@@ -12,8 +13,7 @@ main =>
 
    %Setup_Time = 10, %%% in seconds -- Later we can put an array
    S = 10,  
-   
-   
+     
    %% UNITARY COST in inventory
    C_i = [14 : I in 1..N],
    %%% fixed cost UNITARY associated of product i in period t (day)
@@ -28,14 +28,16 @@ main =>
    %%% Unitary production  cost of product i in period t (day)
    Sixty_hour = 16*60*60 ,
    CP_t = [ Sixty_hour  : I in 1..T], %%% production capacity of one machine on a day
-   
+  
 
     %%% NOT USED ....
     Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
     % quantity expected for ALL periods = Example: 1 month
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
-    Max_setup_per_day = [ 17  : I in 1..T ],
+    %Max_setup_per_day = [ 17  : I in 1..T ],
+    Min_Setup_Day = 9, %% optimal
+    Max_Setup_Day = 11,
 
 %%% VARIABLES
 
@@ -54,9 +56,8 @@ main =>
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
 
-    Empty_day = new_array(T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
-    Empty_day :: 0..Sixty_hour, %% INVENTORY
-
+    %Empty_day = new_array(T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
+    %Empty_day :: 0..Sixty_hour, %% INVENTORY
 
 % CONSTRAINTS
 
@@ -66,8 +67,7 @@ foreach(I in 1..N)
         (X_it[I,J] + I_it[I, J] - D_i[I]) #= I_it[I, J+1]
     end
 end,    
-% DARU: model += (X_it[i, t] + I_it[i, t] - D_i[i] == I_it[i, t+1])
-
+% This is a fundamental constraint for this problem .... BALANCE EQUATION
 
 %% C2: In  ALL DAYS of one product its value must be respect a MAX for that day capacity
 %% constraint of capacity for period ... the max production of a  product i in any period t
@@ -90,22 +90,19 @@ end,
 %foreach(I in 1 ..N) 
 %    sum( [ (X_it[I,J] ) : J in 1 ..T] ) #> Monthly_targets[I]
 %end,
-% nao funciona porque nao eh 30 dias
-
-%foreach(J in 1 ..T) 
-%    sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Max_setup_per_day[J]
-%end,
 
 foreach(J in 1 ..T) 
-    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
+    Min_Setup_Day #<= sum( [ Y_it[I, J]  : I in 1..N] ) #<=  Max_Setup_Day
 end,
+
+%foreach(J in 1 ..T) 
+%    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
+%end,
 
 
 %foreach(J in 1 ..T-1) 
 %    sum( [ Y_it[I, J]  : I in 1..N] ) #!=  sum( [ Y_it[I, J+1]  : I in 1..N] )
 %end,
-
-
 
 %Total_of_Setups #= sum([ Y_it[I,J]  : I in 1..N , J  in 1..T] ),
  
@@ -126,7 +123,6 @@ foreach(I in 1..N)
     end
 end,    
 
-
 %C6: Binary domain for setup variable
 foreach(I in 1..N)   
     foreach(J in 1..T) 
@@ -137,15 +133,12 @@ foreach(I in 1..N)
 end, 
 */
 
-
 %% Each day must respect  until 16 hours worked
 %% in EACH DAY sum the production time of ALL PRODUCTS
 % original formulation as literature
 %Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
 
-Cost #= sum([ (Y_it[I,J] + I_it[I,J] + Empty_day[J] )  : I in 1..N , J  in 1..T] ),  
-
-% +   Total_of_Setups,
+Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I]) )  : I in 1..N , J  in 1..T] ),  
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -153,8 +146,8 @@ Cost #= sum([ (Y_it[I,J] + I_it[I,J] + Empty_day[J] )  : I in 1..N , J  in 1..T]
 %% the sum of ALL DAYS of one product must be respect its month target
 %    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
 
-VAR = [X_it , Y_it , I_it, Empty_day],   
-%VAR = X_it ++ Y_it ++ I_it,   
+VAR = [X_it , Y_it , I_it],   
+%or VAR = X_it ++ Y_it ++ I_it,   
 solve([$min(Cost)], VAR),
 %solve(VAR),
 %printf("\n X_it: ~w", X_it  ).
@@ -196,7 +189,6 @@ sum_COL( M ) =>
 
 
 /*
-
 
 %%% Some statistics -- what's is the weight daily and montly of each product?
 
