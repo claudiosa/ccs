@@ -1,6 +1,7 @@
 %import sat.
 %import cp.
 import mip.
+%import smt.  ===> NOT INSTALLED
 
 main => 
 %%% INPUT DATA and PARAMETERS
@@ -36,7 +37,7 @@ main =>
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
     %Max_setup_per_day = [ 17  : I in 1..T ],
-    Min_Setup_Day = 9, %% optimal
+    Min_Setup_Day = 8, %% optimal
     Max_Setup_Day = 11,
 
 %%% VARIABLES
@@ -88,7 +89,6 @@ foreach(I in 1..N)
     end
 end,    
 
-
 % C7: month production -- FOR 30 DAYS ... not for 5 or less....
 foreach(I in 1 ..N) 
     sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_targets[I]
@@ -100,10 +100,16 @@ foreach(J in 1 ..T)
     % Setups_Day[J]
 end,
 
-%sum( [ Setups_Day[J] : J in 1..T] ) #<= (Max_Setup_Day * N),
 foreach(J in 1 ..T) 
-    Setups_Day[J]  #<= sum( [ Y_it[I, J]  : I in 1..N] )
-end,    
+    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
+    % Setups_Day[J]
+end,
+
+% A setups days less equal ... MIN and MAX
+
+%foreach(J in 1 ..T) 
+%    sum( [ Y_it[I, J]  : I in 1..N] ) #= Setups_Day[J]
+%end,    
 
 %foreach(J in 1 ..T) 
 %    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
@@ -147,7 +153,7 @@ end,
 % original formulation as literature
 %Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
 % + Setups_Day[J]
-Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I]) + Setups_Day[J] )  : I in 1..N , J  in 1..T] ),  
+Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I])  )  : I in 1..N , J  in 1..T] ),  
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -155,15 +161,20 @@ Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I]) + Setups_Day[J] )
 %% the sum of ALL DAYS of one product must be respect its month target
 %    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
 
-VAR = [X_it , Y_it , I_it, Setups_Day],   
-%or VAR = X_it ++ Y_it ++ I_it,   
-solve([$min(Cost)], VAR),
-%solve(VAR),
+VAR = [X_it , Y_it , I_it],   
+%or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
+%solve([$min(Cost)], VAR),
+solve(VAR),
 %printf("\n X_it: ~w", X_it  ).
-print_matrix(X_it),
-print_matrix(Y_it),
 
-print(Setups_Day) .
+print_matrix("Prod Day", X_it),
+print_matrix("Setup Day", Y_it),
+print_matrix("Inventory", I_it),
+printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+sum_COL(Y_it).
+
+
+%print(Setups_Day) .
 
 %print_matrix(Matrix_Sol),
 %printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
@@ -180,18 +191,30 @@ sum_COL( M ) =>
     L = M.length,
     C = M[1].length,
     foreach(J in 1..C) 
-        printf("||%w", sum( [ M[I,J]  : I in 1..L] ))
+        printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ))
     end.
 
 
- print_matrix( M ) =>
+ print_matrix(Title_Y, M ) =>
     L = M.length,
     C = M[1].length,
+    /********* AUX *** pretty output ***************/
     nl,
+    Aux = [ X mod 10 : X in 1 .. C],
+    Left_Shift = Title_Y.length + 4,
+    foreach(I in 1..Left_Shift)
+        print(' ')
+    end,
+
+    foreach(I in Aux)
+        printf(" %d", I)
+    end,
+    nl,
+    /*******************************************/
     foreach(I in 1  .. L)
-        printf("Product %d:  ", I),
+        printf("%w %d:  ", Title_Y, I),
         foreach(J in 1  ..  C)
-        printf("%w " , M[I,J] )
+        printf("%d " , M[I,J] )
            %% printf("(%d,%d): %w " , I, J, M[I,J] ) -- OK
         end,
         nl
