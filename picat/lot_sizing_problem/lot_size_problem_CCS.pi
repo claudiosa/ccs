@@ -37,8 +37,10 @@ main =>
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
     %Max_setup_per_day = [ 17  : I in 1..T ],
-    Min_Setup_Day = 10, %% optimal
+    %Min_Setup_Day = 10, %% optimal
     Max_Setup_Day = 11,
+
+    Min_Batch_Size = 150,
 
 %%% VARIABLES
 
@@ -89,6 +91,12 @@ foreach(I in 1..N)
     end
 end,    
 
+
+%C4: positive production per day ... in all days there's some production
+foreach(J in 1..T) 
+    sum([X_it[I,J] : I in 1..N]) #> 0
+end,
+
 % C7: month production -- FOR 30 DAYS ... not for 5 or less....
 foreach(I in 1 ..N) 
     sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_targets[I]
@@ -100,10 +108,32 @@ foreach(J in 1 ..T)
     % Setups_Day[J]
 end,
 
-foreach(J in 1 ..T) 
-    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
+%foreach(J in 1 ..T) 
+%    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
     % Setups_Day[J]
-end,
+%end,
+ 
+/*
+For example,  in this result, for product 17 and 18, our 
+daily production is 18, 36.. these are batch size. 
+Can we put batch size not to be less than say 150.
+#\/(
+        ( (X_it[I,J] #>= Min_Batch_Size)#<=> (Y_it[I,J] #= 1 )),
+        ( (X_it[I,J]  #= 0) #<=> (Y_it[I,J] #= 0 ))
+    )   
+
+    not(P <-> Q) = p or-exclusive
+*/
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+   /* OR exclusive  .... very cool*/        
+    #~( (X_it[I,J] #>= Min_Batch_Size)
+         #<=>
+        (X_it[I,J] #= 0) 
+       )     
+   end
+ end,
+
 
 % A setups days less equal ... MIN and MAX
 
@@ -123,21 +153,7 @@ end,
  
 /*
  the constraints from here ... are not necessary  ....
-
-%C4: positive production
-foreach(I in 1..N)   
-    foreach(J in 1..T) 
-        X_it[I,J] #>= 0
-    end
-end,    
-    
-%C5: positive inventory
-foreach(I in 1..N)   
-    foreach(J in 1..T) 
-        I_it[I,J] #>= 0
-    end
-end,    
-
+ 
 %C6: Binary domain for setup variable
 foreach(I in 1..N)   
     foreach(J in 1..T) 
@@ -164,13 +180,16 @@ Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  (X_it[I,J]* TP_i[I])  )  : I 
 VAR = [X_it , Y_it , I_it],   
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
 %solve([$min(Cost)], VAR),
+%%% for a best result ... uncomment the line above and comment the line below
 solve(VAR),
 %printf("\n X_it: ~w", X_it  ).
 
-print_matrix("Prod Day", X_it),
+
 %%print_matrix("Setup Day", Y_it),
 print_matrix("Inventory", I_it),
-printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+print_matrix("Prod Day", X_it),
+%%printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
 sum_COL(Y_it),
 print_production(Y_it).
 
