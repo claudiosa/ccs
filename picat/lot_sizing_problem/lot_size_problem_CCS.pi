@@ -1,6 +1,6 @@
 %import sat.
 %import cp.
-import mip.
+import mip.   %%% must be installed in Picat installation
 %import smt.  ===> NOT INSTALLED
 
 main => 
@@ -15,9 +15,9 @@ main =>
    %Setup_Time = 10, %%% in seconds -- Later we can put an array
    S = 10,  
      
-   %% UNITARY COST in inventory
+   %% UNITARY COST in inventory -- store cost ...
    C_i = [14 : I in 1..N],
-   %%% fixed cost UNITARY associated of product i in period t (day)
+   %%% fixed cost UNITARY associated of product i in a day
 
    %%% 
    %H_u = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
@@ -37,12 +37,12 @@ main =>
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
     %Max_setup_per_day = [ 17  : I in 1..T ],
-    Min_Setup_Day = 8, %% optimal
+    Min_Setup_Day = 10, %% optimal
     Max_Setup_Day = 11,
 
 %%% VARIABLES
 
-    Min_Dom = min(D_i), %#fd_min(Daily_targets),
+    % Min_Dom = min(D_i), %#fd_min(Daily_targets),
     Max_Dom = max(Monthly_targets), %#fd_max(Daily_targets),
     %%% created the sol matrix VAR ... which is batch production
     %% production of day i on day t
@@ -57,9 +57,9 @@ main =>
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
 
-    Setups_Day = new_array(T),   %%% units of product i in period t (day)
+    %Setups_Day = new_array(T),   %%% units of product i in period t (day)
     % if exists setup for product i on day t
-    Setups_Day  :: Min_Setup_Day .. Max_Setup_Day,
+    %Setups_Day  :: Min_Setup_Day .. Max_Setup_Day,
 
     %Empty_day = new_array(T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     %Empty_day :: 0..Sixty_hour, %% INVENTORY
@@ -94,7 +94,7 @@ foreach(I in 1 ..N)
     sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_targets[I]
 end,
 
-%%% a Channeling Constraint ....
+%%% a Constraint for UPPER and LOWER bound of SETUPS in a DAY ....
 foreach(J in 1 ..T) 
     sum( [ Y_it[I, J]  : I in 1..N] ) #<= Max_Setup_Day
     % Setups_Day[J]
@@ -153,7 +153,7 @@ end,
 % original formulation as literature
 %Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
 % + Setups_Day[J]
-Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  (X_it[I,J]* TP_i[I])  )  : I in 1..N , J  in 1..T] ),  
+Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  (X_it[I,J]* TP_i[I])  )  : I in 1..N , J  in 1..T] ),  
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -168,10 +168,11 @@ solve(VAR),
 %printf("\n X_it: ~w", X_it  ).
 
 print_matrix("Prod Day", X_it),
-print_matrix("Setup Day", Y_it),
+%%print_matrix("Setup Day", Y_it),
 print_matrix("Inventory", I_it),
 printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
-sum_COL(Y_it).
+sum_COL(Y_it),
+print_production(Y_it).
 
 
 %print(Setups_Day) .
@@ -194,6 +195,29 @@ sum_COL( M ) =>
         printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ))
     end.
 
+print_production( M ) =>
+        L = M.length,
+        C = M[1].length,
+        printf("\n Production of a product in a day: #\n"),
+        Aux = [ X mod 10 : X in 1 .. C],
+        printf("\n ...."),
+        foreach(I in Aux)
+            printf(" %d", I)
+        end,
+        nl,
+    %%% printing the matrix    
+    foreach(I in 1  .. L)
+        printf("\n %d:  ", I),
+        foreach(J in 1  ..  C)
+           if( M[I,J] == 1) then
+                print(' #')
+                else
+            print(' .')
+           end 
+        end
+     end.  %%% end of function 
+
+
 
  print_matrix(Title_Y, M ) =>
     L = M.length,
@@ -212,32 +236,21 @@ sum_COL( M ) =>
     nl,
     /*******************************************/
     foreach(I in 1  .. L)
-        printf("%w %d:  ", Title_Y, I),
+        printf("\n%w %d:  ", Title_Y, I),
         foreach(J in 1  ..  C)
         printf("%d " , M[I,J] )
-           %% printf("(%d,%d): %w " , I, J, M[I,J] ) -- OK
-        end,
-        nl
+        end
     end.   
 
 
 
 /*
 
-%%% Some statistics -- what's is the weight daily and montly of each product?
-
-Daily_sum = sum(Daily_targets),
-Monthly_sum = sum(Monthly_targets),
-printf("\n All demands of a day: %d" ,   Daily_sum),
-printf("\n All demands of month: %d" ,   Monthly_sum),
-%Weight_product_day = new_array(N_products),
-
 Weight_product_day = findall(W,(member(P,Daily_targets), W = truncate(100*(P/Daily_sum)))), 
 printf("\n Weight_product_day: %w" ,   Weight_product_day),
 
 Weight_product_month = findall(W,(member(P,Monthly_targets), W = truncate(100*(P/Monthly_sum)))), 
 printf("\n Weight_product_month: %w" ,   Weight_product_month),
-
 
 */
 
