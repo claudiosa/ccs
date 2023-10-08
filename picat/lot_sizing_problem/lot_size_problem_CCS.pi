@@ -30,14 +30,13 @@ main =>
    Sixty_hour = 16*60*60 ,
    CP_t = [ Sixty_hour  : I in 1..T], %%% production capacity of one machine on a day
   
-
-    %%% NOT USED ....
+    %%% 
     Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
     % quantity expected for ALL periods = Example: 1 month
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
     %Max_setup_per_day = [ 17  : I in 1..T ],
-    %Min_Setup_Day = 10, %% optimal
+    Min_Setup_Day = 8, %% optimal
     Max_Setup_Day = 11,
 
     Min_Batch_Size = 150,
@@ -103,15 +102,17 @@ foreach(I in 1 ..N)
 end,
 
 %%% a Constraint for UPPER and LOWER bound of SETUPS in a DAY ....
+
+foreach(J in 1 ..T) 
+    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
+    % Setups_Day[J]
+end,
+
 foreach(J in 1 ..T) 
     sum( [ Y_it[I, J]  : I in 1..N] ) #<= Max_Setup_Day
     % Setups_Day[J]
 end,
 
-%foreach(J in 1 ..T) 
-%    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
-    % Setups_Day[J]
-%end,
  
 /*
 For example,  in this result, for product 17 and 18, our 
@@ -188,17 +189,14 @@ solve(VAR),
 %%print_matrix("Setup Day", Y_it),
 print_matrix("Inventory", I_it),
 print_matrix("Prod Day", X_it),
-%%printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
-printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
-sum_COL(Y_it),
+print_prod_dem(X_it, Monthly_targets),
+
+printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+%printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
+print_sum_COL(Y_it),
 print_production(Y_it).
+/***********************************************************/
 
-
-%print(Setups_Day) .
-
-%print_matrix(Matrix_Sol),
-%printf("\n SUM of each colum ... Monthly_targets (STRONG CONSTRAINT):\n"),
-%sum_COL(Matrix_Sol).
 
 
 /*
@@ -206,20 +204,29 @@ Picat> X = prod([ sum([3,4]) + 7, 2]).
 X = 28
 yes
 */
+%%% produced X Monthly Demand
+print_prod_dem( M, D ) =>
+    L = M.length,
+    C = M[1].length,
+    foreach(I in 1..L) 
+        printf("\n Item: %d Produced: %d Demanded: %d", I, sum( [ M[I,J]  : J in 1 ..C] ), D[I])
+    end.
 
-sum_COL( M ) =>
+%% the sum of setups/day - Y_it
+print_sum_COL( M ) =>
     L = M.length,
     C = M[1].length,
     foreach(J in 1..C) 
-        printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ))
+        printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ) )
     end.
 
+%%% print
 print_production( M ) =>
         L = M.length,
         C = M[1].length,
-        printf("\n Production of a product in a day: #\n"),
+        printf("\n\n Production of a product in a day: # (there's a setup):\n"),
         Aux = [ X mod 10 : X in 1 .. C],
-        printf("\n ...."),
+        printf("\n D-> "),
         foreach(I in Aux)
             printf(" %d", I)
         end,
