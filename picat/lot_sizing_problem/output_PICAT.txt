@@ -1,0 +1,173 @@
+Welcome to the CBC MILP Solver 
+Version: 2.10.8 
+Build Date: May  9 2022 
+
+command line - cbc __tmp.lp solve solu __tmp.sol (default strategy 1)
+Continuous objective value is 0 - 0.08 seconds
+Cgl0003I 0 fixed, 600 tightened bounds, 4230 strengthened rows, 14800 substitutions
+Cgl0004I processed model has 3584 rows, 1760 columns (1760 integer (600 of which binary)) and 11058 elements
+Cbc0045I No integer variables out of 1760 objects (1760 integer) have costs
+Cbc0045I branch on satisfied N create fake objective Y random cost Y
+Cbc0038I Initial state - 412 integers unsatisfied sum - 82.819
+Cbc0038I Pass   1: (0.66 seconds) suminf.   14.78254 (50) obj. 0 iterations 465
+Cbc0038I Pass   2: (0.66 seconds) suminf.   14.78254 (50) obj. 0 iterations 0
+Cbc0038I Pass   3: (0.66 seconds) suminf.   17.14286 (48) obj. 0 iterations 4
+Cbc0038I Solution found of 0
+Cbc0038I Branch and bound needed to clear up 48 general integers
+Cbc0038I Full problem 3584 rows 1760 columns, reduced to 287 rows 520 columns
+Cbc0038I Mini branch and bound could not fix general integers
+Cbc0038I No solution found this major pass
+Cbc0038I Before mini branch and bound, 725 integers at bound fixed and 0 continuous of which 154 were internal integer and 0 internal continuous
+Cbc0038I Full problem 3584 rows 1760 columns, reduced to 1326 rows 662 columns
+Cbc0038I Mini branch and bound did not improve solution (1.30 seconds)
+Cbc0038I After 1.30 seconds - Feasibility pump exiting - took 0.72 seconds
+Cbc0031I 580 added rows had average density of 5.4086207
+Cbc0013I At root node, 580 cuts changed objective from 0 to 0 in 10 passes
+Cbc0014I Cut generator 0 (Probing) - 602 row cuts average 2.1 elements, 0 column cuts (449 active)  in 0.058 seconds - new frequency is -100
+Cbc0014I Cut generator 1 (Gomory) - 1398 row cuts average 28.0 elements, 0 column cuts (0 active)  in 0.152 seconds - new frequency is -100
+Cbc0014I Cut generator 2 (Knapsack) - 0 row cuts average 0.0 elements, 0 column cuts (0 active)  in 0.017 seconds - new frequency is -100
+Cbc0014I Cut generator 3 (Clique) - 0 row cuts average 0.0 elements, 0 column cuts (0 active)  in 0.001 seconds - new frequency is -100
+Cbc0014I Cut generator 4 (MixedIntegerRounding2) - 1 row cuts average 32.0 elements, 0 column cuts (0 active)  in 0.021 seconds - new frequency is -100
+Cbc0014I Cut generator 5 (FlowCover) - 0 row cuts average 0.0 elements, 0 column cuts (0 active)  in 0.020 seconds - new frequency is -100
+Cbc0014I Cut generator 6 (TwoMirCuts) - 1211 row cuts average 26.1 elements, 0 column cuts (0 active)  in 0.191 seconds - new frequency is -100
+Cbc0014I Cut generator 7 (ZeroHalf) - 1 row cuts average 3.0 elements, 0 column cuts (0 active)  in 0.064 seconds - new frequency is -100
+Cbc0010I After 0 nodes, 1 on tree, 1e+50 best solution, best possible 0 (2.61 seconds)
+Cbc0010I After 100 nodes, 64 on tree, 1e+50 best solution, best possible 0 (6.17 seconds)
+Cbc0010I After 200 nodes, 121 on tree, 1e+50 best solution, best possible 0 (8.39 seconds)
+Cbc0010I After 300 nodes, 174 on tree, 1e+50 best solution, best possible 0 (10.00 seconds)
+Cbc0010I After 400 nodes, 226 on tree, 1e+50 best solution, best possible 0 (11.48 seconds)
+Cbc0010I After 500 nodes, 284 on tree, 1e+50 best solution, best possible 0 (12.70 seconds)
+Cbc0010I After 600 nodes, 340 on tree, 1e+50 best solution, best possible 0 (13.75 seconds)
+Cbc0010I After 700 nodes, 393 on tree, 1e+50 best solution, best possible 0 (14.57 seconds)
+Cbc0010I After 800 nodes, 449 on tree, 1e+50 best solution, best possible 0 (15.50 seconds)
+Cbc0010I After 900 nodes, 514 on tree, 1e+50 best solution, best possible 0 (15.95 seconds)
+Cbc0010I After 1000 nodes, 580 on tree, 1e+50 best solution, best possible 0 (16.28 seconds)
+Cbc0010I After 1100 nodes, 680 on tree, 1e+50 best solution, best possible 0 (16.51 seconds)
+Cbc0010I After 1200 nodes, 780 on tree, 1e+50 best solution, best possible 0 (16.72 seconds)
+Cbc0010I After 1300 nodes, 880 on tree, 1e+50 best solution, best possible 0 (16.95 seconds)
+Cbc0010I After 1400 nodes, 980 on tree, 1e+50 best solution, best possible 0 (17.17 seconds)
+Cbc0010I After 1500 nodes, 1080 on tree, 1e+50 best solution, best possible 0 (17.41 seconds)
+Cbc0010I After 1600 nodes, 1180 on tree, 1e+50 best solution, best possible 0 (17.65 seconds)
+Cbc0010I After 1700 nodes, 1280 on tree, 1e+50 best solution, best possible 0 (17.90 seconds)
+Cbc0010I After 1800 nodes, 1380 on tree, 1e+50 best solution, best possible 0 (18.15 seconds)
+Cbc0010I After 1900 nodes, 1478 on tree, 1e+50 best solution, best possible 0 (18.71 seconds)
+Cbc0010I After 2000 nodes, 1572 on tree, 1e+50 best solution, best possible 0 (19.39 seconds)
+Cbc0010I After 2100 nodes, 1672 on tree, 1e+50 best solution, best possible 0 (19.69 seconds)
+Cbc0010I After 2200 nodes, 1772 on tree, 1e+50 best solution, best possible 0 (19.92 seconds)
+Cbc0010I After 2300 nodes, 1872 on tree, 1e+50 best solution, best possible 0 (20.22 seconds)
+Cbc0016I Integer solution of 0 found by strong branching after 76122 iterations and 2365 nodes (20.59 seconds)
+Cbc0001I Search completed - best objective 0, took 76122 iterations and 2365 nodes (20.91 seconds)
+Cbc0032I Strong branching done 13360 times (46582 iterations), fathomed 3 nodes and fixed 53 variables
+Cbc0035I Maximum depth 1717, 0 variables fixed on reduced cost
+Cuts at root node changed objective from 0 to 0
+Probing was tried 10 times and created 602 cuts of which 449 were active after adding rounds of cuts (0.058 seconds)
+Gomory was tried 10 times and created 1398 cuts of which 0 were active after adding rounds of cuts (0.152 seconds)
+Knapsack was tried 10 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.017 seconds)
+Clique was tried 10 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.001 seconds)
+MixedIntegerRounding2 was tried 10 times and created 1 cuts of which 0 were active after adding rounds of cuts (0.021 seconds)
+FlowCover was tried 10 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.020 seconds)
+TwoMirCuts was tried 10 times and created 1211 cuts of which 0 were active after adding rounds of cuts (0.191 seconds)
+ZeroHalf was tried 1 times and created 1 cuts of which 0 were active after adding rounds of cuts (0.064 seconds)
+
+Result - Optimal solution found
+
+Objective value:                0.00000000
+Enumerated nodes:               2365
+Total iterations:               76122
+Time (CPU seconds):             20.99
+Time (Wallclock seconds):       21.06
+
+Total time (CPU seconds):       21.25   (Wallclock seconds):       21.17
+
+
+              1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+Inventory 1:  903 603 303 3 1500 1200 900 600 300 0 19 0 900 600 300 0 600 300 0 0 600 300 0 0 1 300 0 0 0 0 
+Inventory 2:  150 0 1531 1231 1145 845 1200 900 600 300 0 600 300 0 0 0 0 97 0 0 0 0 0 300 0 300 0 0 0 0 
+Inventory 3:  570 360 0 360 0 87 0 0 360 0 12 362 2 0 0 0 0 360 0 0 0 0 0 152 210 0 0 0 0 0 
+Inventory 4:  720 360 0 0 177 368 8 0 67 797 437 77 359 1814 1800 1440 1080 720 360 0 43 0 360 0 1 0 0 360 0 0 
+Inventory 5:  380 190 0 340 0 0 0 0 0 529 189 340 0 0 340 0 340 0 0 0 0 456 116 340 0 680 340 0 0 0 
+Inventory 6:  1360 1171 831 649 715 375 35 0 0 0 0 0 1 0 0 0 0 0 680 340 0 0 0 341 1 0 0 340 0 0 
+Inventory 7:  530 190 0 869 529 341 1 340 0 1 340 0 680 340 0 340 0 340 0 680 340 0 340 0 620 680 340 0 0 0 
+Inventory 8:  761 421 81 0 0 8 5 680 340 0 715 375 190 0 340 0 0 0 680 340 0 0 0 190 0 0 340 0 0 0 
+Inventory 9:  116 162 208 104 0 318 214 110 6 148 44 104 0 46 161 57 103 149 45 104 0 312 208 104 0 46 92 138 34 80 
+Inventory 10:  276 207 138 69 0 81 12 93 174 255 186 117 48 129 60 276 207 138 69 0 190 121 205 136 67 148 229 160 91 22 
+Inventory 11:  269 305 191 342 228 114 0 114 0 36 114 0 36 72 228 114 0 114 0 114 0 570 456 342 228 114 0 228 114 0 
+Inventory 12:  312 208 104 0 107 3 315 211 107 3 266 162 58 104 0 46 92 138 34 104 0 104 0 46 104 0 46 92 138 34 
+Inventory 13:  264 345 276 207 138 69 0 138 69 0 139 70 1 276 207 138 69 0 333 264 345 276 207 138 69 0 81 12 93 24 
+Inventory 14:  114 0 36 228 114 0 114 0 146 32 339 225 261 147 33 74 114 0 228 114 0 36 114 0 114 0 114 0 114 0 
+Inventory 15:  300 300 150 0 0 0 0 0 0 150 0 0 300 150 0 150 0 0 0 152 2 2 150 0 150 0 150 0 150 0 
+Inventory 16:  649 489 329 169 160 0 160 0 960 800 640 480 320 160 0 0 0 0 0 0 320 160 0 0 320 160 0 139 129 119 
+Inventory 17:  18 0 132 114 96 228 210 192 174 156 138 270 252 234 366 348 330 312 294 276 258 240 222 204 186 168 150 132 114 96 
+Inventory 18:  72 54 36 18 0 132 114 96 78 210 192 324 306 288 270 252 234 366 348 330 312 294 276 258 240 222 204 186 168 150 
+Inventory 19:  329 169 329 169 160 0 0 160 0 160 0 160 0 0 0 320 160 0 160 0 160 0 0 0 160 0 0 320 160 0 
+Inventory 20:  150 0 0 0 0 300 150 0 0 0 0 300 150 0 150 0 150 0 0 0 150 0 0 24 300 150 0 150 0 0 
+             1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+Prod Day 1:  0 0 0 1797 0 0 0 0 0 319 281 1200 0 0 0 900 0 0 300 900 0 0 300 301 599 0 300 300 300 150 
+Prod Day 2:  150 1831 0 214 0 655 0 0 0 0 900 0 0 300 300 300 397 203 300 300 300 300 600 0 600 0 300 300 300 0 
+Prod Day 3:  150 0 720 0 447 273 360 720 0 372 710 0 358 360 360 360 720 0 360 360 360 360 512 418 150 360 360 360 360 150 
+Prod Day 4:  0 0 360 537 551 0 352 427 1090 0 0 642 1815 346 0 0 0 0 0 403 317 720 0 361 359 360 720 0 360 150 
+Prod Day 5:  150 150 680 0 340 340 340 340 869 0 491 0 340 680 0 680 0 340 340 340 796 0 564 0 1020 0 0 340 340 150 
+Prod Day 6:  151 0 158 406 0 0 305 340 340 340 340 341 339 340 340 340 340 1020 0 0 340 340 681 0 339 340 680 0 340 0 
+Prod Day 7:  0 150 1209 0 152 0 679 0 341 679 0 1020 0 0 680 0 680 0 1020 0 0 680 0 960 400 0 0 340 340 0 
+Prod Day 8:  0 0 259 340 348 337 1015 0 0 1055 0 155 150 680 0 340 340 1020 0 0 340 340 530 150 340 680 0 340 340 150 
+Prod Day 9:  150 150 0 0 422 0 0 0 246 0 164 0 150 219 0 150 150 0 163 0 416 0 0 0 150 150 150 0 150 0 
+Prod Day 10:  0 0 0 0 150 0 150 150 150 0 0 0 150 0 285 0 0 0 0 259 0 153 0 0 150 150 0 0 0 0 
+Prod Day 11:  150 0 265 0 0 0 228 0 150 192 0 150 150 270 0 0 228 0 228 0 684 0 0 0 0 0 342 0 0 150 
+Prod Day 12:  0 0 0 211 0 416 0 0 0 367 0 0 150 0 150 150 150 0 174 0 208 0 150 162 0 150 150 150 0 0 
+Prod Day 13:  150 0 0 0 0 0 207 0 0 208 0 0 344 0 0 0 0 402 0 150 0 0 0 0 0 150 0 150 0 0 
+Prod Day 14:  0 150 306 0 0 228 0 260 0 421 0 150 0 0 155 154 0 342 0 0 150 192 0 228 0 228 0 228 0 0 
+Prod Day 15:  150 0 0 150 150 150 150 150 300 0 150 450 0 0 300 0 150 150 302 0 150 298 0 300 0 300 0 300 0 0 
+Prod Day 16:  0 0 0 151 0 320 0 1120 0 0 0 0 0 0 160 160 160 160 160 480 0 0 160 480 0 0 299 150 150 150 
+Prod Day 17:  0 150 0 0 150 0 0 0 0 0 150 0 0 150 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+Prod Day 18:  0 0 0 0 150 0 0 0 150 0 150 0 0 0 0 0 150 0 0 0 0 0 0 0 0 0 0 0 0 150 
+Prod Day 19:  0 320 0 151 0 160 320 0 320 0 320 0 160 160 480 0 0 320 0 320 0 160 160 320 0 160 480 0 0 0 
+Prod Day 20:  0 150 150 150 450 0 0 150 150 150 450 0 0 300 0 300 0 150 150 300 0 150 174 426 0 0 300 0 150 0 
+ Item: 1 Produced: 7947 Demanded: 7500
+ Item: 2 Produced: 8550 Demanded: 7500
+ Item: 3 Produced: 10020 Demanded: 9000
+ Item: 4 Produced: 9870 Demanded: 9000
+ Item: 5 Produced: 9630 Demanded: 8500
+ Item: 6 Produced: 8500 Demanded: 8500
+ Item: 7 Produced: 9330 Demanded: 8500
+ Item: 8 Produced: 9249 Demanded: 8500
+ Item: 9 Produced: 2980 Demanded: 2588
+ Item: 10 Produced: 1747 Demanded: 1725
+ Item: 11 Produced: 3187 Demanded: 2847
+ Item: 12 Produced: 2738 Demanded: 2588
+ Item: 13 Produced: 1761 Demanded: 1725
+ Item: 14 Produced: 3192 Demanded: 2847
+ Item: 15 Produced: 4050 Demanded: 3750
+ Item: 16 Produced: 4260 Demanded: 4000
+ Item: 17 Produced: 600 Demanded: 450
+ Item: 18 Produced: 750 Demanded: 450
+ Item: 19 Produced: 4311 Demanded: 4000
+ Item: 20 Produced: 4200 Demanded: 3750
+ The SETUPS bounds ...MIN: 8  MAX: 11
+Day_1:8 || Day_2:8 || Day_3:9 || Day_4:10 || Day_5:11 || Day_6:9 || Day_7:11 || Day_8:9 || Day_9:11 || Day_10:10 || Day_11:11 || Day_12:8 || Day_13:11 || Day_14:11 || Day_15:10 || Day_16:11 || Day_17:11 || Day_18:10 || Day_19:11 || Day_20:10 || Day_21:11 || Day_22:11 || Day_23:10 || Day_24:11 || Day_25:10 || Day_26:11 || Day_27:11 || Day_28:11 || Day_29:11 || Day_30:8 || 
+
+ Production of a product in a day: # (there's a setup):
+
+ D->  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+ 1:   . . . # . . . . . # # # . . . # . . # # . . # # # . # # # #
+ 2:   # # . # . # . . . . # . . # # # # # # # # # # . # . # # # .
+ 3:   # . # . # # # # . # # . # # # # # . # # # # # # # # # # # #
+ 4:   . . # # # . # # # . . # # # . . . . . # # # . # # # # . # #
+ 5:   # # # . # # # # # . # . # # . # . # # # # . # . # . . # # #
+ 6:   # . # # . . # # # # # # # # # # # # . . # # # . # # # . # .
+ 7:   . # # . # . # . # # . # . . # . # . # . . # . # # . . # # .
+ 8:   . . # # # # # . . # . # # # . # # # . . # # # # # # . # # #
+ 9:   # # . . # . . . # . # . # # . # # . # . # . . . # # # . # .
+ 10:   . . . . # . # # # . . . # . # . . . . # . # . . # # . . . .
+ 11:   # . # . . . # . # # . # # # . . # . # . # . . . . . # . . #
+ 12:   . . . # . # . . . # . . # . # # # . # . # . # # . # # # . .
+ 13:   # . . . . . # . . # . . # . . . . # . # . . . . . # . # . .
+ 14:   . # # . . # . # . # . # . . # # . # . . # # . # . # . # . .
+ 15:   # . . # # # # # # . # # . . # . # # # . # # . # . # . # . .
+ 16:   . . . # . # . # . . . . . . # # # # # # . . # # . . # # # #
+ 17:   . # . . # . . . . . # . . # . . . . . . . . . . . . . . . .
+ 18:   . . . . # . . . # . # . . . . . # . . . . . . . . . . . . #
+ 19:   . # . # . # # . # . # . # # # . . # . # . # # # . # # . . .
+ 20:   . # # # # . . # # # # . . # . # . # # # . # # # . . # . # .
