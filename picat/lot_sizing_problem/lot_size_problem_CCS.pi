@@ -4,7 +4,11 @@ import mip.   %%% must be installed in Picat installation
 %import smt.  ===> NOT INSTALLED
 %% to RUN : picat lot_size_problem_CCS.pi
 
-main => 
+main ?=> model.
+main =>  printf("\n\n the end ............\n")  .
+
+model =>
+
 %%% INPUT DATA and PARAMETERS
    T = 30, %% it becomes proibhitive for 10,25, 20 days worked ,  number of periods
    
@@ -38,8 +42,12 @@ main =>
 
     %Setup per day
     Min_Setup_Day = 8, %% optimal
-    Max_Setup_Day = 11,
-    
+    Max_Setup_Day = 13,
+    if (Min_Setup_Day > Max_Setup_Day) then
+        printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
+        exit()
+    end,
+
     % batch size concept
     Min_Batch_Size = 150,
 
@@ -59,6 +67,8 @@ main =>
    
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
+
+    %F_Relax :: 0..Max_Dom,
 
     %Setups_Day = new_array(T),   %%% units of product i in period t (day)
     % if exists setup for product i on day t
@@ -131,11 +141,15 @@ Can we put batch size not to be less than say 150.
  %% C7: we included the MIN_BATCH_SIZE
 foreach(I in 1..N)   
     foreach(J in 1..T) 
-   /* OR exclusive  .... very cool*/        
+   /* OR exclusive  .... very cool
     #~( (X_it[I,J] #>= Min_Batch_Size)
          #<=>
         (X_it[I,J] #= 0) 
        )     
+     OR- EXCLUSIVE ... REIFICATION Ci #^Cj */
+    (X_it[I,J] #>= Min_Batch_Size)
+    #^ 
+    (X_it[I,J] #= 0) 
    end
  end,
 
@@ -153,10 +167,12 @@ foreach(I in 1..N)
 %% Each day must respect  until 16 hours worked
 %% in EACH DAY sum the production time of ALL PRODUCTS
 % original formulation as literature
-%Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
+%Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]*C_i[I])) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
 % + Setups_Day[J]
 
-Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  (X_it[I,J]* TP_i[I])  )  : I in 1..N , J  in 1..T] ),  
+%% Cost function simplified
+Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
+%Cost #>=  180000,
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -164,11 +180,14 @@ Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  (X_it[I,J]* TP_i[I])  )  : I 
 %% the sum of ALL DAYS of one product must be respect its month target
 %    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
 
-VAR = [X_it , Y_it , I_it],   
+VARS = [X_it , Y_it , I_it],   
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
-%solve([$min(Cost)], VAR),
+%solve($[min(Cost)], VARS),
+%solve($[limit(3)], VARS),
+%solve([$max(Total)],X),  VAR),,min(TheSum)
+%
 %%% for a best result ... uncomment the line above and comment the line below
-solve(VAR),
+solve($[cbc, msg=0, print_level =1, limit(2)],VARS),
 
 %%print_matrix("Setup Day", Y_it),
 
@@ -177,9 +196,15 @@ print_matrix("Prod Day", X_it),
 print_prod_dem(X_it, Monthly_targets),
 
 printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+printf("\n Cost Function - Bound:  %d\n " , Cost),
+%printf("\n Relax Function:  %d" , F_Relax),
+
 %printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
 print_sum_COL(Y_it),
-print_production(Y_it).
+print_production(Y_it),
+
+%%% workaround ...
+fail.
 
 /*********************** END OF MAIN ************************************/
 
