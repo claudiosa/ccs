@@ -4,8 +4,8 @@ import mip.   %%% must be installed in Picat installation
 %import smt.  ===> NOT INSTALLED
 %% to RUN : picat lot_size_problem_CCS.pi
 
-main ?=> model.
-main =>  printf("\n\n the end ............\n")  .
+main => model.
+%main =>  printf("\n\n the end ............\n")  .
 
 model =>
 
@@ -14,6 +14,7 @@ model =>
    
    % demand for product i in a periodo t (DAY in our case) ===>  Demands_targets per day - daily demand
    D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
+   % Unit inventory holding cost of product i at the end of period t (day)
    %%% 20 products
    N = D_i.length, %% number of products    
 
@@ -23,10 +24,7 @@ model =>
    %% UNITARY COST in inventory -- store cost ...
    C_i = [14 : I in 1..N],
    %%% fixed cost UNITARY associated of product i in a day
-
    %%% 
-   %H_u = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
-   % Unit inventory holding cost of product i at the end of period t (day)
  
    %% UNITARY TIME ..... TIME IS DIFFERENT OF COST
    TP_i = [14 : I in 1..N],%%% Tempo de Produção do item i
@@ -41,8 +39,8 @@ model =>
     M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
 
     %Setup per day
-    Min_Setup_Day = 8, %% optimal
-    Max_Setup_Day = 13,
+    Min_Setup_Day = 10, %% optimal
+    Max_Setup_Day = 15,
     if (Min_Setup_Day > Max_Setup_Day) then
         printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
         exit()
@@ -68,8 +66,7 @@ model =>
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
 
-    %F_Relax :: 0..Max_Dom,
-
+/******* TESTS ***********/
     %Setups_Day = new_array(T),   %%% units of product i in period t (day)
     % if exists setup for product i on day t
     %Setups_Day  :: Min_Setup_Day .. Max_Setup_Day,
@@ -124,7 +121,6 @@ foreach(J in 1 ..T)
     % UPPER
 end,
 % A setups days between a MIN and a MAX
-
  
 /*
 For example,  in this result, for product 17 and 18, our 
@@ -139,17 +135,18 @@ Can we put batch size not to be less than say 150.
 
  %% OR EXCLUSIVE
  %% C7: we included the MIN_BATCH_SIZE
-foreach(I in 1..N)   
-    foreach(J in 1..T) 
-   /* OR exclusive  .... very cool
+    /* OR exclusive  .... very cool
     #~( (X_it[I,J] #>= Min_Batch_Size)
          #<=>
         (X_it[I,J] #= 0) 
        )     
-     OR- EXCLUSIVE ... REIFICATION Ci #^Cj */
-    (X_it[I,J] #>= Min_Batch_Size)
-    #^ 
-    (X_it[I,J] #= 0) 
+     OR- EXCLUSIVE ... REIFICATION Ci #^Cj 
+    IMPORTANT AND KEY constraint */
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        (X_it[I,J] #>= Min_Batch_Size)
+        #^ 
+        (X_it[I,J] #= 0) 
    end
  end,
 
@@ -160,7 +157,6 @@ foreach(I in 1..N)
      (X_it[I,J] #= 0) #<=> (Y_it[I,J] #= 0)           
    end
  end,
-
  
 /*  END OF CONSTRAINTS */
 
@@ -172,7 +168,7 @@ foreach(I in 1..N)
 
 %% Cost function simplified
 Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
-%Cost #>=  180000,
+%Cost #>=  268888, %%% a lower bound ... heurestic
 
 %%% the min time per day - 6 hours
 %    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
@@ -182,29 +178,34 @@ Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  X_it[I,J]  )  : I in 1..N , J  in 1..T
 
 VARS = [X_it , Y_it , I_it],   
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
+
+%%% UNDER STUDIES .... 
 %solve($[min(Cost)], VARS),
 %solve($[limit(3)], VARS),
 %solve([$max(Total)],X),  VAR),,min(TheSum)
 %
 %%% for a best result ... uncomment the line above and comment the line below
-solve($[cbc, msg=0, print_level =1, limit(2)],VARS),
+solve( $[cbc, 'sec 10', 'maxSo 4', 'threads 4'], VARS),
+%All_Sols = solve_all($[cbc],VARS),
+%%print_matrix("Setup Day", Y_it)
 
-%%print_matrix("Setup Day", Y_it),
-
-print_matrix("Inventory", I_it),
-print_matrix("Prod Day", X_it),
+/* OUTPUT ......*/
+print_matrix("Inventory:", I_it),
+print_matrix("Prod Day:", X_it),
 print_prod_dem(X_it, Monthly_targets),
 
 printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
 printf("\n Cost Function - Bound:  %d\n " , Cost),
-%printf("\n Relax Function:  %d" , F_Relax),
 
 %printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
 print_sum_COL(Y_it),
-print_production(Y_it),
+print_production(Y_it).
+
+%printf("\n VARS ==> %w", VARS),
+%printf("\n ALL SOL: %w", All_Sols).
 
 %%% workaround ...
-fail.
+
 
 /*********************** END OF MAIN ************************************/
 

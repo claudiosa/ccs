@@ -1,0 +1,24 @@
+
+import util.
+%import sat.
+%import cp.
+import mip.
+
+main => 
+    Num_Sol = 4,
+    All_Sol = find_all([X], model(X)),
+    List = take(All_Sol, Num_Sol) ,
+    printf("\n ==> %w", List).  
+    
+%main.
+
+model(X) =>
+   X = [Bananas, Oranges,Mangoes,Apples],
+   X :: 1..100,
+
+   3*Bananas*189 + 5*Oranges*135 + 7*Mangoes*105 + 9*Apples*315 #= 100*945,
+
+   sum(X) #= 100,
+   solve(X).
+   %%% msg=0, print_level =1,
+   %%%%solve($[cbc, limit(2)],X ) 

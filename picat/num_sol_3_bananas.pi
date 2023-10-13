@@ -1,0 +1,43 @@
+%import util.
+%import sat.
+import cp.
+%import mip.
+
+main => 
+   Num_Sol = 3,
+   model( Num_Sol ).
+
+   model(N) =>
+      X = [Bananas, Oranges,Mangoes,Apples],
+      X :: 1..100,
+   
+      3*Bananas*189 + 5*Oranges*135 + 7*Mangoes*105 + 9*Apples*315 #= 100*945,
+      %TheSum #= Bananas+Apples, %%% MINIMIZATION
+      sum(X) #= 100,
+      /******** END of MODEL ****/
+      L_Sol = find_all(X, solve_with_limit(X, N)),
+      printf("\n ==> %w", L_Sol).  
+
+solve_with_limit(Vars, Limit) =>
+      M = get_global_map(),
+      M.put(limit, Limit),
+      solve(Vars),
+      N = M.get(limit),
+      (N > 1 ->
+          M.put(limit, N-1)
+      ;
+          !
+      ).
+  
+   
+/*
+Picat> L=[], L:=L++[1], L:=L++[2].
+L = [1,2]
+yes
+*/
+
+   %%%%  solve($[min(TheSum)], X) 
+   %%% msg=0, print_level =1,
+   %%%%solve($[cbc, limit(2)],X ) 
+   %%% no tested for minimization
+

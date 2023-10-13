@@ -1,0 +1,1 @@
+cbc __tmp.lp -sec $TIMELIMIT -threads $THREADS -ratio $MIPGAP -solve -solution $SOLFILE

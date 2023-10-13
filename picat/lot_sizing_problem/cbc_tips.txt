@@ -1,0 +1,3 @@
+cbc model1a.lp ratio 0.05 threads 8 solve printing csv solution model1a.csv
+cbc __tmp.lp  sec 10 solve -solu output.txt
+cbc __tmp.lp  sec 10 threads 4 maxSo 4      solve -solu -csv output.txt
