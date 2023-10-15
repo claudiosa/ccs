@@ -1,11 +1,13 @@
-%import sat.
-%import cp.
+
+%% Model build by CCS and Daru
+%import sat. %%% unsatisfatory response time
+%import cp. %%% unsatisfatory response time
 import mip.   %%% must be installed in Picat installation
 %import smt.  ===> NOT INSTALLED
 %% to RUN : picat lot_size_problem_CCS.pi
 
-main => model.
-%main =>  printf("\n\n the end ............\n")  .
+main => model,
+        printf("\n\n the end main............\n")  .
 
 model =>
 
@@ -15,7 +17,7 @@ model =>
    % demand for product i in a periodo t (DAY in our case) ===>  Demands_targets per day - daily demand
    D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
    % Unit inventory holding cost of product i at the end of period t (day)
-   %%% 20 products
+   %%% 20 products - in this example
    N = D_i.length, %% number of products    
 
    %Setup_Time = 10, %%% in seconds -- Later we can put an array
@@ -23,36 +25,40 @@ model =>
      
    %% UNITARY COST in inventory -- store cost ...
    C_i = [14 : I in 1..N],
-   %%% fixed cost UNITARY associated of product i in a day
+   %%% fixed cost UNITARY associated of product i in a day in the inventory
    %%% 
  
    %% UNITARY TIME ..... TIME IS DIFFERENT OF COST
-   TP_i = [14 : I in 1..N],%%% Tempo de Produção do item i
+   TP_i = [14 : I in 1..N],%%% Production time of item i
    
    %%% Unitary production  cost of product i in period t (day)
    Sixty_hour = 16*60*60 ,
    CP_t = [ Sixty_hour  : I in 1..T], %%% production capacity of one machine on a day
   
     %%% 
-    Monthly_targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
+    Monthly_Targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
     % quantity expected for ALL periods = Example: 1 month
-    M_BIG = 2*sum(Monthly_targets), %%% M a big constant number
+    M_BIG = 2*sum(Monthly_Targets), %%% M a big constant number
 
     %Setup per day
-    Min_Setup_Day = 10, %% optimal
-    Max_Setup_Day = 15,
+    Min_Setup_Day = 7, %% MIN
+    Max_Setup_Day = 11, %% MAX
+
+
+    %K_Heuristic = round((T * N * 2)/(Min_Setup_Day+Max_Setup_Day)),
+
     if (Min_Setup_Day > Max_Setup_Day) then
         printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
         exit()
     end,
 
-    % batch size concept
+    % batch size concept -- Adjust as you demand
     Min_Batch_Size = 150,
 
 %%% VARIABLES
 
-    % Min_Dom = min(D_i), %#fd_min(Daily_targets),
-    Max_Dom = max(Monthly_targets), %#fd_max(Daily_targets),
+    % Min_Dom = min(D_i), % <=> #fd_min(Daily_targets),
+    Max_Dom = max(Monthly_Targets), %#fd_max(Daily_targets),
     %%% created the sol matrix VAR ... which is batch production
     %% production of day i on day t
     X_it = new_array(N, T),  %%% units of product i in period t (day) -- quantity produced of product it in time t
@@ -66,7 +72,7 @@ model =>
     I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
     I_it :: 0..Max_Dom, %% INVENTORY
 
-/******* TESTS ***********/
+/******* TESTS NOT USED ***********/
     %Setups_Day = new_array(T),   %%% units of product i in period t (day)
     % if exists setup for product i on day t
     %Setups_Day  :: Min_Setup_Day .. Max_Setup_Day,
@@ -90,8 +96,6 @@ end,
     sum( [ (X_it[I,J] * TP_i[I]) + (S * Y_it[I, J]) : I in 1..N] ) #<= CP_t[J]
  end,
 
-%%%model += lpSum([X_it[i, t] * TP_i[i] + S * Y_it[i,t] for i in range(N)]) <= CP_t[t]
-
 %%% C3: the production happen only if exist a setup (change of product)
 foreach(I in 1..N)   
     foreach(J in 1..T) 
@@ -106,11 +110,11 @@ end,
 
 % C5: month production -- FOR 30 DAYS ... not for 5 or less....
 foreach(I in 1 ..N) 
-    sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_targets[I]
+    sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_Targets[I]
 end,
 
 %%% C6: a Constraint for UPPER and LOWER bound of SETUPS in a DAY ....
-%%% To include boundaries of setup number 
+%%% To include boundaries of setup numbers -- a heuristic 
 foreach(J in 1 ..T) 
     sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
     % LOWER 
@@ -123,6 +127,7 @@ end,
 % A setups days between a MIN and a MAX
  
 /*
+User demand:
 For example,  in this result, for product 17 and 18, our 
 daily production is 18, 36.. these are batch size. 
 Can we put batch size not to be less than say 150.
@@ -167,14 +172,12 @@ foreach(I in 1..N)
 % + Setups_Day[J]
 
 %% Cost function simplified
-Cost #= sum([ (S*Y_it[I,J] + I_it[I,J] +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
+Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
 %Cost #>=  268888, %%% a lower bound ... heurestic
 
-%%% the min time per day - 6 hours
-%    sum( [ Matrix_Sol[I,J]  : J in 1..N_products] )  #> 3600  %% 6 hours per day worked
 
-%% the sum of ALL DAYS of one product must be respect its month target
-%    sum( [ Matrix_Sol[I,J]  : I in 1..M_days] ) #>= Monthly_targets[J]
+%% A Heuristic for a minimization on Y_it -- tests
+%sum( [ Y_it[I,J] : I in 1..N , J  in 1..T ]) #<= 350,
 
 VARS = [X_it , Y_it , I_it],   
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
@@ -185,17 +188,19 @@ VARS = [X_it , Y_it , I_it],
 %solve([$max(Total)],X),  VAR),,min(TheSum)
 %
 %%% for a best result ... uncomment the line above and comment the line below
-solve( $[cbc, 'sec 10', 'maxSo 4', 'threads 4'], VARS),
+%solve( $[cbc, 'sec 10', 'maxSo 4', 'threads 4'], VARS),
+solve( $[cbc], VARS),
 %All_Sols = solve_all($[cbc],VARS),
 %%print_matrix("Setup Day", Y_it)
 
 /* OUTPUT ......*/
-print_matrix("Inventory:", I_it),
-print_matrix("Prod Day:", X_it),
-print_prod_dem(X_it, Monthly_targets),
+print_matrix("Inventory: ", I_it),
+print_matrix("Prod Day: ", X_it),
+print_prod_dem(X_it, Monthly_Targets),
 
 printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
-printf("\n Cost Function - Bound:  %d\n " , Cost),
+printf("\n Cost Function - Bound:  %d " , Cost),
+%printf("\n Heuristic - Bound:  %d\n " , K_Heuristic),
 
 %printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
 print_sum_COL(Y_it),
@@ -204,7 +209,6 @@ print_production(Y_it).
 %printf("\n VARS ==> %w", VARS),
 %printf("\n ALL SOL: %w", All_Sols).
 
-%%% workaround ...
 
 
 /*********************** END OF MAIN ************************************/
@@ -229,7 +233,9 @@ print_sum_COL( M ) =>
     C = M[1].length,
     foreach(J in 1..C) 
         printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ) )
-    end.
+    end,
+    printf("\n Total : %d  ", sum( [ M[I,J]  : I in 1..L, J in 1..C] ) )
+    .
 
 %%% printing - output
 print_production( M ) =>
@@ -281,41 +287,5 @@ print_production( M ) =>
 
 
 
-/* ************************************************************************************
-CUT HERE
-
-STICKS of codes ....
-
-Weight_product_day = findall(W,(member(P,Daily_targets), W = truncate(100*(P/Daily_sum)))), 
-printf("\n Weight_product_day: %w" ,   Weight_product_day),
-
-Weight_product_month = findall(W,(member(P,Monthly_targets), W = truncate(100*(P/Monthly_sum)))), 
-printf("\n Weight_product_month: %w" ,   Weight_product_month),
-
-
-%foreach(J in 1 ..T) 
-%    sum( [ Y_it[I, J]  : I in 1..N] ) #= Setups_Day[J]
-%end,    
-
-%foreach(J in 1 ..T) 
-%    Sixty_hour - sum( [ X_it[I, J] * TP_i[I] : I in 1..N] )  #= Empty_day[J]
-%end,
-
-%foreach(J in 1 ..T-1) 
-%    sum( [ Y_it[I, J]  : I in 1..N] ) #!=  sum( [ Y_it[I, J+1]  : I in 1..N] )
-%end,
-
-%Total_of_Setups #= sum([ Y_it[I,J]  : I in 1..N , J  in 1..T] ),
- the constraints from here ... are not necessary  ....
-
-%C6: Binary domain for setup variable
-foreach(I in 1..N)   
-    foreach(J in 1..T) 
-    (Y_it[I,J] #= 0)
-    #\/      %%% OR
-    (Y_it[I,J] #= 1)
-    end
-end, 
-
-*/
+/* ************************************************************************************/
 
