@@ -146,7 +146,8 @@ Can we put batch size not to be less than say 150.
         (X_it[I,J] #= 0) 
        )     
      OR- EXCLUSIVE ... REIFICATION Ci #^Cj 
-    IMPORTANT AND KEY constraint */
+    IMPORTANT AND KEY constraint 
+    */
 foreach(I in 1..N)   
     foreach(J in 1..T) 
         (X_it[I,J] #>= Min_Batch_Size)
@@ -190,7 +191,7 @@ VARS = [X_it , Y_it , I_it],
 %%% for a best result ... uncomment the line above and comment the line below
 %solve( $[cbc, 'sec 10', 'maxSo 4', 'threads 4'], VARS),
 solve( $[cbc], VARS),
-%All_Sols = solve_all($[cbc],VARS),
+%All_Sols = solve_all($[cbc, limit(10)],VARS),
 %%print_matrix("Setup Day", Y_it)
 
 /* OUTPUT ......*/
