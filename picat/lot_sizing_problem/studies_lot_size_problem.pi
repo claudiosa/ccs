@@ -46,6 +46,7 @@ model =>
 
 
     %K_Heuristic = round((T * N * 2)/(Min_Setup_Day+Max_Setup_Day)),
+    K_Heuristic = 1427000,
 
     if (Min_Setup_Day > Max_Setup_Day) then
         printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
@@ -148,6 +149,7 @@ Can we put batch size not to be less than say 150.
      OR- EXCLUSIVE ... REIFICATION Ci #^Cj 
     IMPORTANT AND KEY constraint 
     */
+/*
 foreach(I in 1..N)   
     foreach(J in 1..T) 
         (X_it[I,J] #>= Min_Batch_Size)
@@ -155,15 +157,22 @@ foreach(I in 1..N)
         (X_it[I,J] #= 0) 
    end
  end,
-
+*/
 %%%% If inexists production ... there's setup equal 0
 %%% C8: If none setup is defined for i in t, so the production MUST be zero
+/* 
  foreach(I in 1..N)   
     foreach(J in 1..T) 
      (X_it[I,J] #= 0) #<=> (Y_it[I,J] #= 0)           
    end
  end,
- 
+ */
+
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+     X_it[I,J] #>=  (Y_it[I,J] * Min_Batch_Size)           
+   end
+ end,
 /*  END OF CONSTRAINTS */
 
 %% Each day must respect  until 16 hours worked
@@ -173,8 +182,11 @@ foreach(I in 1..N)
 % + Setups_Day[J]
 
 %% Cost function simplified
+
+
 Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
-%Cost #>=  268888, %%% a lower bound ... heurestic
+
+%Cost #>=  K_Heuristic, %%% a lower bound ... heurestic
 
 
 %% A Heuristic for a minimization on Y_it -- tests
@@ -184,13 +196,13 @@ VARS = [X_it , Y_it , I_it],
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
 
 %%% UNDER STUDIES .... 
-%solve($[min(Cost)], VARS),
+solve($[cbc, min(Cost)], VARS),
 %solve($[limit(3)], VARS),
 %solve([$max(Total)],X),  VAR),,min(TheSum)
 %
 %%% for a best result ... uncomment the line above and comment the line below
-%solve( $[cbc, 'sec 10', 'maxSo 4', 'threads 4'], VARS),
-solve( $[cbc], VARS),
+%solve( $[cbc, 'sec 100', 'maxSo 4', 'threads 4'], VARS),
+%solve( $[cbc], VARS),
 %All_Sols = solve_all($[cbc, limit(10)],VARS),
 %%print_matrix("Setup Day", Y_it)
 
@@ -201,7 +213,7 @@ print_prod_dem(X_it, Monthly_Targets),
 
 printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
 printf("\n Cost Function - Bound:  %d " , Cost),
-%printf("\n Heuristic - Bound:  %d\n " , K_Heuristic),
+printf("\n Heuristic - Bound:  %d\n " , K_Heuristic),
 
 %printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
 print_sum_COL(Y_it),
