@@ -1,0 +1,140 @@
+Welcome to the CBC MILP Solver 
+Version: 2.10.8 
+Build Date: May  9 2022 
+
+command line - cbc __tmp.lp solve solu __tmp.sol (default strategy 1)
+Continuous objective value is 0 - 0.05 seconds
+Cgl0003I 0 fixed, 600 tightened bounds, 2430 strengthened rows, 6059 substitutions
+Cgl0004I processed model has 3120 rows, 1760 columns (1760 integer (600 of which binary)) and 10130 elements
+Cbc0045I No integer variables out of 1760 objects (1760 integer) have costs
+Cbc0045I branch on satisfied N create fake objective Y random cost Y
+Cbc0038I Initial state - 311 integers unsatisfied sum - 69.9719
+Cbc0038I Pass   1: (1.78 seconds) suminf.    0.57143 (2) obj. 0 iterations 345
+Cbc0038I Solution found of 0
+Cbc0038I Branch and bound needed to clear up 2 general integers
+Cbc0038I Full problem 3120 rows 1760 columns, reduced to 199 rows 312 columns
+Cbc0038I Cleaned solution of 0
+Cbc0038I Before mini branch and bound, 1026 integers at bound fixed and 0 continuous of which 198 were internal integer and 0 internal continuous
+Cbc0038I Mini branch and bound did not improve solution (1.89 seconds)
+Cbc0038I After 1.89 seconds - Feasibility pump exiting with objective of 0 - took 0.24 seconds
+Cbc0012I Integer solution of 0 found by feasibility pump after 0 iterations and 0 nodes (1.89 seconds)
+Cbc0001I Search completed - best objective 0, took 0 iterations and 0 nodes (1.90 seconds)
+Cbc0035I Maximum depth 0, 0 variables fixed on reduced cost
+Cuts at root node changed objective from 0 to 0
+Probing was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+Gomory was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+Knapsack was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+Clique was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+MixedIntegerRounding2 was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+FlowCover was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+TwoMirCuts was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+ZeroHalf was tried 0 times and created 0 cuts of which 0 were active after adding rounds of cuts (0.000 seconds)
+
+Result - Optimal solution found
+
+Objective value:                0.00000000
+Enumerated nodes:               0
+Total iterations:               0
+Time (CPU seconds):             1.97
+Time (Wallclock seconds):       2.02
+
+Total time (CPU seconds):       2.20   (Wallclock seconds):       2.12
+
+
+                1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+Inventory:  1:  1200 900 600 450 300 0 1350 1050 750 450 300 0 2790 2490 2190 2040 1890 1590 1440 1360 1060 760 610 3670 3520 3220 2920 2770 2470 2170 
+Inventory:  2:  1650 1350 1200 900 600 450 300 0 0 0 450 300 0 3060 2910 5970 5820 5520 5220 4920 4620 4320 7380 7230 7080 6780 6480 6330 6030 5730 
+Inventory:  3:  360 0 210 0 930 570 210 0 210 0 2400 2190 2250 2040 5040 4680 4320 3960 3600 3240 2880 2520 2160 1800 1440 1080 720 360 0 0 
+Inventory:  4:  6959 9000 8640 8280 7920 7560 7200 6840 6480 6120 5760 5400 5040 4680 4470 4110 3750 3390 3180 2820 2610 2250 1890 1530 4530 4320 3960 6960 6750 6390 
+Inventory:  5:  1210 870 680 340 0 190 0 1574 1384 1740 1400 1060 720 530 190 0 460 120 2950 2760 2420 2230 1890 1550 1210 870 680 340 0 0 
+Inventory:  6:  2980 3749 3559 3219 2879 2539 2199 2720 2380 2040 1700 1360 1020 680 340 0 2270 1930 1590 1400 1060 720 530 340 0 2830 2490 2150 1810 1470 
+Inventory:  7:  1360 1020 680 3700 3360 3020 2680 2340 2000 2230 1890 1700 1360 1020 680 340 0 0 0 2950 2610 2420 2080 1740 1400 1060 720 530 340 0 
+Inventory:  8:  1550 1210 870 530 190 0 1022 832 680 340 0 3020 2680 2340 2000 1660 1488 2080 1890 1550 1360 1020 680 340 0 0 340 0 230 40 
+Inventory:  9:  948 844 740 636 682 578 474 370 266 162 58 104 0 46 92 138 266 312 208 104 0 2830 2876 2772 2668 2564 2610 2506 2552 2598 
+Inventory:  10:  1275 1206 1137 1068 999 930 861 942 873 804 735 666 747 678 609 540 471 402 333 264 345 276 207 138 69 0 2321 2252 2183 2114 
+Inventory:  11:  228 114 0 36 1380 1416 1452 1338 1224 1110 1146 1032 918 804 690 576 462 348 234 270 156 192 228 114 0 36 342 228 114 0 
+Inventory:  12:  266 162 58 104 0 46 590 486 382 278 174 70 116 162 208 104 0 1040 936 832 728 624 520 416 312 208 104 0 104 0 
+Inventory:  13:  276 357 288 219 150 81 12 828 759 690 621 552 483 414 345 276 207 138 69 0 621 552 483 414 345 276 207 138 69 0 
+Inventory:  14:  459 345 684 570 456 342 228 114 0 1254 1140 1026 912 798 684 570 456 342 228 114 0 462 348 234 270 306 192 228 114 0 
+Inventory:  15:  150 0 2487 2337 2337 3000 2850 2700 2700 2550 2400 2250 2250 2100 1950 1950 1800 1650 1500 1350 1200 1050 900 750 600 450 300 150 0 0 
+Inventory:  16:  980 970 810 650 490 330 170 10 0 866 856 696 536 376 216 206 46 1280 1120 960 800 640 480 320 160 0 160 0 2571 2411 
+Inventory:  17:  138 120 102 84 216 198 180 162 144 126 108 90 72 54 36 18 0 132 114 96 228 210 192 174 156 138 120 102 84 66 
+Inventory:  18:  396 378 360 342 324 306 288 270 252 234 216 198 180 162 144 126 108 90 72 54 36 18 0 132 114 96 78 60 42 24 
+Inventory:  19:  2980 2970 2810 2650 2490 2330 2170 2010 1850 1690 1680 1670 1660 1650 1640 1480 1320 1160 1000 840 680 520 360 350 340 180 20 10 0 2340 
+Inventory:  20:  2250 2250 2100 2100 1950 1800 1650 1500 1350 1200 1050 900 750 600 450 300 150 0 0 0 2670 2670 2670 2670 2670 2670 2520 2370 2220 2070 
+               1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+Prod Day:  1:  0 0 150 150 0 1650 0 0 0 150 0 3090 0 0 150 150 0 150 220 0 0 150 3360 150 0 0 150 0 0 0 
+Prod Day:  2:  0 150 0 0 150 150 0 300 300 750 150 0 3360 150 3360 150 0 0 0 0 0 3360 150 150 0 0 150 0 0 0 
+Prod Day:  3:  0 570 150 1290 0 0 150 570 150 2760 150 420 150 3360 0 0 0 0 0 0 0 0 0 0 0 0 0 0 360 0 
+Prod Day:  4:  2401 0 0 0 0 0 0 0 0 0 0 0 0 150 0 0 0 150 0 150 0 0 0 3360 150 0 3360 150 0 3210 
+Prod Day:  5:  0 150 0 0 530 150 1914 150 696 0 0 0 150 0 150 800 0 3170 150 0 150 0 0 0 0 150 0 0 340 0 
+Prod Day:  6:  1109 150 0 0 0 0 861 0 0 0 0 0 0 0 0 2610 0 0 150 0 0 150 150 0 3170 0 0 0 0 150 
+Prod Day:  7:  0 0 3360 0 0 0 0 0 570 0 150 0 0 0 0 0 340 340 3290 0 150 0 0 0 0 0 150 150 0 0 
+Prod Day:  8:  0 0 0 0 150 1362 150 188 0 0 3360 0 0 0 0 168 932 150 0 150 0 0 0 0 340 680 0 570 150 150 
+Prod Day:  9:  0 0 0 150 0 0 0 0 0 0 150 0 150 150 150 232 150 0 0 0 2934 150 0 0 0 150 0 150 150 0 
+Prod Day:  10:  0 0 0 0 0 0 150 0 0 0 0 150 0 0 0 0 0 0 0 150 0 0 0 0 0 2390 0 0 0 0 
+Prod Day:  11:  0 0 150 1458 150 150 0 0 0 150 0 0 0 0 0 0 0 0 150 0 150 150 0 0 150 420 0 0 0 0 
+Prod Day:  12:  0 0 150 0 150 648 0 0 0 0 0 150 150 150 0 0 1144 0 0 0 0 0 0 0 0 0 0 208 0 0 
+Prod Day:  13:  150 0 0 0 0 0 885 0 0 0 0 0 0 0 0 0 0 0 0 690 0 0 0 0 0 0 0 0 0 0 
+Prod Day:  14:  0 453 0 0 0 0 0 0 1368 0 0 0 0 0 0 0 0 0 0 0 576 0 0 150 150 0 150 0 0 0 
+Prod Day:  15:  0 2637 0 150 813 0 0 150 0 0 0 150 0 0 150 0 0 0 0 0 0 0 0 0 0 0 0 0 150 0 
+Prod Day:  16:  150 0 0 0 0 0 0 150 1026 150 0 0 0 0 150 0 1394 0 0 0 0 0 0 0 0 320 0 2731 0 150 
+Prod Day:  17:  0 0 0 150 0 0 0 0 0 0 0 0 0 0 0 0 150 0 0 150 0 0 0 0 0 0 0 0 0 0 
+Prod Day:  18:  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 150 0 0 0 0 0 0 300 
+Prod Day:  19:  150 0 0 0 0 0 0 0 0 150 150 150 150 150 0 0 0 0 0 0 0 0 150 150 0 0 150 150 2500 0 
+Prod Day:  20:  150 0 150 0 0 0 0 0 0 0 0 0 0 0 0 0 0 150 150 2820 150 150 150 150 150 0 0 0 0 150 
+ Item: 1 Produced: 9670 Demanded: 7500
+ Item: 2 Produced: 12780 Demanded: 7500
+ Item: 3 Produced: 10080 Demanded: 9000
+ Item: 4 Produced: 13081 Demanded: 9000
+ Item: 5 Produced: 8650 Demanded: 8500
+ Item: 6 Produced: 8500 Demanded: 8500
+ Item: 7 Produced: 8500 Demanded: 8500
+ Item: 8 Produced: 8500 Demanded: 8500
+ Item: 9 Produced: 4666 Demanded: 2588
+ Item: 10 Produced: 2840 Demanded: 1725
+ Item: 11 Produced: 3078 Demanded: 2847
+ Item: 12 Produced: 2750 Demanded: 2588
+ Item: 13 Produced: 1725 Demanded: 1725
+ Item: 14 Produced: 2847 Demanded: 2847
+ Item: 15 Produced: 4200 Demanded: 3750
+ Item: 16 Produced: 6221 Demanded: 4000
+ Item: 17 Produced: 450 Demanded: 450
+ Item: 18 Produced: 450 Demanded: 450
+ Item: 19 Produced: 4000 Demanded: 4000
+ Item: 20 Produced: 4320 Demanded: 3750
+ The SETUPS bounds ...MIN: 6  MAX: 10
+
+ Cost Function - Bound:  11091716 
+ Heuristic - Bound:  37927936
+ Day_1:6 || Day_2:6 || Day_3:6 || Day_4:6 || Day_5:6 || Day_6:6 || Day_7:6 || Day_8:6 || Day_9:6 || Day_10:6 || Day_11:6 || Day_12:6 || Day_13:6 || Day_14:6 || Day_15:6 || Day_16:6 || Day_17:6 || Day_18:6 || Day_19:6 || Day_20:6 || Day_21:6 || Day_22:6 || Day_23:6 || Day_24:6 || Day_25:6 || Day_26:6 || Day_27:6 || Day_28:7 || Day_29:6 || Day_30:6 || 
+ Total : 181  
+
+ Production of a product in a day: # (there's a setup):
+
+ D->  1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0
+
+ 1:   . . # # . # . . . # . # . . # # . # # . . # # # . . # . . .
+ 2:   . # . . # # . # # # # . # # # # . . . . . # # # . . # . . .
+ 3:   . # # # . . # # # # # # # # . . . . . . . . . . . . . . # .
+ 4:   # . . . . . . . . . . . . # . . . # . # . . . # # . # # . #
+ 5:   . # . . # # # # # . . . # . # # . # # . # . . . . # . . # .
+ 6:   # # . . . . # . . . . . . . . # . . # . . # # . # . . . . #
+ 7:   . . # . . . . . # . # . . . . . # # # . # . . . . . # # . .
+ 8:   . . . . # # # # . . # . . . . # # # . # . . . . # # . # # #
+ 9:   . . . # . . . . . . # . # # # # # . . . # # . . . # . # # .
+ 10:   . . . . . . # . . . . # . . . . . . . # . . . . . # . . . .
+ 11:   . . # # # # . . . # . . . . . . . . # . # # . . # # . . . .
+ 12:   . . # . # # . . . . . # # # . . # . . . . . . . . . . # . .
+ 13:   # . . . . . # . . . . . . . . . . . . # . . . . . . . . . .
+ 14:   . # . . . . . . # . . . . . . . . . . . # . . # # . # . . .
+ 15:   . # . # # . . # . . . # . . # . . . . . . . . . . . . . # .
+ 16:   # . . . . . . # # # . . . . # . # . . . . . . . . # . # . #
+ 17:   . . . # . . . . . . . . . . . . # . . # . . . . . . . . . .
+ 18:   . . . . . . . . . . . . . . . . . . . . . . # . . . . . . #
+ 19:   # . . . . . . . . # # # # # . . . . . . . . # # . . # # # .
+ 20:   # . # . . . . . . . . . . . . . . # # # # # # # # . . . . #
+
+ the end main............
