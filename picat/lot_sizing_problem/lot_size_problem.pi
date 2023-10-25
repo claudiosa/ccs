@@ -41,11 +41,11 @@ model =>
     M_BIG = 2*sum(Monthly_Targets), %%% M a big constant number
 
     %Setup per day
-    Min_Setup_Day = 7, %% MIN
-    Max_Setup_Day = 11, %% MAX
+    Min_Setup_Day = 6, %% MIN
+    Max_Setup_Day = 10, %% MAX
 
     %K_Heuristic = round((T * N * 2)/(Min_Setup_Day+Max_Setup_Day)),
-    K_Heuristic = 1427000,
+    %K_Heuristic = 1630331,
 
     if (Min_Setup_Day > Max_Setup_Day) then
         printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
@@ -144,17 +144,15 @@ foreach(I in 1..N)
 %% Cost function simplified
 
 Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
-
-%Cost #>=  K_Heuristic, %%% a lower bound ... heurestic
-
+%% an heuristic to stop
+Cost #>=  K_Heuristic, %%% a lower bound ... heurestic
 
 VARS = [X_it , Y_it , I_it],   
 %or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
 
 %%% UNDER STUDIES .... 
-solve($[cbc, min(Cost)], VARS),
-%solve($[limit(3)], VARS),
-%solve([$max(Total)],X),  VAR),,min(TheSum)
+%solve($[cbc, min(Cost)], VARS),
+solve($[limit(3)], VARS),
 %
 %%% for a best result ... uncomment the line above and comment the line below
 %solve( $[cbc, 'sec 100', 'maxSo 4', 'threads 4'], VARS),
