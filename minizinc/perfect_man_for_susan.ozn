@@ -1,0 +1,3 @@
+output ["\"output\": {","\"default\": ",showJSON(concat([" = \t"++show(perfectMan[i]) | i in Mens_Name])),", \"raw\": ",showJSON(concat([" = \t"++show(perfectMan[i]) | i in Mens_Name])),"}, \"sections\": [\"default\", \"raw\"]"];
+set of int: Mens_Name = 1..4;
+array [Mens_Name] of bool: perfectMan;
