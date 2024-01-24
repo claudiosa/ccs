@@ -43,7 +43,7 @@ forall (x in Mens_Name)
 constraint
 %%% Formulas 6.25 and 6.26 from Adrian's book
 exists (x in Mens_Name, y in Mens_Name)
-  ((perfectMan[ x ] /\ perfectMan[ y ]) -> x = y ) ;
+  ((perfectMan[ x ] /\ perfectMan[ y ]) -> x == y ) ;
 
 constraint
 %%% Formulas 6.27 from Adrian's book
@@ -94,14 +94,21 @@ constraint
    
 
 /*
-TEST sssss? */
-constraint  
+TEST sssss? 
+ minizinc -a --solver Gecode perfect_man_for_susan.mzn 
+*/
+/*
 
 %%% which men is perfect?
 exists (x in Mens_Name)
   (perfectMan[ x ] = true ) ;
-/*
-            perfectMan[ arthur ] = true
+
+PROBABLY is missing something here....
+
+*/
+constraint  
+
+      perfectMan[ arthur ] = true
       \/
       perfectMan[ bill ] = true
       \/
@@ -109,7 +116,7 @@ exists (x in Mens_Name)
       \/
       perfectMan[ dave ] = true   
       ;
- */    
+    
       
   
 solve satisfy;
