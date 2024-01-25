@@ -40,39 +40,45 @@ constraint
 forall (x in Mens_Name)
   (perfectMan[ x ] <-> ( tall[ x ] /\ dark[ x ] /\  slim[ x ] /\ brownEyed[ x ] ) ) ;
 
-constraint
+%constraint
 %%% Formulas 6.25 and 6.26 from Adrian's book
-exists (x in Mens_Name, y in Mens_Name)
-  ((perfectMan[ x ] /\ perfectMan[ y ]) -> x == y ) ;
+%exists (x in Mens_Name, y in Mens_Name)
+%  ((perfectMan[ x ] /\ perfectMan[ y ]) -> x == y ) ;
 
 constraint
 %%% Formulas 6.27 from Adrian's book
-exists (x in Mens_Name)
-  ( brownEyed[x] /\ dark[x] )  ;
+%exists (x in Mens_Name)
+  sum([brownEyed[x] /\ dark[x] | x in Mens_Name] ) == 1 ;
 
 constraint
-  ( brownEyed[arthur] <-> brownEyed[bill] )  ;   %Clue 1: Arthur and Bill have the same eye colour.
+  ( brownEyed[arthur] <-> brownEyed[bill] )  ;  
+   %Clue 1: Arthur and Bill have the same eye colour.
 
 constraint
 %%% Formulas 6.28 from Adrian's book
 exists (x in Mens_Name, y in Mens_Name)
   (((brownEyed[x] /\ dark[x]) /\ (brownEyed[y] /\ dark[y])) -> x == y)   ;
 %  Clue 2. Only one of the men has both black hair and brown eyes.
+%  sum([(brownEyed[x] /\ dark[x]) | x in Mens_Name]) == 1   ;
+
 
 constraint
   ( dark[bill] <-> dark[charles] )  ; %Clue 3
 
 constraint
-  exists (x in Mens_Name, y in Mens_Name)
-   (( tall[x] /\ slim[x]) /\  (tall[y] /\ slim[y]) ->  x != y ) ; %Clue 4a
-   
+  %exists (x in Mens_Name, y in Mens_Name)
+  % (( tall[x] /\ slim[x]) /\  (tall[y] /\ slim[y]) ->  x != y ) ; %Clue 4a
+     sum( [ tall[x] /\ slim[x] | x in Mens_Name ]) == 2   ;
+
+/*   
 constraint
   exists (x in Mens_Name, y in Mens_Name, z in Mens_Name)
    (( tall[x] /\ slim[x] /\ tall[y] /\ slim[y] /\ tall[z] /\ slim[z] /\ (x != y) )-> (z = x \/ z = y )) ;    %Clue 4b
+*/
 
 constraint
-  ( not slim[dave] <-> slim[charles] )  ; %Clue 5: Charles and Dave are of differing build.
-
+  ( not slim[dave] <-> slim[charles] ) ; %Clue 5: Charles and Dave are of differing build.
+/*
 constraint
   exists (x in Mens_Name, y in Mens_Name)
    ( tall[x] /\ dark[x] /\  tall[y] /\ dark[y] /\ (x != y) ) ; %Clue 6a
@@ -80,34 +86,35 @@ constraint
 constraint
   exists (x in Mens_Name, y in Mens_Name, z in Mens_Name)
    (( tall[x] /\ dark[x] /\ tall[y] /\ dark[y] /\ tall[z] /\ dark[z] /\ (x != y) )-> (z = x \/ z = y )) ;    %Clue 6b:  Only two of the men are both tall and dark-haired.
+*/
 
+% 6. Only two of the men are both tall and dark-haired.
+constraint
+  sum( [ tall[x] /\dark[x] | x in Mens_Name ]) == 2;
 
 constraint
   ( tall[dave] <-> tall[arthur] )  ; 
   %Clue 7: Dave and Arthur are the same height.
 
-
 constraint
-  exists (x in Mens_Name, y in Mens_Name)
-   (( ( not brownEyed[x] /\ slim[x]) /\ ( not brownEyed[y] /\ slim[y])) ->  x == y ) ; 
+%  exists (x in Mens_Name, y in Mens_Name)
+%   (( ( not brownEyed[x] /\ slim[x]) /\ ( not brownEyed[y] /\ slim[y])) ->  x == y ) ; 
    %Clue 8: 8. Only three of the men are both slim and brown-eyed.
-   
+ sum( [ brownEyed[x] /\ slim[x] | x in Mens_Name ]) == 3;  
 
 /*
-TEST sssss? 
+TEST-it
  minizinc -a --solver Gecode perfect_man_for_susan.mzn 
+ minizinc -n 4 --solver Gecode perfect_man_for_susan.mzn 
+
 */
 /*
-
 %%% which men is perfect?
 exists (x in Mens_Name)
   (perfectMan[ x ] = true ) ;
-
-PROBABLY is missing something here....
-
+OR
 */
 constraint  
-
       perfectMan[ arthur ] = true
       \/
       perfectMan[ bill ] = true
@@ -117,13 +124,24 @@ constraint
       perfectMan[ dave ] = true   
       ;
     
+% hakank.
+constraint
+ sum([ perfectMan [x] | x in Mens_Name]) == 1 ;
       
   
 solve satisfy;
- 
- output ["Perfect: " ++show(i)++" "++ show(perfectMan[i])++" \t tall:"++ show(tall[i])++"  dark:"++ show(dark[i])++"  tall:"++ show(slim[i])++"  browEyed:"++ show(brownEyed[i])++"\n" | i in Mens_Name] ;
 
-
+ output ["Perfect: " ++show(names[i])++" "++ show(perfectMan[i])++" \t tall:"++ 
+ show(tall[i])++"  dark:"++    show(dark[i])++"  tall:"++ 
+ show(slim[i]) ++"  browEyed:"++ show(brownEyed[i])++"\n" | i in Mens_Name] 
+  ++
+ % hakank: Show who is the perfect man
+ [ if fix(perfectMan[x]) == 1 then
+   "Perfect: \(names[x])\n"
+   endif
+   | x in Mens_Name
+  ]
+;
  
 % function copied from https://stackoverflow.com/questions/35758640/index-of-string-value-in-minizinc-%%array
 %%% TO IMPROVE LATER ... change it - so annoying
