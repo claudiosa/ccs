@@ -1,0 +1,171 @@
+%http://hakank.org/picat/perfect_man.pi
+
+/* 
+
+UNFORTUNATELY, I have no sucess on this alternative of Hakan's implementation
+I tried a dictionary (a map) whit the names  as keys, and contents being true or false.
+No succes... the  Hakan's implementation is perfect and best that I had been sawn.
+
+
+  Perfect man puzzle in Picat.
+
+  From Adrian Groza "Modelling Puzzles in First Order Logic"
+  See https://www.researchgate.net/publication/374588335_Measuring_reasoning_capabilities_of_ChatGPT
+  """
+  Puzzle 55. Perfect man
+
+  Susan's perfect man has black hair, brown eyes, and is tall and slim. Susan knows four
+  men: Arthur, Bill, Charles, and Dave. Only one of them has all the characteristics that
+  Susan requires.
+  1. Arthur and Bill have the same eye colour.
+  2. Only one of the men has both black hair and brown eyes.
+  3. Bill and Charles have the same hair colour.
+  4. Only two of the men are both tall and slim.
+  5. Charles and Dave are of differing build.
+  6. Only two of the men are both tall and dark-haired.
+  7. Dave and Arthur are the same height.
+  8. Only three of the men are both slim and brown-eyed.
+  Who is Susan's perfect man? (taken from Clessa (1996))
+  """
+
+  Here we have some assumptions. Either a person has/is
+  - black hair or not
+  - brown eyes or not
+  - tall or not
+  - slim or not
+  And also that dark hair = black hair (clue 6)
+  
+  This model yields 2 solutions, both stating that Arthur is the perfect man.
+
+  Here are the solutions with details:
+  Arthur = [hair = [1,2,2,1],eyes = [1,1,1,2],height = [1,1,2,1],build = [1,1,1,2],person = [1]]
+  Arthur = [hair = [1,2,2,1],eyes = [1,1,1,2],height = [1,2,1,1],build = [1,1,1,2],person = [1]]
+                                                          ^ ^
+  The difference is whether Bill and Charles are tall or not.
+
+  Groza's Mace4 first order logic model yields 8 solutions, all stating that Arthur 
+  is the perfect man.
+
+
+  This program was created by Hakan Kjellerstrand, hakank@gmail.com
+  See also my Picat page: http://www.hakank.org/picat/
+
+*/
+
+import cp.
+
+main => go.
+
+
+  
+
+  % The perfect man is the man with all 1s in Hair, Eyes, Height, and Build
+
+  %%% STRUCTURE ....
+/*
+N = 4,  
+  Picat> A = new_map([ b = (2,3) , a = (1,2)]), get(A, a,_)=Va, write(Va).
+1,2A = (map)[b = (2,3),a = (1,2)]
+Va = (1,2)
+yes
+
+Picat> A = new_map([ b = (2,3) , a = (true,false)]), get(A, b ,_)=Vb, write(Vb).
+2,3A = (map)[b = (2,3),a = (true,false)]
+Vb = (2,3)
+yes
+
+Picat> A = new_map([ b = (2,3) , a = (true,false)]), get(A, a ,_)=Vb, write(Vb).
+true,falseA = (map)[b = (2,3),a = (true,false)]
+Vb = (true,false)
+yes
+*/
+
+go ?=>
+  % Susan's perfect man has black hair, brown eyes, and is tall and slim.
+  % black hair = true ... the man has black hair and it is true
+  % and so on.
+  Perfect = new_map([ arthur = [A_Hair, A_Eyes, A_Height, A_Build],
+                      bill = [B_Hair, B_Eyes, B_Height, B_Build],
+                      charles = [C_Hair, C_Eyes, C_Height, C_Build],
+                      dave = [D_Hair, D_Eyes, D_Height, D_Build],
+                      pattern = [true, true, true, true]
+                    ] ),
+  %Perfect :: (map)[false,true],                    
+  printf("\n Before all Map: %w", Perfect),                  
+  /*                    
+  get(Perfect, arthur,_) = A,
+  get(Perfect, bill,_) = B,
+  printf("\n Arthur : %w", A),                        
+  printf("\n Bill : %w", B),                        
+  */
+%get(Perfect, arthur, _) =  [A_Hair, A_Eyes, A_Height, A_Build], 
+%get(Perfect, bill, _) = [B_Hair, B_Eyes, B_Height, B_Build],
+%put(Perfect, arthur, Val),
+get(Perfect, arthur) = Val,
+get(Perfect, bill) = Val2,
+printf("Val1: %w", Val),
+
+
+
+  % Susan's perfect man has black hair, brown eyes, and is tall and slim.
+
+  % 1. Arthur and Bill have the same eye colour.
+    ((A_Eyes = true , B_Eyes = true);
+    (B_Eyes = false , B_Eyes = false)
+    ) ,
+
+  % 2. Only one of the men has both black hair and brown eyes.
+  %sum([Hair[P] #= HairBlack #/\ Eyes[P] #= EyesBrown : P in 1..N]) #= 1,
+  (
+  sum_atom_true([true, true, A_Height, A_Build]) = 2;
+  sum_atom_true([true, true, B_Height, B_Build]) = 2;
+  sum_atom_true([true, true, C_Height, C_Build]) = 2;
+  sum_atom_true([true, true, D_Height, D_Build]) = 2
+  ),
+
+
+  % 3. Bill and Charles have the same hair colour. %%%% same color YES but which color?
+  ((B_Hair = true , C_Hair = true);
+  (B_Hair = false , C_Hair = false)
+  )
+  ,
+  
+  % 4. Only two of the men are both tall and slim.
+  %  sum([Height[P] #= HeightTall #/\ Build[P] #= BuildSlim : P in 1..N]) #= 2,
+  (
+    sum_atom_true([A_Hair, A_Eyes, true, true]) = 4;
+    sum_atom_true([B_Hair, B_Eyes, true, true]) = 4;
+    sum_atom_true([C_Hair, C_Eyes, true, true]) = 4;
+    sum_atom_true([D_Hair, D_Eyes, true, true]) = 4
+  ),
+
+  printf("\n Debug: %w\n", Perfect)  ,
+
+
+  % 5. Charles and Dave are of differing build.
+  ((D_Build = false , C_Build  = true);
+  (D_Build = true , C_Build  = false)
+  )
+  ,
+
+  % 6. Only two of the men are both tall and dark-haired.
+  % hakank: I assume that dark-haired = Black hair
+  %sum([Height[P] #= HeightTall #/\ Hair[P] #= HairBlack  : P in 1..N]) #= 2,  
+  
+  % 7. Dave and Arthur are the same height.
+  ((D_Height = true , A_Height = true);
+  (D_Height = false , A_Height = false)
+  ) ,
+
+  % 8. Only three of the men are both slim and brown-eyed.
+  %sum([Build[P] #= BuildSlim #/\ Eyes[P] #= EyesBrown : P in 1..N]) #= 3,
+
+  % Who is Susan's perfect man? (taken from Clessa (1996))
+
+  % Susan's perfect man has black hair, brown eyes, and is tall and slim.
+
+printf("\n After all Map: %w", Perfect).                  
+
+go => printf("\n END").
+%% function to sum all "true" in any list
+sum_atom_true(L) = R => K = findall(X, (member(X,L), nonvar(X), X == true) ), R = len(K).

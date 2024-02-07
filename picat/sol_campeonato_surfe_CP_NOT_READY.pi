@@ -1,54 +1,87 @@
 /*
 Campeonato de Surf do RACHA-CUCA INCOMPLETO
 
-REGRAS FICTICIAS foram modificadas .......
-
-
-ERRO comum dos alunos (2016-2): 
-"Voces soh podem montar as regras com as variaveis,
-uma vez que estas estejam INSTANCIADAS durante
-o programa na ordem correta ...."
-
-ISTO EH: NUNCA MONTAR REGRAS COM FATOS NAO INSTANCIADOS
-
-
-FALTA BASICAMENTE ACERTAREM as regras ....
-
-para rodar: $ picat  sol_campeonato_surf_PRELIMINAR.pi
+para rodar: $ picat  sol_campeonato_surf_CP.pi
 */
-
-main ?=> 
-     modelo( L  ),
-     imprime( L ),
-     false.
-	 
-main => nl, 
-       printf("\n==================================================== \n"). 
+import cp.
+main => 
+       modelo.
+/*       Lista = 
+[
+ [Cor_1, Surf_1, Praia_1, Tam_1, Gent_1, Rank_1] , %%% SURFISTA 1
+ [Cor_2, Surf_2, Praia_2, Tam_2, Gent_2, Rank_2] ,
+ [Cor_3, Surf_3, Praia_3, Tam_3, Gent_3, Rank_3] ,
+ [Cor_4, Surf_4, Praia_4, Tam_4, Gent_4, Rank_4] ,
+ [Cor_5, Surf_5, Praia_5, Tam_5, Gent_5, Rank_5]  %%% SURFISTA 5
+],  
+    % modelo( Lista  ),
+     %imprime( Lista ),
+*/     
+  	 
+%main => nl, 
+%       printf("\n==================================================== \n"). 
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % AQUI COMEÇA O PROGRAMA ....
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-modelo( Lista ) ?=>
+modelo =>
+     N=5,   
+     printf("\n ....."),  
 	%%%%%%%%%%%%% LISTA %%%%%%%%%%%%%
-    Lista = 
-    [
-     [Cor_1, Surf_1, Praia_1, Tam_1, Gent_1, Rank_1] , %%% SURFISTA 1
-     [Cor_2, Surf_2, Praia_2, Tam_2, Gent_2, Rank_2] ,
-     [Cor_3, Surf_3, Praia_3, Tam_3, Gent_3, Rank_3] ,
-     [Cor_4, Surf_4, Praia_4, Tam_4, Gent_4, Rank_4] ,
-     [Cor_5, Surf_5, Praia_5, Tam_5, Gent_5, Rank_5]  %%% SURFISTA 5
-    ],
-
+% NOMES
+Nomes = [Surf_1, Surf_2, Surf_3, Surf_4, Surf_5],
+Nomes_Surfistas = new_map([flavio=1, fernando=2, igor=3, rogerio=4, tomas=5]),
+Nomes :: 1..N,
+%Vars :: Exp: This predicate restricts the domain or domains of V ars to Exp. V ars can be either a single variable, a list of variables, or an array of variables. For integer-domain variables, Exp must result in a list of integer values. For real-domain variables for the mip module, Exp must be an interval in the form L..U, where L and U are real values.
+%Domain variables, when being created, are usually represented internally by using intervals. An interval turns to a bit vector when a hole occurs in the interval. The following built-in predicate can be used to reset the range or access the current range.
 
 %%%%%%%%%%%%% TODAS Cor_ES %%%%%%%%%%%%%
+Cores = [Cor_1, Cor_2, Cor_3, Cor_4, Cor_5],
+Nome_Cores = new_map([amarela=1, azul=2, branca=3, verde=4, vermelha=5]),
+Cores :: 1..N,
+%%%%%%%%%%%%%%%%%%%
 
-cor( Cor_1),
-cor( Cor_2),
-cor( Cor_3),
-cor( Cor_4),
-cor( Cor_5),
-alldifferent([Cor_1, Cor_2, Cor_3, Cor_4, Cor_5]),
+all_different(Cores),
+all_different(Nomes),
+
+%COMPLETAR AQUI'
+
+%%% regras aqui ...
+get(Nome_Cores, amarela) = X, 
+X #!= Cor_1,
+get(Nomes_Surfistas, igor)  = Y ,
+Y #= Surf_1, 
+%map_to_list(Nomes_Surfistas) = PairsList,
+%printf("\n PAIRLIST : %w", PairsList),
+%index_do_mapa(Nomes_Surfistas, igor) #= Surf_1,
+
+%printf("\n Cores : %w \n %w", Cores, Nome_Cores),
+solve([Nomes++Cores]),
+printf("\n Nomes: %w \n Cores: %w", Nomes, Cores).
+
+
+index_do_mapa(Mapa, Chave) = R  =>
+       %keys(Mapa) = Lista_Chaves,
+        %printf("\n CHAVES %w", Lista_Chaves),
+       values(Mapa) = Lista_Valores,
+       printf("\n Valores %w", Lista_Valores),
+       get(Mapa, Chave) = Valor,
+       printf("\n Valor %w", [Valor]),
+      /*
+       if not(member(Valor,Lista_Valores))  then
+           printf("\n Erro de chave no mapa"),
+          exit()
+       end,
+       */
+       R = to_int(Valor).
+           
+               
+
+
+
+/*
+
 
 %%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES %%%%%%%%%%%%%
 
@@ -64,7 +97,7 @@ surf(Surf_2),
 surf(Surf_3),
 surf(Surf_4),
 surf(Surf_5),
-alldifferent([Surf_1, Surf_2, Surf_3, Surf_4, Surf_5]),
+alldifferent(),
 
 %%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES + NOMES %%%%%%%%%%%%%
 
@@ -81,8 +114,9 @@ praia(Praia_2),
 praia(Praia_3),
 praia(Praia_4),
 praia(Praia_5),
-alldifferent([Praia_1, Praia_2, Praia_3, Praia_4, Praia_5]),
-%%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES + NOMES + PRAIAS %%%%%%%%%%%%%
+       
+
+
 
 %% EXEMPLO
  
@@ -162,7 +196,7 @@ alldifferent([Rank_1, Rank_2, Rank_3, Rank_4, Rank_5]),
  Surf_5==fernando, 
  Rank_3== oit_8 , 
 %%%% NADA DAQUI PODE SER UMA CONTRADICAO COM O QUE FOI PREVIAMENTE DEFINIDO em regras anteriores 
- /*
+
  
  NESTE PONTO TODAS AS VARIAVEIS DOS FATOS FORAM INSTANCIADAS ...
  ASSIM falta apenas ir construindo as regras
@@ -173,17 +207,13 @@ alldifferent([Rank_1, Rank_2, Rank_3, Rank_4, Rank_5]),
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
 %% quase terminado 
-printf("\n==> Atingiu o Final do Modelo : UFA !!!! =====\n"). 
+%printf("\n==> Atingiu o Final do Modelo : UFA !!!! =====\n"). 
  	 
 /** quando estiver imprimindo a mensagem acima e esta ... comente esta 	 
 modelo(_) =>	 
    printf("\n==> Inconsistencia no MODELO passo anterior: REVISE TODA REGRA <== \n"). 
 **/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% apos o aluno entender varios conceitos 
-alldifferent([]) ?=> true.
-alldifferent([H|T]) => not(member(H,T)),
-                       alldifferent(T).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 imprime([]) ?=> true. 
 imprime([[Cor_, Surf_, Praia_, Tam_, Gent_, Rank_]|T]) => 
@@ -191,24 +221,12 @@ imprime([[Cor_, Surf_, Praia_, Tam_, Gent_, Rank_]|T]) =>
        Cor_, Surf_, Praia_, Tam_, Gent_, Rank_),
         %%%%%writeln([Cor_, Surf_, Praia_, Tam_, Gent_, Rank_]),
         imprime(T).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%% BANCO DE DADOS ou FATOS %%%%%%%%%%%%%
 
 	% Cores
-index(-)
-cor(amarela).
-cor(azul).
-cor(branca).
-cor(verde).
-cor(vermelha).
 
-	% NOMES
-index(-)
-surf(flavio).
-surf(fernando).
-surf(igor).
-surf(rogerio).
-surf(tomas).
 
 	% PRAIA
 index(-)

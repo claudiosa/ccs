@@ -1,0 +1,34 @@
+import cp.
+
+main => model.
+model =>
+     N=5,
+     Colors = [Cor_1, Cor_2, Cor_3, Cor_4, Cor_5],
+     Colors :: 1..N,
+     Name_Colors = new_map([amarela=1, azul=2, branca=3, verde=4, vermelha=5]),
+     
+     %%%%%%%%%%%%%
+     get(Name_Colors, vermelha)  = Y ,
+     Y #= Cor_1,
+     
+     %%%%%%%%%%%%%
+     /*
+       
+      How can I use it directly as: 
+      get(Name_Colors, vermelha) #= Cor_1,
+
+    */
+
+     solve(Colors),
+     printf("\n Map Names: %w \n Colors: %w\n", Name_Colors, Colors).
+
+
+%%%% a tentative by a function to return a integer ... avoiding hash values?
+index_mapa(Mapa, Chave) = R  =>
+       %keys(Mapa) = Lista_Chaves,
+        %printf("\n CHAVES %w", Lista_Chaves),
+       values(Mapa) = Lista_Valores,
+       printf("\n Valores %w", Lista_Valores),
+       get(Mapa, Chave) = Valor,
+       printf("\n Valor %w", [Valor]),   
+       R = to_int(Valor).
