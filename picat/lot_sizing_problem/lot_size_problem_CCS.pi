@@ -1,0 +1,304 @@
+
+%% Model build by CCS and Daru
+%import sat. %%% unsatisfatory response time
+%import cp. %%% unsatisfatory response time
+import mip.   %%% must be installed in Picat installation
+%import smt.  ===> NOT INSTALLED
+%% to RUN : picat lot_size_problem_CCS.pi
+
+main => model,
+        printf("\n\n the end main............\n")  .
+
+model =>
+
+%%% INPUT DATA and PARAMETERS
+   T = 30, %% it becomes proibhitive for 10,25, 20 days worked ,  number of periods
+   
+   % demand for product i in a periodo t (DAY in our case) ===>  Demands_targets per day - daily demand
+   D_i = [300, 300, 360, 360, 340, 340, 340, 340, 104, 69, 114, 104, 69, 114, 150, 160, 18, 18,160,150],
+   % Unit inventory holding cost of product i at the end of period t (day)
+   %%% 20 products - in this example
+   N = D_i.length, %% number of products    
+
+   %Setup_Time = 10, %%% in seconds -- Later we can put an array
+   S = 10,  
+     
+   %% UNITARY COST in inventory -- store cost ...
+   C_i = [14 : I in 1..N],
+   %%% fixed cost UNITARY associated of product i in a day in the inventory
+   %%% 
+ 
+   %% UNITARY TIME ..... TIME IS DIFFERENT OF COST
+   TP_i = [14 : I in 1..N],%%% Production time of item i
+   
+   %%% Unitary production  cost of product i in period t (day)
+   Sixty_hour = 16*60*60 ,
+   CP_t = [ Sixty_hour  : I in 1..T], %%% production capacity of one machine on a day
+  
+    %%% 
+    Monthly_Targets = [7500, 7500, 9000, 9000, 8500, 8500, 8500, 8500, 2588, 1725, 2847, 2588, 1725, 2847, 3750, 4000, 450, 450, 4000, 3750],
+    % quantity expected for ALL periods = Example: 1 month
+    M_BIG = 2*sum(Monthly_Targets), %%% M a big constant number
+
+    %Setup per day
+    Min_Setup_Day = 7, %% MIN
+    Max_Setup_Day = 11, %% MAX
+
+
+    %K_Heuristic = round((T * N * 2)/(Min_Setup_Day+Max_Setup_Day)),
+    K_Heuristic = 1427000,
+
+    if (Min_Setup_Day > Max_Setup_Day) then
+        printf("\n Min_Setup_Day > Max_Setup_Day -- ERROR "),
+        exit()
+    end,
+
+    % batch size concept -- Adjust as you demand
+    Min_Batch_Size = 150,
+
+%%% VARIABLES
+
+    % Min_Dom = min(D_i), % <=> #fd_min(Daily_targets),
+    Max_Dom = max(Monthly_Targets), %#fd_max(Daily_targets),
+    %%% created the sol matrix VAR ... which is batch production
+    %% production of day i on day t
+    X_it = new_array(N, T),  %%% units of product i in period t (day) -- quantity produced of product it in time t
+    X_it :: 0 .. Max_Dom,
+ 
+   %% SETUP ... BINARY VARIABLES
+    Y_it = new_array(N, T),   %%% units of product i in period t (day)
+    % if exists setup for product i on day t
+    Y_it  :: 0 .. 1,
+   
+    I_it = new_array(N, T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
+    I_it :: 0..Max_Dom, %% INVENTORY
+
+/******* TESTS BUT NOT USED ***********/
+    %Setups_Day = new_array(T),   %%% units of product i in period t (day)
+    % if exists setup for product i on day t
+    %Setups_Day  :: Min_Setup_Day .. Max_Setup_Day,
+
+    %Empty_day = new_array(T), %%%% quantity or units of product i held as inventory at the end of period t (a day)
+    %Empty_day :: 0..Sixty_hour, %% INVENTORY
+
+% CONSTRAINTS
+%%% C1: a balance between inventory and product - key constraint
+foreach(I in 1..N)   
+    foreach(J in 1..T-1) 
+        (X_it[I,J] + I_it[I, J] - D_i[I]) #= I_it[I, J+1]
+    end
+end,    
+% This is a fundamental constraint for this problem .... BALANCE EQUATION
+
+%% C2: In  ALL DAYS of one product its value must be respect a MAX for that day capacity
+%% constraint of capacity for period ... the max production of a  product i in any period t
+%% production cost more setup time if happens
+ foreach(J in 1 ..T) 
+    sum( [ (X_it[I,J] * TP_i[I]) + (S * Y_it[I, J]) : I in 1..N] ) #<= CP_t[J]
+ end,
+
+%%% C3: the production happen only if exist a setup (change of product)
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        X_it[I,J] #<= (M_BIG * Y_it[I,J])
+    end
+end,    
+
+% C4: positive production per day ... in all days there's some production
+foreach(J in 1..T) 
+    sum([X_it[I,J] : I in 1..N]) #> 0
+end,
+
+% C5: month production -- FOR 30 DAYS ... not for 5 or less....
+foreach(I in 1 ..N) 
+    sum( [ X_it[I,J]  : J in 1 ..T] ) #>= Monthly_Targets[I]
+end,
+
+%%% C6: a Constraint for UPPER and LOWER bound of SETUPS in a DAY ....
+%%% To include boundaries of setup numbers -- a heuristic 
+foreach(J in 1 ..T) 
+    sum( [ Y_it[I, J]  : I in 1..N] ) #>= Min_Setup_Day
+    % LOWER 
+end,
+
+foreach(J in 1 ..T) 
+    sum( [ Y_it[I, J]  : I in 1..N] ) #<= Max_Setup_Day
+    % UPPER
+end,
+% A setups days between a MIN and a MAX
+ 
+/*
+User demand:
+For example,  in this result, for product 17 and 18, our 
+daily production is 18, 36.. these are batch size. 
+Can we put batch size not to be less than say 150.
+#\/(
+        ( (X_it[I,J] #>= Min_Batch_Size)#<=> (Y_it[I,J] #= 1 )),
+        ( (X_it[I,J]  #= 0) #<=> (Y_it[I,J] #= 0 ))
+    )   
+  not(P <-> Q) = p or-exclusive
+*/
+
+ %% OR EXCLUSIVE
+ %% C7: we included the MIN_BATCH_SIZE
+    /* OR exclusive  .... very cool
+    #~( (X_it[I,J] #>= Min_Batch_Size)
+         #<=>
+        (X_it[I,J] #= 0) 
+       )     
+     OR- EXCLUSIVE ... REIFICATION Ci #^Cj 
+    IMPORTANT AND KEY constraint 
+    */
+/*
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+        (X_it[I,J] #>= Min_Batch_Size)
+        #^ 
+        (X_it[I,J] #= 0) 
+   end
+ end,
+*/
+%%%% If inexists production ... there's setup equal 0
+%%% C8: If none setup is defined for i in t, so the production MUST be zero
+/* 
+ foreach(I in 1..N)   
+    foreach(J in 1..T) 
+     (X_it[I,J] #= 0) #<=> (Y_it[I,J] #= 0)           
+   end
+ end,
+ */
+
+foreach(I in 1..N)   
+    foreach(J in 1..T) 
+     X_it[I,J] #>=  (Y_it[I,J] * Min_Batch_Size)           
+   end
+ end,
+/*  END OF CONSTRAINTS */
+
+%% Each day must respect  until 16 hours worked
+%% in EACH DAY sum the production time of ALL PRODUCTS
+% original formulation as literature
+%Cost #= sum([ (S * Y_it[I,J]) + (I_it[I,J]*C_i[I])) +  (X_it[I,J]* TP_i[I]) : I in 1..N , J  in 1..T] ),
+% + Setups_Day[J]
+
+%% Cost function simplified
+
+
+Cost #= sum([ (S*Y_it[I,J] + (I_it[I,J]*C_i[I]) +  X_it[I,J]  )  : I in 1..N , J  in 1..T] ),  
+
+%Cost #>=  K_Heuristic, %%% a lower bound ... heurestic
+
+
+%% A Heuristic for a minimization on Y_it -- tests
+%sum( [ Y_it[I,J] : I in 1..N , J  in 1..T ]) #<= 350,
+
+VARS = [X_it , Y_it , I_it],   
+%or VAR = X_it ++ Y_it ++ I_it ++  Setups_Day
+
+%%% UNDER STUDIES .... 
+solve($[cbc, min(Cost)], VARS),
+%solve($[limit(3)], VARS),
+%solve([$max(Total)],X),  VAR),,min(TheSum)
+%
+%%% for a best result ... uncomment the line above and comment the line below
+%solve( $[cbc, 'sec 100', 'maxSo 4', 'threads 4'], VARS),
+%solve( $[cbc], VARS),
+%All_Sols = solve_all($[cbc, limit(10)],VARS),
+%%print_matrix("Setup Day", Y_it)
+
+/* OUTPUT ......*/
+print_matrix("Inventory: ", I_it),
+print_matrix("Prod Day: ", X_it),
+print_prod_dem(X_it, Monthly_Targets),
+
+printf("\n The SETUPS bounds ...MIN: %d  MAX: %d\n", Min_Setup_Day, Max_Setup_Day),
+printf("\n Cost Function - Bound:  %d " , Cost),
+printf("\n Heuristic - Bound:  %d\n " , K_Heuristic),
+
+%printf("\n The MAX SETUP (a bound() %d\n",  Max_Setup_Day),
+print_sum_COL(Y_it),
+print_production(Y_it).
+
+%printf("\n VARS ==> %w", VARS),
+%printf("\n ALL SOL: %w", All_Sols).
+
+
+
+/*********************** END OF MAIN ************************************/
+
+/*
+Picat> X = prod([ sum([3,4]) + 7, 2]).
+X = 28
+yes
+*/
+
+%%% produced X Monthly Demand
+print_prod_dem( M, D ) =>
+    L = M.length,
+    C = M[1].length,
+    foreach(I in 1..L) 
+        printf("\n Item: %d Produced: %d Demanded: %d", I, sum( [ M[I,J]  : J in 1 ..C] ), D[I])
+    end.
+
+%% the sum of setups/day - Y_it
+print_sum_COL( M ) =>
+    L = M.length,
+    C = M[1].length,
+    foreach(J in 1..C) 
+        printf("Day_%d:%d || ", J , sum( [ M[I,J]  : I in 1..L] ) )
+    end,
+    printf("\n Total : %d  ", sum( [ M[I,J]  : I in 1..L, J in 1..C] ) )
+    .
+
+%%% printing - output
+print_production( M ) =>
+        L = M.length,
+        C = M[1].length,
+        printf("\n\n Production of a product in a day: # (there's a setup):\n"),
+        Aux = [ X mod 10 : X in 1 .. C],
+        printf("\n D-> "),
+        foreach(I in Aux)
+            printf(" %d", I)
+        end,
+        nl,
+    %%% printing the matrix    
+    foreach(I in 1  .. L)
+        printf("\n %d:  ", I),
+        foreach(J in 1  ..  C)
+           if( M[I,J] == 1) then
+                print(' #')
+                else
+            print(' .')
+           end 
+        end
+     end.  %%% end of function 
+
+/*******************************************/
+%% printing a matrix withi a Title per line
+ print_matrix(Title_Y, M ) =>
+    L = M.length,
+    C = M[1].length,
+    /********* AUX *** pretty output ***************/
+    nl,
+    Aux = [ X mod 10 : X in 1 .. C],
+    Left_Shift = Title_Y.length + 4,
+    foreach(I in 1..Left_Shift)
+        print(' ')
+    end,
+
+    foreach(I in Aux)
+        printf(" %d", I)
+    end,
+    nl,
+    /*******************************************/
+    foreach(I in 1  .. L)
+        printf("\n%w %d:  ", Title_Y, I),
+        foreach(J in 1  ..  C)
+        printf("%d " , M[I,J] )
+        end
+    end.   
+
+
+
+/* ************************************************************************************/
+

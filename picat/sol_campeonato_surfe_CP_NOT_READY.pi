@@ -1,6 +1,5 @@
 /*
 Campeonato de Surf do RACHA-CUCA INCOMPLETO
-
 para rodar: $ picat  sol_campeonato_surf_CP.pi
 */
 import cp.
@@ -30,35 +29,69 @@ modelo =>
      printf("\n ....."),  
 	%%%%%%%%%%%%% LISTA %%%%%%%%%%%%%
 % NOMES
-Nomes = [Surf_1, Surf_2, Surf_3, Surf_4, Surf_5],
-Nomes_Surfistas = new_map([flavio=1, fernando=2, igor=3, rogerio=4, tomas=5]),
-Nomes :: 1..N,
+       Nomes = [Surf_1, Surf_2, Surf_3, Surf_4, Surf_5],
+       Nomes_Surfistas = new_map([flavio=1, fernando=2, igor=3, rogerio=4, tomas=5]),
+       Nomes :: 1..N,
 %Vars :: Exp: This predicate restricts the domain or domains of V ars to Exp. V ars can be either a single variable, a list of variables, or an array of variables. For integer-domain variables, Exp must result in a list of integer values. For real-domain variables for the mip module, Exp must be an interval in the form L..U, where L and U are real values.
 %Domain variables, when being created, are usually represented internally by using intervals. An interval turns to a bit vector when a hole occurs in the interval. The following built-in predicate can be used to reset the range or access the current range.
 
 %%%%%%%%%%%%% TODAS Cor_ES %%%%%%%%%%%%%
-Cores = [Cor_1, Cor_2, Cor_3, Cor_4, Cor_5],
-Nome_Cores = new_map([amarela=1, azul=2, branca=3, verde=4, vermelha=5]),
-Cores :: 1..N,
+       Cores = [Cor_1, Cor_2, Cor_3, Cor_4, Cor_5],
+       Nome_Cores = new_map([amarela=1, azul=2, branca=3, verde=4, vermelha=5]),
+       Cores :: 1..N,
+
+
+%%%%%%%%%%%%%% PRAIAS
+       Praias = [Praia_1, Praia_2, Praia_3, Praia_4, Praia_5],
+       Praias :: 1..N,
+       Nomes_Praias = new_map([areado = 1, brava = 2, itaguare=3, itamambuca=4, maresias=5]),
+
+
 %%%%%%%%%%%%%%%%%%%
 
-all_different(Cores),
-all_different(Nomes),
+       all_different(Cores),
+       all_different(Nomes),
+       all_different(Praias),
+
 
 %COMPLETAR AQUI'
 
 %%% regras aqui ...
-get(Nome_Cores, amarela) = X, 
-X #!= Cor_1,
-get(Nomes_Surfistas, igor)  = Y ,
-Y #= Surf_1, 
+
+%%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES %%%%%%%%%%%%%
+       get(Nome_Cores, azul) = C1, 
+       #=(C1, Cor_1),
+
+%%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES + NOMES %%%%%%%%%%%%%
+
+%% EXEMPLO
+%(Surf_2==igor, Cor_3==verde),
+
+       get(Nomes_Surfistas, igor) = S2 ,
+       S2 #= Surf_2, 
+       get(Nome_Cores, verde) = C2, 
+       C2 #= Cor_3,
+
+/*      Praia_3 == maresias, 
+       Cor_5==branca,
+       Surf_5==fernando, */
+
+       get(Nomes_Praias, maresias) = P3,
+       P3 #= Praia_5,
+       get(Nomes_Surfistas, fernando) = S3 ,
+       S3 #= Surf_2, 
+       get(Nome_Cores, branca) = C3, 
+       C3 #= Cor_5,
+
+
+
 %map_to_list(Nomes_Surfistas) = PairsList,
 %printf("\n PAIRLIST : %w", PairsList),
 %index_do_mapa(Nomes_Surfistas, igor) #= Surf_1,
 
 %printf("\n Cores : %w \n %w", Cores, Nome_Cores),
-solve([Nomes++Cores]),
-printf("\n Nomes: %w \n Cores: %w", Nomes, Cores).
+solve([Nomes++Cores++Praias]),
+printf("\n Nomes: %w \n Cores: %w \n Praias: %w", Nomes, Cores, Praias).
 
 
 index_do_mapa(Mapa, Chave) = R  =>
@@ -75,54 +108,23 @@ index_do_mapa(Mapa, Chave) = R  =>
        end,
        */
        R = to_int(Valor).
-           
-               
-
-
 
 /*
 
 
-%%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES %%%%%%%%%%%%%
-
-%% EXEMPLO
- Cor_1==azul,
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%% TODOS NOMES %%%%%%%%%%%%%
-
-surf(Surf_1),
-surf(Surf_2),
-surf(Surf_3),
-surf(Surf_4),
-surf(Surf_5),
-alldifferent(),
-
-%%%%%%%%%%%%% REGRAS  que envolvam APENAS CORES + NOMES %%%%%%%%%%%%%
-
-%% EXEMPLO
- (Surf_2==igor, Cor_3==verde),
 
 
 %%% ALUNO ... voce aqui ...
 %%%% NADA DAQUI PODE SER UMA CONTRADICAO COM O QUE FOI PREVIAMENTE DEFINIDO em regras anteriores
 %%%%%%%%%%%%% TODAS PRAIAS %%%%%%%%%%%%%
 
-praia(Praia_1),
-praia(Praia_2),
-praia(Praia_3),
-praia(Praia_4),
-praia(Praia_5),
-       
-
 
 
 %% EXEMPLO
  
- Praia_3 == maresias, 
- Cor_5==branca,
- Surf_5==fernando, 
+
 %%%% NADA DAQUI PODE SER UMA CONTRADICAO COM O QUE FOI PREVIAMENTE DEFINIDO em regras anteriores
 
 %%%%%%%%%%%% TODOS TAMANHOS DAS PRANCHAS %%%%%%%%%%%%%
@@ -228,13 +230,7 @@ imprime([[Cor_, Surf_, Praia_, Tam_, Gent_, Rank_]|T]) =>
 	% Cores
 
 
-	% PRAIA
-index(-)
-praia(areado).
-praia(brava).
-praia(itaguare).
-praia(itamambuca).
-praia(maresias).
+
 
 	% TAMANHO
 index(-)
