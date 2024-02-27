@@ -28,7 +28,8 @@ def model_job_shop():
                  [1, 3, 2]
                 ]
     '''
-    ### modify to use in Python directly
+
+  ### modify to use in Python directly
     sequence = [ [1, 2, 0],  # Job 1 must starts in machine 3
                  [2, 0, 1] ,
                  [0, 2, 1]   # Job 3 must starts in machine 1
@@ -36,10 +37,12 @@ def model_job_shop():
     
     # time duration of jobs i in  machines  j
     duration = [ 
-        [ 76, 73, 72] ,
+            [ 76, 73, 72] ,
 	    [ 56, 74, 68 ],
 	    [ 56, 55, 56]
         ]
+
+
 
     # Computes horizon dynamically as the sum of all durations.
     end_VALUE = sum(map(sum, duration)) ### TWO FORs
@@ -126,85 +129,6 @@ def model_job_shop():
                     the_model.Add(job_start[i][k] - job_start[i][j] <= (-duration[i][k] + High_Value*(x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k]) 
                     the_model.Add(job_start[i][k] - job_start[i][j] <= (-duration[i][k] + High_Value*(x[i][j][k]) ) ) . OnlyEnforceIf (x[i][j][k].Not()) 
         
-
-    '''
-        s =[the_model.NewIntVar(0,1,'s_t[i]') \
-          for i in range(machines) 
-       ]
-    
-    
-    for i in range(machines) :  
-        #for j in range(jobs):
-            s[i] == sum( [ x[i][j][k] for j in range(jobs) for k in range(jobs) if j < k ] )
-            the_model.Add(s[i] == 1)
-
-
-
-            #s_j[j] == sum( [ x[i][j][k] for k in range(jobs) if j < k] )
-            #s_k[j] == sum( [ x[i][k][j] for k in range(jobs) if j > k] )
-            #a, b = s_j[j], s_k[j]
-            #the_model.AddBoolXOr([ a ,  b])
-            #the_model.AddBoolXOr([s_j[j] ,  s_k[j]])
-            #the_model.Add((s_j[j] + s_k[j]) == 1)
-    
-            #the_model.Add(s_j[j] == 1).OnlyEnforceIf(s_j[j])
-            #the_model.Add(s_j[j] == 1).OnlyEnforceIf(s_j[j].Not())
-            #the_model.Add(s_k[j] == 1).OnlyEnforceIf(s_k[j])
-            #the_model.Add(s_k[j] == 1).OnlyEnforceIf(s_k[j].Not())
-    
-            ###the_model.AddBoolXOr([s_j[j]==1,  s_k[j] == 1])
-
-    s_1 = the_model.NewIntVar(0,jobs, 's_1')
-    s_2 = the_model.NewIntVar(0,jobs, 's_2')
-     
-    s_1 = sum([s_j[j] for j in range(jobs)])
-    s_2 = sum([s_k[j] for j in range(jobs)])
-
-    
-    s =[the_model.NewIntVar(0,1,'s_j[i]') \
-          for i in range(machines) 
-       ] 
-    
-    print("............\n")
-    for i in range(machines) :  
-            s[i] == sum( [ x[i][j][k] for j in range(jobs) for k in range(jobs) if j < k ] )
-            the_model.Add(s[i] == 1). OnlyEnforceIf (s[i]) 
-            the_model.Add(s[i] == 1). OnlyEnforceIf (s[i].Not()) 
-
-    # print("s_1  s_2", s_1, s_2)
-    # the_model.AddBoolXOr( [s_1 == 1, s_2 == 1])
-    # the_model.Add(s_1 >= 1).OnlyEnforceIf(s_1)
-    # the_model.Add( s_1 == 1).OnlyEnforceIf().not()
-    # the_model.Add( s_2 == 1).OnlyEnforceIf()
-            #for k in range(jobs):
-            #    if j == k:
-            #       continue;
-            #    the_model.AddBoolOr( sum( [ x[i][j][k] ] ) == 2 ) . OnlyEnforceIf (x[i][j][k])
-            #    the_model.AddBoolOr( sum( [ x[i][j][k] ]) == 2 ) . OnlyEnforceIf (x[i][j][k].Not())
-        #sum(shift_requests[n][d][s] * shifts[(n, d, s)] for n in all_nurses
-        #for d in all_days for s in all_shifts))                   
-            #the_model.AddBoolXOr( [(sum( [ x[i][j][k] for k in range(jobs) if j != k] ) == 1 ),
-            #                      (sum( [ x[i][k][j] for k in range(jobs) if j != k] ) == 1 ) 
-            #]
-            #)  
-                                
-    
-    #the_model.AddBoolXOr([(job_start[i][k] > job_start[i][j] + duration[i][j]) == True, 
-    #                                (job_start[i][j] > job_start[i][k] + duration[i][k]) == True
-                                    
-    
-        # hakank: Ensure that the jobs does not have overlapping machines
-        #    #         i.e. the "transpose" of the constraints above
-        for j in range(jobs):
-        for m1 in range(machines) :            
-            for m2 in range(machines):
-                if m1 == m2:
-                    continue;
-                the_model.Add(job_start[m1][j] >= job_start[m2][j] + duration[m2][j]) . OnlyEnforceIf (y[m1][m2][j]  )
-                the_model.Add(job_start[m2][j] >= job_start[m1][j] + duration[m1][j]) . OnlyEnforceIf (y[m1][m2][j].Not()  )
-          
-   
-    '''  
     # ORDERING OR SEQUENCE from sequence matrix
     for i in range(machines) :
         for j in range(jobs):

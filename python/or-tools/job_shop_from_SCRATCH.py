@@ -36,7 +36,7 @@ def model_job_shop():
     
     # time duration of jobs i in  machines  j
     duration = [ 
-        [ 76, 73, 72] ,
+            [ 76, 73, 72] ,
 	    [ 56, 74, 68 ],
 	    [ 56, 55, 56]
         ]
@@ -121,22 +121,6 @@ def model_job_shop():
                                     ]
                                     ) 
               
-    FROM PICAT ... of HAKAN
-     % handle EndTimes
-  foreach(M in 1..NumMachines, J in 1..NumJobs)
-      JobEnd[M,J] #= JobStart[M,J] + JobTimes[M,J]
-  end,
-
-  % check the job order
-  foreach(M in 1..NumMachines)
-     foreach(J1 in 1..NumJobs, J2 in 1..NumJobs, J1 < J2) 
-        if JobOrder[M,J1] < JobOrder[M,J2] then
-           before(JobEnd[M,J1], JobStart[M,J2])
-        else 
-           after(JobStart[M,J1], JobEnd[M,J2])
-        end
-     end
-  end,
   '''  
     # ORDERING OR SEQUENCE from sequence matrix
     for i in range(machines) :
@@ -194,7 +178,18 @@ def model_job_shop():
     print("END SOLVER and MODEL ")
     print_t(40)
     return ###### end function
-
+# No overlapping of tasks s1 and s2
+# NOT TESTED yet
+def no_overlap_HAKAN(self, model, s1, d1, s2, d2):
+        """
+    no_overlap(model, s1, d1, s2, d2)  Ensure that there are no overlap of task 1 (`s1` + `d1`)
+    and task 2 (`s2` + `d2`)
+        """
+        b1 = model.NewBoolVar("b1") 
+        model.Add(s1 + d1 <= s2).OnlyEnforceIf(b1)
+        b2 = model.NewBoolVar("b1") 
+        model.Add(s2 + d2 <= s1).OnlyEnforceIf(b2)
+        model.Add(b1 + b2 >= 1) ### esta restrição será postada se não houver overlapp
 
 ### PRINTING FUNCTION
 ## learning Python
