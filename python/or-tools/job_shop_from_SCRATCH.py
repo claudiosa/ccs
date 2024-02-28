@@ -36,7 +36,7 @@ def model_job_shop():
     
     # time duration of jobs i in  machines  j
     duration = [ 
-            [ 76, 73, 72] ,
+        [ 76, 73, 72] ,
 	    [ 56, 74, 68 ],
 	    [ 56, 55, 56]
         ]
@@ -49,7 +49,7 @@ def model_job_shop():
                 for i in range(jobs)  
         ]
   
-    ### equally to the finish timie
+    ### equally to the finish time
     job_end = [
          [the_model.NewIntVar(0,end_VALUE,'job_end[i][j]') \
           for j in range(machines) ] \
@@ -92,10 +92,12 @@ def model_job_shop():
             for k in range(jobs):
             #if j == k:
             #    continue;
-                if j < k:  ### MORE EFFICIENT
+               if j < k: 
+                no_overlap_HAKAN(the_model,  job_start[i][j], duration[i][j], job_start[i][k], duration[i][k])
+               """  if j < k:  ### MORE EFFICIENT
                     the_model.Add(job_start[i][k] >= job_start[i][j] + duration[i][j]) . OnlyEnforceIf (x[i][j][k]) 
                     the_model.Add(job_start[i][j] >= job_start[i][k] + duration[i][k]) . OnlyEnforceIf (x[i][j][k].Not())               
-    
+     """
     
 
     # hakank: Ensure that the jobs does not have overlapping machines
@@ -114,10 +116,10 @@ def model_job_shop():
             if j != k:
                 #continue;
                 the_model.Add( sum(x[i][j][k] for i in range(machines) ) <= 1 )
-               
-
-    the_model.AddBoolXOr([(job_start[i][k] > job_start[i][j] + duration[i][j]) == True, 
-                                    (job_start[i][j] > job_start[i][k] + duration[i][k]) == True
+              
+    MELHORAR.... FUTURO
+    the_model.AddBoolXOr([(job_start[i][k] >= job_start[i][j] + duration[i][j]) == True, 
+                                    (job_start[i][j] >= job_start[i][k] + duration[i][k]) == True
                                     ]
                                     ) 
               
@@ -179,15 +181,15 @@ def model_job_shop():
     print_t(40)
     return ###### end function
 # No overlapping of tasks s1 and s2
-# NOT TESTED yet
-def no_overlap_HAKAN(self, model, s1, d1, s2, d2):
+# TESTED and very clear to study it.
+def no_overlap_HAKAN(model, s1, d1, s2, d2):
         """
     no_overlap(model, s1, d1, s2, d2)  Ensure that there are no overlap of task 1 (`s1` + `d1`)
     and task 2 (`s2` + `d2`)
         """
         b1 = model.NewBoolVar("b1") 
         model.Add(s1 + d1 <= s2).OnlyEnforceIf(b1)
-        b2 = model.NewBoolVar("b1") 
+        b2 = model.NewBoolVar("b2") 
         model.Add(s2 + d2 <= s1).OnlyEnforceIf(b2)
         model.Add(b1 + b2 >= 1) ### esta restrição será postada se não houver overlapp
 

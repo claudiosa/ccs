@@ -37,7 +37,7 @@ def model_job_shop():
     
     # time duration of jobs i in  machines  j
     duration = [ 
-            [ 76, 73, 72] ,
+        [ 76, 73, 72] ,
 	    [ 56, 74, 68 ],
 	    [ 56, 55, 56]
         ]
