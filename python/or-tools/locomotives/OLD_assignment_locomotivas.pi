@@ -41,100 +41,80 @@ W = W1+W2.
 */
 
 main => %input_tuplas(X),  print(X).
-    input_tuples(Services), %% from Excell
-    %Services = [(Id, Start, T1, End, T2)| Others_Services], 
-    printf("\n Num de servicos: %w\n", len(Services)),
+    input_tuples(L),
+    L = [(Service, Start, T1, End, T2)| Others_Services], 
+    printf("\n Num de servicos: %w\n", len(L)),
 
     locomotives(Loc),
     init_location(Init_Location),  
-    Loc_Place_Time = build_tuple_3(Loc, Init_Location),
-    print(Loc_Place_Time),
-    %% where are the locomotives in each time
+    Loc_Place = build_tuple(Loc, Init_Location ),
+    print(Loc_Place),
     printf("\n ..............."),
-    assign(Services, Loc_Place_Time, [], Plan, Wait),nl,nl,
+    assign(L, Loc_Place, [], Plan),nl,nl,
     printf("\n Plano:\n"),
-    print(reverse(Plan)),
-    printf("\n Peso %w", Wait).
+    print(reverse(Plan)).
 
+%table(+,+,-, min)
 %%% always with current position of ALL locomotives 
-table(+,+,+,-, min)
-assign([], Loc_Place_Time, Current, All_Serv, W) ?=>
+assign([], Loc_Place, Current, All_Serv) ?=>
         All_Serv = Current.
        % printf("\n acabou a lista de servicos %w\n\n", Current),
        
 %%% always with current position of ALL locomotives  in Loc_Places
-assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
-    
+assign([(Service, Start, T1, End, T2)| Others_Services], 
+       Loc_Place, Current, All_Serv) =>
+    !,
     %%% with backtracking here 
-    
-    (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(Services_To_Do),
-    !,   
-    % (S_Next: where my service start, Loc_Place_Time, - )        
-    % T_Next: when this service starts
-    print(Id_Next),%%% S_Next, T1_Next, E_Next, T2_Next),
-    printf("\n => %w PRECISA EM:%w  Start_T1:%w  Local_FIM:%w End_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
-    printf("\n Elas estão em: %w", Loc_Place_Time),
-    find_a_locomotive((S_Next,T1_Next), Loc_Place_Time, A_Candidate),
-
-
+    find_a_locomotive(Start, Loc_Place, A_Locomotive),
+    printf("\n =>Serv:%w Loc:%w Where:%w Current:%w", Service, A_Locomotive, Start, Current),
+    %A_Locomotive = find_a_L(Start, Loc_Place), 
     %%  encontra locomotiva naquela partida
-    %% Esta locomotiva eh atualizada na sua posição e quando ficará livre
-    New_Loc_Place_Time = update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
-    %printf("=> End in: %w", End),
-    Others_Services = delete(Services_To_Do, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),
+    %%  atribui servico a esta locomotiva e atualiza a sua posição
+    New_Loc_Place = update_position(A_Locomotive, End, Loc_Place),
+    printf("=> End in: %w", End),
+    append([(Service , A_Locomotive)], Current, New_Current),    
 
-    append([(Id_Next , A_Candidate)], Current, New_Current),    
-
-    assign(Others_Services, New_Loc_Place_Time, New_Current, All_Serv, W1),
-    W = W1 + (T2_Next-T1_Next).
+    assign(Others_Services, New_Loc_Place, New_Current, All_Serv).
     
 
 
-build_tuple_3([],[]) = [].
+build_tuple([],[])  = [].
     %build_tuple([A],[]) => print("\n L1 > L2 (%w)", A).
     %build_tuple([],[B]) => print("\n L1 < L2 (%w)", B).
-build_tuple_3([A|L1], [B|L2]) = Ys =>
-            Ys = [ (A,B,0) | build_tuple_3(L1,L2)]. 
-%% locomotive_ID, Position and time = 0 
+build_tuple([A|L1], [B|L2]) = Ys =>
+            Ys = [ (A,B) | build_tuple(L1,L2)]. 
+
 
 %find_a_locomotive(Start, [], Answer) ?=> Answer = 'NOT MORE LOCOMOTIVES'.
-%%% PREDICATIVE CLAUSE -- need a backtracking
-find_a_locomotive((Place, When), [(Loc, Where_is, T)|Rest], Answer) ?=>  
-    Where_is == Place, 
-    T =< When, 
-    Answer = Loc.
-find_a_locomotive((Place, When), [(_,_,_) |Rest], Answer) =>   find_a_locomotive((Place, When), Rest, Answer).
-/*
-
-Picat> X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',bwur,0)], find_a_locomotive((bwur,10),X, Y).
-X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',bwur,0)]
-Y = '159-002' ?;
-X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',bwur,0)]
-Y = '159-010' ?;
-*/
+%%% PREDICATIVE CLAUSE
+find_a_locomotive(Start, [(Loc,Where_is)|Rest], Answer) ?=>   Where_is == Start, Answer = Loc .
+find_a_locomotive(Start, [(_,Where_is) |Rest], Answer)  =>   find_a_locomotive(Start, Rest, Answer).
+               
+%% FUNCTIONAL CLAUSE .... of find_a_locomotive
+% Função que encontra uma locomotiva 
+find_a_L(_ , []) = 'NOT FOUND LOCOMOTIVE'.
+find_a_L(Start, [(Loc, Where_is) | Rest])= Train , (Where_is == Start) => Train = Loc.
+find_a_L(Start, [(_, Where_is) | Rest]) = 
+       Train,
+       (Where_is \= Start) => Train = find_a_L(Start, Rest).
 
 %%%Picat> locomotives(X), init_location(Y), T= build_tuple(X,Y), find_a_L(ahroo, T)= Z.
-%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
-update_position((A_Candidate, E_Next, T2_Next), [] ) = R => R = [].
-update_position((A_Candidate, E_Next, T2_Next), [(Loc_Curr, Where_is, When) | Rest]) =  New_Loc_Place
-              , (A_Candidate == Loc_Curr) =>
-               New_Loc_Place = [(A_Candidate, E_Next, T2_Next) | Rest].
-update_position((A_Candidate, E_Next, T2_Next), [(Loc_Curr, Where_is, When)|Rest]) = New_Loc_Place
-        , (A_Candidate \= Loc_Curr) => 
-        New_Loc_Place = [(Loc_Curr,Where_is,When) | update_position((A_Candidate, E_Next, T2_Next), Rest) ].
+update_position(Locomotive , Final, [] ) = [].
+update_position(Locomotive , Final, [(Loc_CURR, Where_is) | Rest]) =  New_Loc_Place
+              , (Locomotive == Loc_CURR) =>
+               New_Loc_Place = [(Locomotive, Final) | Rest].
 
+update_position(Locomotive , Final, [(Loc_CURR, Where_is) | Rest]) = New_Loc_Place
+        , (Locomotive \= Loc_CURR) => 
+        New_Loc_Place = [(Loc_CURR, Where_is) | update_position( Locomotive, Final, Rest )].
 
 /*
-x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',bwur,0),('159-004',lqb,0)],
-    write(L),
-    update_position(('159-002',flor,0), L) = K,
-    write(K).
-
-Picat> update_position(('159-010',flor,10) , [('159-008',ahroo,0) , ('159-002',bwur,0) , ('159-010', bwur,0)]) = X.  
-X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',flor,10)]
-yes
+% Picat> [-2,2,-1] = X, X.menor() = Y.
+menor([]) = R, len([])==0 => R = [].
+menor([A]) = R, len([A])==1 => R = A.              
+menor([A, B|L]) = R, A<B => R = menor([A|L]).    
+menor([A, B|L]) = R, B=<A => R = menor([B|L]).  
 */
-
 
 retorna_3o_da_tupla((_, _, X, _, _)) = X.
 
@@ -144,11 +124,9 @@ menor([A, B | L]) = R, retorna_3o_da_tupla(A) < retorna_3o_da_tupla(B) => R = me
 menor([A, B | L]) = R, retorna_3o_da_tupla(B) =< retorna_3o_da_tupla(A) => R = menor([B | L]).
 
 % Função que encontra a tupla com o menor elemento na terceira posição
-find_soon_service(Lista) = R =>
-    R = menor(Lista).
-/*
-Testes
- input_tuples(L), (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(L).
+encontra_menor_tupla(Lista) = Resultado =>
+    Resultado = menor(Lista).
+
 x => L = [('a001', 'ahroo', 16, 'dro', 168), 
      ('a002', 'dro', 18, 'bno', 184),
      ('a003', 'bno', 10, 'dro', 1800), 
@@ -158,4 +136,3 @@ x => L = [('a001', 'ahroo', 16, 'dro', 168),
     print(Resultado),
     delete(L, Resultado) = Y,
     printf("\n NEW: %w", Y).
-    */
