@@ -51,20 +51,20 @@ assign(Sevices_OVER, Loc_Place_Time, Current, All_Serv, W),
 %%% always with current position of ALL locomotives  in Loc_Places
 assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
     
+    % It is a function to get the early service in the list
     (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(Services_To_Do),
     
     % (S_Next: where my service start STATION, Loc_Place_Time, - )        
     % T_Next: when this service starts
     
     printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
-   
+    % As a predicate to allow backtracking over this search
     find_a_locomotive((S_Next, T1_Next), Loc_Place_Time, {A_Candidate, T_Wait}),
     /*** 
-        tomar tempo da locomotiva escolhida ... que eh o quanto ela esperava lá
-      T1 - Tempo na estacao
+        tomar tempo da locomotiva escolhida ... que eh o quanto ela esperava lá desde entao
     ****/
     if ( A_Candidate == 'no_locomotive' ) then
-    %% NAO encontra locomotiva naquela partida
+    %% NAO encontra locomotiva naquela estacao de partida
     %% Esta locomotiva eh atualizada na sua posição e quando ficará livre
     (
         printf("\n Pulou %w PRECISAVA em: %w", Id_Next, S_Next),
@@ -77,6 +77,7 @@ assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
         append([(Id_Next ,'xxx')], Current, New_Current)
     )    
     else (
+        %%% find a locomotive in that station
         New_Loc_Place_Time = update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
         printf("\n=> Achou em: %w em %w deixa %w ", A_Candidate, S_Next, E_Next),
         Others_Services = delete(Services_To_Do, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),
@@ -96,18 +97,14 @@ build_tuple_3([],[]) = [].
 build_tuple_3([A|L1], [B|L2]) = Ys =>
             Ys = [ (A,B,0) | build_tuple_3(L1,L2)]. 
 %% locomotive_ID, Position and time = 0 
-
 %find_a_locomotive(Start, [], Answer) ?=> Answer = 'NOT MORE LOCOMOTIVES'.
 %%% PREDICATIVE CLAUSE -- need a backtracking
 %%% em caso de falha????
 
-
 /*
-
 find_a_locomotive(_, [], {no_locomotive, 0}) => true, !.
 MAS NAO ADICIONA A MENSAGEM CORRETAMENTE DE SERVICOS
 INVALIDOS
-
 */
 find_a_locomotive((_, _), [],  {L, T}) ?=> 
     L = 'no_locomotive', %'NO LOC in this PLACE',
@@ -122,7 +119,6 @@ find_a_locomotive((Station_S, Start_T), [(Lomotive, Where_is, T_Wait)|Rest], {L,
 
 find_a_locomotive((Station_S, Start_T), [(_,_,_) |Rest],  {L, T}) =>  
     find_a_locomotive((Station_S, Start_T), Rest,  {L, T} ).
-
 
 /*
 Picat> L = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',bwur,0)], find_a_locomotive((bwur,10),L, {X,Y}).
