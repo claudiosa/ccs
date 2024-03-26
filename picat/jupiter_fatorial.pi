@@ -1,0 +1,18 @@
+/** ANTES de tudo ... numa célula do jupiter ... => %load_ext ipicat    */
+/** DEPOIS,  numa outra célula do jupiter ... =>  %picat -e jupiter_fatorial.pi    */
+
+%%picat
+/* Versões recursivas do Fatorial */
+main => 
+        fat_1(-99, F1),  printf(" %w ", F1), 
+        fat_1(2, F2),  printf(" %w ", F2), 
+        fat_1(3, F3),  printf(" %w \n", F3),
+        printf("==========================").
+
+/* recursividade CLASSICA -- prolog like */
+fat_1( N, Fat ), (N =< 1) ?=> Fat = 1. 
+fat_1( N, Fat ), (N > 0) =>  
+                Aux  =  (N - 1),
+                fat_1( Aux , Parcial ),
+                Fat = ( N * Parcial ). 
+/* ====================================== */
