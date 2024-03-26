@@ -1,21 +1,15 @@
 /* input data at the end of this code */
 
 /*
-main => X = input_data(), print(X),
-init_location(P),nl, print(P),
-locomotives(L), nl, print(L).
-Picat> X = [(1,2), (a,b)], [(X1,X2)|L] = X, print(X2). .
-2X = [(1,2),(a,b)]
-X1 = 1
-X2 = 2
-L = [(a,b)]
-yes
-
+Este codigo vai buscar um plano, indepedente as posições das locomotivas
+Todas inicialmente podem se encontrar em qualquer lugar.
+Uma vez alocadas, na 1a. vez, ficam instanciadas e condicionadas
+a aquele novo destino.
 */
 
 
 
-main ?=>
+main =>
     input_tuples(Services), %% from Excell
     %Services = [(Id, Start, T1, End, T2)| Others_Services], 
     printf("\n Num de servicos: %w\n", len(Services)),
@@ -37,19 +31,17 @@ main ?=>
     printf("\n\n NAO REALIZADOS: %w", fil_1(Plan)),
     printf("\n QUANTOS NAO REALIZADOS: %w", len(fil_1(Plan))),
     printf("\n\n T_FINAL: %w",W).
-%    fail.
-%main => printf("\n\n NO MORE SOLUTIONS").
+    
 
 %%% always with current position of ALL locomotives 
 %table(+,+,+,-, min)
 assign(Sevices_OVER, Loc_Place_Time, Current, All_Serv, W),
 % para quando todos serviços forem designados
-    Sevices_OVER == [],  
-    (len(fil_2(Current)) > 66)
+    Sevices_OVER == [] 
     ?=>
     All_Serv = Current,
     W = 0.
-    %Sevices_OVER == []  ;  
+     
        
 %%% always with current position of ALL locomotives  in Loc_Places
 assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
@@ -63,7 +55,7 @@ assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
     % E_Next: where this service finish
     % T2_Next: when this service ends
     
-    % printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
+    printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
     % As a predicate to allow backtracking over this search
     find_a_locomotive((S_Next, T1_Next), Loc_Place_Time, {A_Candidate, T_Wait}),
     /*** 
@@ -93,14 +85,18 @@ assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
 
     assign(Others_Services, New_Loc_Place_Time, New_Current, All_Serv, W_temp ),
     W = W_temp + (T1_Next - T_Wait),
-    
-    printf(" -> %w", W ).
+    %% append(New_Current, Serv_temp, All_Serv),    
+    %% all_Serv = New_Current,
+    printf("\n . %w", W ).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-build_tuple_3([],[]) = [].
-build_tuple_3([A|L1], [B|L2]) = Ys =>
-            Ys = [ (A,B,0) | build_tuple_3(L1,L2)]. 
+
+%%% localizacao inicial desconhecida inicialmente _
+build_tuple([]) = [].
+build_tuple([A|L]) = Ys =>
+            Ys = [ (_,A,0) | build_tuple(L)]. 
+
 %% locomotive_ID, Position and time = 0 
 %find_a_locomotive(Start, [], Answer) ?=> Answer = 'NOT MORE LOCOMOTIVES'.
 %%% PREDICATIVE CLAUSE -- need a backtracking

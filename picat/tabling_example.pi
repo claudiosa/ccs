@@ -1,0 +1,41 @@
+%
+%  a -1- b -2- e
+%   \         /
+%   9        3
+%    \       /
+%     c -2- d -2- f
+%            \
+%            3
+%             \
+%              g
+%
+
+edge(a,b,1).
+edge(b,e,2).
+edge(a,c,9).
+edge(c,d,2).
+edge(e,d,3).
+edge(d,f,2).
+edge(d,g,3).
+
+% to study tabling in PICAT -- from book of Neng-Fa and Hakan
+%%picat
+main ?=> connected(a,g, Path, W),
+        printf("\n => Path:%w \t W:%w ", Path,W).
+        %%, fail.
+
+main => printf("\n => no more answers ").
+%% comment this line and run ...
+%%  how this table works...
+%table(+,+,-,min)
+table(+,+,-,max)
+connected(X,Y, Path, W) ?=>
+    Path = [(X,Y)],
+    edge(X,Y,W).
+
+ connected(X,Y, Path, W) ?=>
+        Path = [(X,Z)| Path_Temp],
+        edge(X,Z,W_xz),
+        connected(Z,Y,Path_Temp, W_Temp ),
+        W = W_xz + W_Temp.
+    
