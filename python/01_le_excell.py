@@ -1,8 +1,6 @@
 import pandas as pd
 from datetime import datetime
 
-
-
 def converter_para_valor_absoluto(data_horario_str):
     # Converter a string para um objeto datetime
     data_horario = datetime.strptime(data_horario_str, '%Y-%m-%dT%H:%M:%SZ')
@@ -15,12 +13,13 @@ def converter_para_valor_absoluto(data_horario_str):
 
 
 # Ler a planilha do Excel
-caminho_do_arquivo_excel = 'ds_locomotive_plan.xlsx'   #'caminho/para/o/arquivo.xlsx'
-nome_da_planilha = 'services'  # Nome da planilha que você deseja ler
+caminho_do_arquivo_excel = 'ds_27_plans.xlsx'   #'caminho/para/o/arquivo.xlsx'
+#nome_da_planilha = 'services'  # Nome da planilha que você deseja ler
+nome_da_planilha = 'locomotives' # nomes 
 #coluna_para_convert = 'startDatetime'  # Nome da coluna que você deseja converter em matriz
 #coluna_para_convert = 'endDatetime' 
-coluna_para_convert = 'startLocation'
- 
+#coluna_para_convert = 'startLocation'
+coluna_para_convert = 'id' 
 # Carregar o arquivo Excel em um DataFrame do pandas
 dados_excel = pd.read_excel(caminho_do_arquivo_excel, sheet_name=nome_da_planilha)
 
@@ -29,7 +28,7 @@ aux = dados_excel[coluna_para_convert].values
 
 matriz = []
 for item in aux:
-    valor_absoluto = int(converter_para_valor_absoluto(item))
+    valor_absoluto = item.lower()
     matriz.append(valor_absoluto)   
 
 

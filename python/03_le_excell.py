@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 # Ler a planilha do Excel
-caminho_do_arquivo_excel = 'ds_locomotive_plan.xlsx'   #'caminho/para/o/arquivo.xlsx'
+caminho_do_arquivo_excel = 'ds_27_plans.xlsx'   #'caminho/para/o/arquivo.xlsx'
 nome_da_planilha = 'locomotives'  # Nome da planilha que você deseja ler
 
 coluna_para_convert = 'location'

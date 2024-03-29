@@ -16,6 +16,6 @@ def ler_planilha(caminho_arquivo):
     return lista_de_tuplas
 
 # Exemplo de uso
-caminho_arquivo = 'ds_locomotive_plan.xlsx'
+caminho_arquivo = 'ds_27_plans.xlsx'
 lista_de_tuplas = ler_planilha(caminho_arquivo)
 print(lista_de_tuplas)
