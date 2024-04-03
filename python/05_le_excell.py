@@ -1,5 +1,6 @@
 import pandas as pd
 from datetime import datetime
+# li a planilha SERVICES
 
 def converter_para_valor_absoluto(data_horario_str):
     # Converter a string para um objeto datetime
@@ -10,15 +11,16 @@ def converter_para_valor_absoluto(data_horario_str):
         
     return valor_absoluto
 
-def ler_planilha(caminho_arquivo):
+def ler_planilha(caminho_arquivo,nome_da_planilha):
     # Carregar a planilha Excel em um DataFrame do pandas
-    df = pd.read_excel(caminho_arquivo)
-    
+
+    #df = pd.read_excel(caminho_arquivo, sheet_name=nome_da_planilha, header=None, engine='openpyxl')
+    df = pd.read_excel(caminho_arquivo, sheet_name=nome_da_planilha)
     # Garantir que todas as células alfa-numéricas estejam em minúsculo
     df = df.applymap(lambda x: x.lower() if isinstance(x, str) else x)
     
     # Pegar as primeiras 5 colunas e as próximas 100 linhas
-    df = df.iloc[:100, :5]
+    df = df.iloc[:27, :6]
     
     # Converter as datas e horários nas colunas 3 e 5 para valores absolutos
     df.iloc[:, 2] = df.iloc[:, 2].apply(converter_para_valor_absoluto)
@@ -29,7 +31,10 @@ def ler_planilha(caminho_arquivo):
     
     return lista_de_tuplas
 
-# Exemplo de uso
-caminho_arquivo = 'ds_27_plans.xlsx'
-lista_de_tuplas = ler_planilha(caminho_arquivo)
-print(lista_de_tuplas)
+if __name__ == "__main__":
+	# Exemplo de uso
+	caminho_arquivo = 'ds_27_plans.xlsx'
+	nome_da_planilha = 'services' # nomes 
+
+	lista_de_tuplas = ler_planilha(caminho_arquivo , nome_da_planilha)
+	print(lista_de_tuplas)

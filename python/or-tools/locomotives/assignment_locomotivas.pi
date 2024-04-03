@@ -1,6 +1,7 @@
 /* input data  */
 %import input_100.
 import input_27.
+import util.
 
 main =>
     input_tuples(Services), %% from Excell
@@ -50,6 +51,8 @@ assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
     % It is a function to get the early service in the list
     (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(Services_To_Do),
     
+  %  Todas_Local_Tempo = findall(find_soon_service(Services_To_Do)),
+  %  printf("\n Todas: %w", Todas_Local_Tempo),
     % (S_Next: where my service start STATION, Loc_Place_Time, - )        
     % T1_Next: when this service starts
     % E_Next: where this service finish
@@ -57,7 +60,7 @@ assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
     
     % printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
     % As a predicate to allow backtracking over this search
-    find_a_locomotive((S_Next, T1_Next), Loc_Place_Time, {A_Candidate, T_Wait}),
+    find_a_locomotive((S_Next, T1_Next),  Loc_Place_Time, {A_Candidate, T_Wait}),
     /*** 
         tomar tempo da locomotiva escolhida ... que eh o quanto ela esperava lá desde entao
     ****/
@@ -152,17 +155,23 @@ X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',flor,10)]
 yes
 */
 
+% Fazer recursiva - predicativa
 
-retorna_3o_da_tupla((_, _, X, _, _)) = X.
+n_3_tupla((_, _, X, _, _)) = X.
 
 menor([]) = R, len([]) == 0 => R = '()'.
 menor([A]) = R, len([A]) == 1 => R = A.              
-menor([A, B | L]) = R, retorna_3o_da_tupla(A) < retorna_3o_da_tupla(B) => R = menor([A | L]).    
-menor([A, B | L]) = R, retorna_3o_da_tupla(B) =< retorna_3o_da_tupla(A) => R = menor([B | L]).
+menor([A, B | L]) = R, n_3_tupla(A) < n_3_tupla(B) => R = menor([A | L]).    
+menor([A, B | L]) = R, n_3_tupla(B) =< n_3_tupla(A) => R = menor([B | L]).
 
 % Função que encontra a tupla com o menor elemento na terceira posição
 find_soon_service(Lista) = R =>
     R = menor(Lista).
+
+
+
+
+
 /*
 Testes
  input_tuples(L), (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(L).
