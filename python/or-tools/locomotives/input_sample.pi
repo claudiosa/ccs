@@ -1,5 +1,5 @@
 /* DATA FROM THIS PROBLEM */
-module input_27.
+module input_sample.
 
 locomotives(['250-1', '250-2', '246-1', '246-2', '203-1', '203-2', '203-3', '203-4']).
 loc_class(['250', '250', '246_285', '246_285', '203', '203', '203', '203']).
@@ -42,9 +42,11 @@ services([('b0001', 'dro', 1672545600, 'bno', 1672560000),
     ('b5002', 'bno', 1672563600, 'bno', 1672599600), 
     ('b5003', 'dro', 1672657200, 'dro', 1672686000), 
     ('b5004', 'bno', 1672732860, 'bno', 1672772400), 
-    ('b5005', 'dro', 1672837200, 'dro', 1672855200), 
-    ('b5006', 'bno', 1672855201, 'bno', 1672866000)]
-    ). 
+    ('b5005', 'dro', 1672837200, 'dro', 1672855200),
+    ('b5006', 'bno', 1672855201, 'bno', 1672866000)] ). 
+
+% ('b5006', 'bno', 1672855201, 'bno', 1672866000)
+% 1672905600
 %%% cada serviço tem uma classe exigida
 services_class(['ldual', 'ldual', 'ldual', 'ldual', 'ldual', 'ldual', 'mdiesel', 'mdiesel', 'mdiesel', 'mdiesel', 'mdiesel', 'mdiesel', 'sdiesel', 'sdiesel', 'sdiesel', 'sdiesel', 'sdiesel', 'sdiesel', 'meloco', 'meloco', 'ldual', 'ldual', 'ldual', 'ldual', 'ldual', 'ldual']).
 

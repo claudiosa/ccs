@@ -1,0 +1,119 @@
+locomotives([('250-1', 250, 'dro', 1672491600),
+ ('250-2', 250, 'dro', 1672491600), 
+('246-1', '246_285', 'dnm', 1672542000), 
+('246-2', '246_285', 'dnm', 1672542000), 
+('203-1', 203, 'bwur', 1672542000), 
+('203-2', 203, 'bwur', 1672542000), 
+('203-3', 203, 'bwur', 1672542000), 
+('203-4', 203, 'bwur', 1672542000)]).
+
+locomotive_Class(
+              [('203', 'sdiesel', 'dt_203', 'dt_sdiesel'), 
+              ('246_285', 'mdiesel', 'dt_246_285', 'dt_mdiesel'), 
+              ('250', 'ldiesel', 'nan', 'nan'), 
+              ('263_264', 'ldiesel', 'nan', 'nan'), 
+              ('159', 'ldual', 'nan', 'nan'), 
+              ('185', 'meloco', 'dt_185', 'dt_meloco')]).
+
+
+find_a_locomotive(_, [], _, R ) ?=> R = 'TROUBLES HOUSTON'.
+
+find_a_locomotive(Serv_Candidate, [A|Loc], [B |Loc_SURRA], Loc_Assigned ) ?=>
+    
+    %(ID_LOC, Class_LOC, Local_LOC, Time) = A,
+    (Id_Serv, Start_P, Start_T, End_P, End_T, Class) = Serv_Candidate,
+    %print(Id_Serv, Start_P, Start_T, End_P, End_T, Class),
+    locomotive_Class(Loc_Classes), %%% NA TABELA das classes x Locomotivas
+    %% vai ldual, sdiesel, mdiesel etc...
+    %%%from_serv_class_loc
+    %% TODAS LOCOMOTIVAS DESTA CLASSE DE SERVICO
+    find_locs_class(Loc_Classes, Class, L_LOC_class),
+    printf("\n Lista Locomotivas desta Classe: %w", L_LOC_class),    
+    !,    
+    %% backtracking AQUI ....
+    member(Loc_Candidate , L_LOC_class),
+    printf("\n Cand: %w", Loc_Candidate),
+    
+    (Id_Loc, Loc_Class, Position, Time) = Loc_Candidate,
+    Loc_Class == Class, %%% locomotiva atende?
+    Position == Start_P,
+    Time =< Start_T,
+    %(ID_LOC, Class_LOC, Local_LOC, Time)
+    B = (Id_Loc, Loc_Class, End_P, End_T),
+    printf("\n B %w", [B]),
+    Loc_SURRA = Loc,
+    Loc_Assigned = Id_Loc.
+
+find_a_locomotive(Serv_Candidate, [A|Loc],  New_Loc, Loc_Assigned ) =>
+    %    b0006,   bno,    1672945200, dro,1672970400,ldual
+        (Id_Serv, Start_P, Start_T, End_P, End_T, Class) = Serv_Candidate,
+        %write(Id_Serv, Start_P, Start_T, End_P, End_T, Class),
+        %id	locomotive Class	location locationDatetime    
+        (Id_Loc, Loc_Clas, Position, Time) = A,
+        %% basta a posição diferente e classe diferentes
+        %% pensar depois aqui.
+        (Position != Start_P ; Loc_Class != Class),
+        New_Loc = Loc,
+        find_a_locomotive(Serv_Candidate, Loc, New_Loc, Loc_Assigned ).   
+
+
+%%% dada UMA CLASSE DE LOCOMOTIVA retorna Todas lomotivas CANDIDATAS
+find_locs_class([] , _, L_Candidate ) ?=> L_Candidate = [].
+
+find_locs_class([ A | Rest], Which_Class,  L_ATENCAO ) ?=>
+     (Id_Loc, Loc_Class, Position, Time) = A,
+     to_string(Loc_Class) == to_string(Which_Class),
+     Uma_Loc = A,
+     L_ATENCAO = [ Uma_Loc | L_Candidate ],
+     find_locs_class( Rest, Which_Class, L_Candidate) .
+
+find_locs_class([A|Rest], Which_Class, L_Candidate) =>
+    (Id_Loc, Loc_Class, Position, Time) = A,
+     to_string(Loc_Class) != to_string(Which_Class),
+     find_locs_class( Rest, Which_Class, L_Candidate ).
+
+
+%%%   Which_Class = find_loc_in_class(Class, Loc_Classes),
+from_serv_class_loc(Class, []) = L => 
+    L = 'no locomotive for this service class'.
+/*
+ locomotiveClass serviceClass doubleHeadingClass doubleHeadingServiceClass
+ locomotive_Class([('203', 'sdiesel', 'dt_203', 'dt_sdiesel'), 
+*/    
+%%%% DA CLASSE DE SERVICO RETORNA A CLASSE DA LOCOMOTIVA REQUERIDA                   
+from_serv_class_loc(Class, [A|Rest]) = R ,
+    (Locomotive_Class, ServiceClass, DoubleHeadingClass, DoubleHeadingServiceClass) = A,
+    ServiceClass == Class
+    =>  R = Locomotive_Class.
+
+from_serv_class_loc(Class, [A|Rest]) = R  ,  
+        (LocomotiveClass, ServiceClass, DoubleHeadingClass, DoubleHeadingServiceClass) = A,
+        ServiceClass != Class
+        => R = from_serv_class_loc(Class, Rest).
+
+
+%main => locomotives(L), write(L).
+%main => locomotive_Class(L), write(L).
+
+%main => locomotive_Class(L), R1 = from_serv_class_loc('mdiesel', L), write(R1),
+% R2 = from_serv_class_loc('xldual', L),nl, write(R2).
+
+
+%ldual, sdiesel etc
+main => Serv = ('b0006', 'bno', 1672945200, 'dro', 1672970400, 'mdiesel'), 
+        %(Id_Serv, Start_P, Start_T, End_P, End_T, Class) = Serv,
+        locomotives(L),
+        %locomotive_Class(Loc_Classes), %%% NA TABELA das classes x Locomotivas
+        %find_locs_class(Loc_Classes, Class, L_loc_class),
+        %printf("\n %w %w \n", Class, L_loc_class).
+        
+        print(L),
+       
+        find_a_locomotive(Serv, L, L_NEW, Loc), 
+        printf("\n %w %w \n", L_NEW, Loc).
+        %printf(" ONDE ESTAO Locomotiva %w:",L_NEW).
+
+/*
+main => locomotive_Class(L), R1 = find_loc_in_class('mdiesel', L), write(R1),
+ R2 = find_loc_in_class('ldual', L),nl, write(R2).
+*/

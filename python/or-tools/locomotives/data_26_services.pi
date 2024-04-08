@@ -1,13 +1,7 @@
 /* DATA FROM THIS PROBLEM */
-module all_data.
-
-locomotives(['250-1', '250-2', '246-1', '246-2', '203-1', '203-2', '203-3', '203-4']).
-loc_class(['250', '250', '246_285', '246_285', '203', '203', '203', '203']).
-init_location(['dro', 'dro', 'dnm', 'dnm', 'bwur', 'bwur', 'bwur', 'bwur']
-        ).
+module data_26_services.
 
 %%% DADOS dos serviços    
-
 %%% cada serviço tem uma classe exigida
 %% planilha services
 %%%id	startLocation	startDatetime	endLocation	endDatetime	serviceClass
@@ -16,10 +10,16 @@ services([('b0001', 'dro', 1672545600, 'bno', 1672560000, 'ldual'),
 ('b0003', 'dro', 1672718400, 'bno', 1672732800, 'ldual'), ('b0004', 'bno', 1672772460, 'dro', 1672797600, 'ldual'), ('b0005', 'dro', 1672891200, 'bno', 1672905600, 'ldual'), ('b0006', 'bno', 1672945200, 'dro', 1672970400, 'ldual'), ('b0007', 'dnm', 1672696800, 'wm e', 1672736400, 'mdiesel'), ('b0008', 'wm e', 1672783200, 'dnm', 1672822800, 'mdiesel'), ('b0009', 'dnm', 1672869600, 'wm e', 1672909200, 'mdiesel'), ('b0010', 'wm e', 1672956000, 'dnm', 1672995600, 'mdiesel'), ('b0011', 'dnm', 1673042400, 'wm e', 1673082000, 'mdiesel'), ('b0012', 'wm e', 1673128800, 'dnm', 1673168400, 'mdiesel'), ('b0013', 'bwur', 1672567200, 'lmof', 1672570800, 'sdiesel'), ('b0014', 'lmof', 1672592400, 'bwur', 1672596000, 'sdiesel'), ('b0015', 'bwur', 1672740000, 'lmof', 1672743600, 'sdiesel'), ('b0016', 'lmof', 1672765200, 'bwur', 1672768800, 'sdiesel'), ('b0017', 'bwur', 1672912800, 'lmof', 1672916400, 'sdiesel'), ('b0018', 'lmof', 1672938000, 'bwur', 1672941600, 'sdiesel'), ('b0019', 'bwur', 1672837200, 'egbk', 1672873200, 'meloco'), ('b0020', 'egbk', 1672930800, 'bwur', 1672966800, 'meloco'), ('b5001', 'dro', 1672491600, 'dro', 1672520400, 'ldual'), ('b5002', 'bno', 1672563600, 'bno', 1672599600, 'ldual'), ('b5003', 'dro', 1672657200, 'dro', 1672686000, 'ldual'), ('b5004', 'bno', 1672732860, 'bno', 1672772400, 'ldual'), ('b5005', 'dro', 1672837200, 'dro', 1672855200, 'ldual'), 
 ('b5006', 'bno', 1672855201, 'bno', 1672866000, 'ldual')]).
 
-%id	locomotiveClass	locationlocationDatetime
-locomotives[('250-1', 250, 'dro', 1672491600),
- ('250-2', 250, 'dro', 1672491600), ('246-1', '246_285', 'dnm', 1672542000), ('246-2', '246_285', 'dnm', 1672542000), ('203-1', 203, 'bwur', 1672542000), ('203-2', 203, 'bwur', 1672542000), ('203-3', 203, 'bwur', 1672542000), 
-('203-4', 203, 'bwur', 1672542000)]
+%id	locomotive Class	location locationDatetime
+% ONDE ESTAO ETC
+locomotives([('250-1', 250, 'dro', 1672491600),
+    ('250-2', 250, 'dro', 1672491600), 
+    ('246-1', '246_285', 'dnm', 1672542000), 
+    ('246-2', '246_285', 'dnm', 1672542000), 
+    ('203-1', 203, 'bwur', 1672542000), 
+    ('203-2', 203, 'bwur', 1672542000), 
+    ('203-3', 203, 'bwur', 1672542000), 
+    ('203-4', 203, 'bwur', 1672542000)]).
 
 
 % locomotiveClass serviceClass doubleHeadingClass doubleHeadingServiceClass
@@ -31,13 +31,17 @@ locomotive_Class([('203', 'sdiesel', 'dt_203', 'dt_sdiesel'),
               ('185', 'meloco', 'dt_185', 'dt_meloco')]).
 
 %serviceClass	classEquivalence	penalty
-serv_class_equiv[('sdiesel', 'mdiesel', 20),
- ('sdiesel', 'ldiesel', 30),
- ('sdiesel', 'ldual', 30), ('mdiesel', 'dt_sdiesel', 10),
- ('mdiesel', 'ldiesel', 10), ('mdiesel', 'ldual', 20),
-('ldiesel', 'dt_mdiesel', 30), ('ldiesel', 'ldual', 20), 
-('ldual', 'dt_mdiesel', 30), ('ldual', 'ldiesel', 30), 
-('meloco', 'mdiesel', 20), 
-('meloco', 'ldiesel', 20),
- ('meloco', 'ldual', 20)]).
+serv_class_equiv([('sdiesel', 'mdiesel', 20),
+    ('sdiesel', 'ldiesel', 30),
+    ('sdiesel', 'ldual', 30), 
+    ('mdiesel', 'dt_sdiesel', 10),
+    ('mdiesel', 'ldiesel', 10), 
+    ('mdiesel', 'ldual', 20),
+    ('ldiesel', 'dt_mdiesel', 30),
+    ('ldiesel', 'ldual', 20), 
+    ('ldual', 'dt_mdiesel', 30),
+    ('ldual', 'ldiesel', 30), 
+    ('meloco', 'mdiesel', 20), 
+    ('meloco', 'ldiesel', 20),
+    ('meloco', 'ldual', 20)]).
              

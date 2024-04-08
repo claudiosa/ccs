@@ -18,10 +18,11 @@ main =>
     %Services = [(Id, Start, T1, End, T2)| Others_Services], 
     printf("\n Num de servicos: %w\n", len(Services)),
 
+    %L = findall(R,assign(Services, Loc_Place_Time, [], R , W)),  % , {0,W}
+    %printf("\n\n TOTAL de: %w", len(L)).
+    assign(Services, Loc_Place_Time, [], R , W),
     
-    assign(Services, [] , Loc_Place_Time, [], R),
-    
-    printf("\n\n Planos: %w ", R),
+    printf("\n\n Planos: "),
     Plan = reverse( R ),
     printf("\n\n TOTAL de Servicos: %w", len(Plan)),
 
@@ -29,8 +30,8 @@ main =>
     printf("\n QUANTOS REALIZADOS: %w", len(fil_2(Plan))),
 
     printf("\n\n NAO REALIZADOS: %w", fil_1(Plan)),
-    printf("\n QUANTOS NAO REALIZADOS: %w", len(fil_1(Plan))).
-    %printf("\n\n T_FINAL: %w\n",W).
+    printf("\n QUANTOS NAO REALIZADOS: %w", len(fil_1(Plan))),
+    printf("\n\n T_FINAL: %w\n",W).
     %,
     %fail.
     
@@ -38,23 +39,22 @@ main =>
 
 %%% always with current position of ALL locomotives 
 %table(+,+,+,-, min)
-assign(Sevices_OVER, Pending, Loc_Place_Time, Current, All_Serv),
-    % para quando todos serviços forem designados
-    (Sevices_OVER == [],  Pending == [])
-    %len(Current) >= 25) 
+assign(Sevices_OVER, Loc_Place_Time, Current, All_Serv, W),
+% para quando todos serviços forem designados
+   %(len(fil_2(Current)) >=26 )
+    Sevices_OVER == []  
     ?=>
     All_Serv = Current,
-    printf("\n %w", All_Serv).
+    W = 0.
     %Sevices_OVER == []  ;  
        
 %%% always with current position of ALL locomotives  in Loc_Places
-assign(Services_To_Do, Pending, Loc_Place_Time, Current, All_Serv) ?=>
-    Services_To_Do != [],
+assign(Services_To_Do, Loc_Place_Time, Current, All_Serv, W) =>
     % Current: lista das designações  até em então, começa com vazia
     % All_Serv: usado para retorno de Current, pois Current veio como vazia inicialmente
     % It is a function to get the early service in the list
     (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(Services_To_Do),
-     Early = (Id_Next, S_Next, T1_Next, E_Next, T2_Next),
+    
   %  Todas_Local_Tempo = findall(find_soon_service(Services_To_Do)),
   %  printf("\n Todas: %w", Todas_Local_Tempo),
     % (S_Next: where my service start STATION, Loc_Place_Time, - )        
@@ -64,79 +64,43 @@ assign(Services_To_Do, Pending, Loc_Place_Time, Current, All_Serv) ?=>
     
     % printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
     % As a predicate to allow backtracking over this search
-    find_a_locomotive( (S_Next, T1_Next),  Loc_Place_Time, {A_Candidate, T_Wait}),
+    find_a_locomotive((S_Next, T1_Next),  Loc_Place_Time, {A_Candidate, T_Wait}),
     /*** 
         tomar tempo da locomotiva escolhida ... que eh o quanto ela esperava lá desde entao
     ****/
-    if ( A_Candidate == 'X_no_locomotive_X' ) then
+    if ( A_Candidate == 'no_locomotive' ) then
     %% NAO encontra locomotiva naquela estacao de partida
     %% Esta locomotiva eh atualizada na sua posição e quando ficará livre
     (
-        printf("\n PULOU POR ENQUANTO: %w PRECISAVA em: %w", Id_Next, S_Next),
+        printf("\n PULOU: %w PRECISAVA em: %w", Id_Next, S_Next),
         printf("\n As locomotivas estão em: %w", Loc_Place_Time),
         New_Loc_Place_Time = Loc_Place_Time, %%%% nao altera lista das locomotivas
         %% Exclui este serviço
-        Others_Services = delete(Services_To_Do, Early),
-        %% Adiciona para o futuro
-        New_Pending = Pending ++ [(Early)] , 
-        printf("\n Vai para depois: %w AGORA EH %w", Pending,  New_Pending)
-
+        Others_Services = delete(Services_To_Do, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),
+        %% Adiciona esta mensagem para este serviço
+        %append([(Id_Next ,'NO SOLUTION FOR THIS SERVICE')], Current, New_Current)
+        append([(Id_Next ,'xxx')], Current, New_Current)
     )    
     else (
         %%% find a locomotive in that station
         New_Loc_Place_Time = update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
         printf("\n SERV:%w ACHOU:%w EM %w DEIXOU EM %w ", Id_Next, A_Candidate, S_Next, E_Next),
         Others_Services = delete(Services_To_Do, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),
-        append([(Id_Next , A_Candidate)],  Current, New_Current),            
-        New_Pending = Pending
+        append([(Id_Next , A_Candidate)], Current, New_Current)
         )
     end,
 
-    assign( Others_Services, New_Pending, New_Loc_Place_Time, New_Current, All_Serv ).
-    %W = W_temp + (T1_Next - T_Wait).
+    assign(Others_Services, New_Loc_Place_Time, New_Current, All_Serv, W_temp ),
+    W = W_temp + (T1_Next - T_Wait).
     %  printf(" -> %w", W ).
 
-assign( Services_To_Do , Pending, Loc_Place_Time, Current, All_Serv) =>
-        Pending != [],
-        %%% buscar as pendentes....
-        (Id_Next, S_Next, T1_Next, E_Next, T2_Next) = find_soon_service(Pending),
-        Early = (Id_Next, S_Next, T1_Next, E_Next, T2_Next),
-        printf("\n => Serv RETARDATARIO: %w ", Early),
-        % As a predicate to allow backtracking over this search
-        find_a_locomotive( (S_Next, T1_Next),  Loc_Place_Time, {A_Candidate, T_Wait}),
-        /*** 
-            tomar tempo da locomotiva escolhida ... que eh o quanto ela esperava lá desde entao
-        ****/
-        if ( A_Candidate == 'X_no_locomotive_X' ) then
-        %% NAO encontra locomotiva naquela estacao de partida
-        %% Esta locomotiva eh atualizada na sua posição e quando ficará livre
-        (
-            printf("\n RETARDATARIO: %w PRECISAVA em: %w", Id_Next, S_Next),
-            printf("\n As locomotivas estão em: %w", Loc_Place_Time)
-            
-            %% Adiciona esta mensagem para este serviço
-            %append([(Id_Next ,'NO SOLUTION FOR THIS SERVICE')], Current, New_Current)
-        )
-     end,   
-
-            %%% find a locomotive in that station
-        New_Loc_Place_Time = update_position( (A_Candidate, E_Next, T2_Next), Loc_Place_Time),
-        printf("\n SERV:%w ACHOU:%w EM %w DEIXOU EM %w ", Id_Next, A_Candidate, S_Next, E_Next),
-        append([(Id_Next , A_Candidate)],  Current, New_Current),           
-    
-        New_Pending = delete(Pending, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),    
-        printf("\n Pending ====> %w %w %w", New_Pending, Pending, (Id_Next, S_Next, T1_Next, E_Next, T2_Next)),
-        Services = Services_To_Do,
-        assign( Services, New_Pending, New_Loc_Place_Time, New_Current, All_Serv ).
-        %%W = W_temp + (T1_Next - T_Wait).
-    
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 build_tuple_3([],[],[]) = [].
 build_tuple_3([A|L1], [B|L2], [C|L3]) = Ys =>
             Ys = [ (A,B,C) | build_tuple_3(L1,L2,L3)]. 
+
 %% locomotive_ID, Position and time = 0 
 %find_a_locomotive(Start, [], Answer) ?=> Answer = 'NOT MORE LOCOMOTIVES'.
 %%% PREDICATIVE CLAUSE -- need a backtracking
@@ -148,16 +112,15 @@ MAS NAO ADICIONA A MENSAGEM CORRETAMENTE DE SERVICOS
 INVALIDOS
 */
 find_a_locomotive((_, _), [],  {L, T}) ?=> 
-    L = 'X_no_locomotive_X', %'NO LOC in this PLACE',
+    L = 'no_locomotive', %'NO LOC in this PLACE',
     T = 9999999, !.
 
-find_a_locomotive((Station_S, Start_T), [(Locomotive, Where_is, T_Availble)|Rest], {L, T}),
-    Station_S == Where_is, 
-    Start_T >= T_Availble 
-    %%% Locomotiva sai depois  
+find_a_locomotive((Station_S, Start_T), [(Lomotive, Where_is, T_Wait)|Rest], {L, T}),
+    (Station_S == Where_is, 
+    Start_T >= T_Wait)
     ?=>  
-    L = Locomotive,
-    T = T_Availble.
+    L = Lomotive,
+    T = T_Wait.
 
 find_a_locomotive((Station_S, Start_T), [(_,_,_) |Rest],  {L, T}) =>  
     find_a_locomotive((Station_S, Start_T), Rest,  {L, T} ).
@@ -202,7 +165,7 @@ yes
 
 n_3_tupla((_, _, X, _, _)) = X.
 
-menor([]) = R, len([]) == 0 => R = 0.
+menor([]) = R, len([]) == 0 => R = '()'.
 menor([A]) = R, len([A]) == 1 => R = A.              
 menor([A, B | L]) = R, n_3_tupla(A) < n_3_tupla(B) => R = menor([A | L]).    
 menor([A, B | L]) = R, n_3_tupla(B) =< n_3_tupla(A) => R = menor([B | L]).
