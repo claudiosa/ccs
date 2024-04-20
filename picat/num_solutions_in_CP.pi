@@ -1,0 +1,19 @@
+%%picat
+import cp.
+
+model({X,Y}) =>
+   C = 10,
+   D = 10,
+   X :: 1..C,
+   Y :: 1..D,
+   X+Y #= 15,
+    
+   solve([ff,$limit(5)],[X,Y]).
+   %%%printf("\n %w %w \n", X, Y). 
+/*
+main ?=> L = findall({X,Y}, model({X,Y})),
+       printf("\n %w ", L).    
+*/
+main ?=> model({X,Y}),
+       printf("\n %w ", {X,Y}), fail.    
+main => true.
