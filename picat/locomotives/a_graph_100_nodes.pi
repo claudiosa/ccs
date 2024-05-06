@@ -1,0 +1,102 @@
+%module a_graph_100_nodes.
+
+ arc(a001, 'ahroo', 'dro').
+ arc(a002, 'dro', 'bno').
+ arc(a003, 'bno', 'dro').
+ arc(a004, 'dro', 'brc').
+ arc(a005, 'bss u', 'dro').
+ arc(a006, 'dro', 'am n').
+ arc(a007, 'am n', 'ahroo').
+ arc(a008, 'ahroo', 'dro').
+ arc(a009, 'dro', 'ahroo').
+ arc(a010, 'ahroo', 'dro').
+ arc(b001, 'bwur', 'lks').
+ arc(b002, 'lks', 'hclp').
+ arc(b003, 'hclg', 'un').
+ arc(b004, 'un', 'hclp').
+ arc(b005, 'hclp', 'bwur').
+ arc(c001, 'bwur', 'wkgw').
+ arc(c002, 'wkgw', 'bhc').
+ arc(c003, 'bhc', 'bwur').
+ arc(c004, 'bwur', 'bruh').
+ arc(c005, 'bruh', 'bwur').
+ arc(c006, 'bwur', 'bruh').
+ arc(c007, 'bruh', 'bwur').
+ arc(c008, 'bwur', 'bruh').
+ arc(c009, 'bruh', 'bwur').
+ arc(c010, 'bwur', 'lfg').
+ arc(c011, 'lfg', 'awi').
+ arc(c012, 'hwid', 'lgs').
+ arc(c013, 'lgs', 'bwur').
+ arc(d001, 'bwur', 'bhc').
+ arc(d002, 'bhc', 'wcor').
+ arc(d003, 'wcor', 'bwur').
+ arc(d004, 'bwur', 'lgs').
+ arc(d005, 'lgs', 'hcn').
+ arc(d006, 'hcn', 'hwum').
+ arc(d007, 'hwum', 'hsr').
+ arc(d008, 'hsr', 'hcn').
+ arc(d009, 'hcn', 'bwur').
+ arc(e001, 'lqb', 'hhar').
+ arc(e002, 'hhar', 'hlat').
+ arc(e003, 'hlat', 'hhar').
+ arc(e004, 'hhar', 'lqb').
+ arc(e005, 'lqb', 'hv').
+ arc(e006, 'hv', 'lqb').
+ arc(f001, 'bwur', 'bspj').
+ arc(f002, 'bspj', 'bwur').
+ arc(f003, 'bwur', 'lmuk').
+ arc(f004, 'lmuk', 'lbrw').
+ arc(f005, 'lbrw', 'hsr o').
+ arc(f006, 'hsr o', 'hoch').
+ arc(f007, 'hoch', 'hoch').
+ arc(f008, 'hoch', 'hoch').
+ arc(f009, 'hoch', 'lbrw').
+ arc(f010, 'lbrw', 'lmuk').
+ arc(f011, 'lmuk', 'hsr o').
+ arc(f012, 'hsr o', 'hold').
+ arc(f013, 'hold', 'hsr o').
+ arc(f014, 'hsr o', 'lbrw').
+ arc(f015, 'lbrw', 'lmuk').
+ arc(g001, 'hgrd', 'hesh').
+ arc(g002, 'hesh', 'hcn').
+ arc(g003, 'hcn', 'lqb').
+ arc(g004, 'lqb', 'hwtt').
+ arc(g005, 'hwtt', 'hbwk').
+ arc(g006, 'hbwk', 'hgrd').
+ arc(g007, 'hgrd', 'hwbk').
+ arc(g008, 'hbwk', 'hgrd').
+ arc(g009, 'hgrd', 'hsan').
+ arc(g010, 'hsan', 'hgrd').
+ arc(h001, 'hp', 'habz').
+ arc(h002, 'habz', 'un').
+ arc(h003, 'un', 'awlb').
+ arc(h004, 'hlerw', 'uim').
+ arc(h005, 'uim', 'uei g').
+ arc(h006, 'uei g', 'uim').
+ arc(h007, 'uim', 'uei g').
+ arc(h008, 'uei g', 'bwur').
+ arc(h009, 'bwur', 'wak').
+ arc(h010, 'wak', 'bwur').
+ arc(i001, 'wpl', 'dsut').
+ arc(i002, 'dsut', 'dbw').
+ arc(i003, 'dbw', 'daf').
+ arc(i004, 'daf', 'wrs').
+ arc(i005, 'wrs', 'bwur').
+ arc(i006, 'bwur', 'dsut').
+ arc(i007, 'dust', 'daf').
+ arc(i008, 'daf', 'lf').
+ arc(i009, 'lf', 'wn').
+ arc(i010, 'wn', 'bwur').
+ arc(j001, 'hli', 'fwki').
+ arc(j002, 'fwki', 'hg').
+ arc(j003, 'hg', 'fwki').
+ arc(j004, 'fwki', 'hg').
+ arc(j005, 'hg', 'ala').
+ arc(j006, 'ala', 'bwur').
+ arc(j007, 'ls', 'bhc').
+ arc(j008, 'bhc', 'bno').
+ arc(j009, 'bno', 'lgs').
+ arc(j010, 'lgs', 'wsgr').
+ arc(j011, 'wlst', 'wcor').
+ arc(j012, 'wcor', 'bwur').

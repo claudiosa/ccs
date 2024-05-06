@@ -1,0 +1,145 @@
+%%picat
+/* input data  */
+import data_26_services.
+import util.
+import datetime.
+import planner.
+
+/* pontos iniciais e finais do problema */
+%% for the planner
+final( {[] , _ } ) => true .
+
+
+main ?=>
+    locomotives(Loc),
+    init_location(Init_Location), 
+    init_time(Init_Time), 
+
+    Loc_Place_Time = build_tuple_3(Loc, Init_Location, Init_Time),
+    print(Loc_Place_Time),
+
+    services(Services), %% from Excell
+    printf("\n Num de servicos: %w\n", len(Services)),
+    printf("\n Num de Loc: %w\n", len(Loc)),
+    S0 = {Services, Loc_Place_Time},
+    printf("\n Initial STATES \n"),
+    printf("\n Services : %w\n", Services),
+    printf("\n Locomotives, Stations, Times : %w\n", Loc_Place_Time),
+    %plan(S0, Sol_Acoes),
+
+    best_plan_unbounded(S0 , Sol_Acoes), 
+    println(sol_ACTIONS=Sol_Acoes),
+    
+    printf("\n Services Assigned X Locomotives: \n"),
+    print_list(Sol_Acoes),
+    printf("\n Services Assigned:  %w\n", len(Sol_Acoes)).
+    
+main => printf("\n\n NO MORE SOLUTIONS").
+
+print_list([]) =>
+    true.
+print_list([ X | Xs]) =>
+    printf("\n => %w", X),
+    print_list(Xs).
+
+
+/* Describing the possible actions ==> for the planner */
+/* ONE LOCOMOTIVE */
+action({L_inp, Loc}, S1, Action, Action_Cost ) ?=>
+    Action_Cost = 1,
+    [ S | Services_To_Do ] = L_inp, 
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+   
+    find_locomotives( S, Loc, L_Locomotives ),
+    ( len(L_Locomotives) >= 1
+    ),  %% conditions
+    % printf("\n Candidatas: %w \n em S: %w", L_Locomotives, S ),
+    [(A_Candidate, _, _) | _ ] = L_Locomotives,
+    
+    Loc_New = update_position((A_Candidate, End_P, End_T), Loc),
+   
+	Action = {(Id_Serv, A_Candidate)} , %%a description
+	S1 = { Services_To_Do, Loc_New}.
+
+/* TWO LOCOMOTIVES */
+action({L_inp, Loc}, S1, Action, Action_Cost ) ?=>
+    Action_Cost = 10,
+    [ S | Services_To_Do ] = L_inp, 
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+   
+    find_locomotives( S, Loc, L_Locomotives ),
+    (len(L_Locomotives) >= 2
+    ),  %% conditions
+
+    [(Locomotive_01, Station_01, T_01), (Locomotive_02, Station_02, T_02) | _ ] = L_Locomotives,
+    % printf("\n Candidatas: %w e %w", Locomotive_01, Locomotive_02 ),
+    Loc_New_01 = update_position((Locomotive_01, End_P, End_T), Loc),
+    Loc_New_02 = update_position((Locomotive_02, End_P, End_T), Loc_New_01),
+   
+	Action = {(Id_Serv, Locomotive_01), (Id_Serv, Locomotive_02)} , %%a description
+    % printf("\n ACTION: %w", Action ),
+	S1 = { Services_To_Do, Loc_New_02 }.	
+
+action({L_inp, Loc}, S1, Action, Action_Cost ) =>
+    Action_Cost = 100,
+    [ S | Services_To_Do ] = L_inp, 
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+   
+    find_locomotives( S, Loc, L_Locomotives ),
+    ( len(L_Locomotives) == 0
+    ),  %% conditions
+    
+    Loc_New =  Loc,
+   
+	Action = {(Id_Serv, "NO LOCOMOTIVE AVAILBLE")} , %%a description
+	S1 = { Services_To_Do, Loc_New}.
+    
+/* END PLANNER */
+
+%% id	locomotiveClass 	location	locationDatetime
+%% find_a_locomotive(A_Candidate, Loc, New_Loc, Loc_Assigned )
+
+find_locomotives(_, [], R ) ?=>  R = [].
+find_locomotives(S, Linp, Lout ) ?=>
+    %printf("\n S: %w \t %w ", S , Linp),	
+    Linp =  [ A | L1],
+    Lout = [ B | L2 ],
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+    (Id_Loc, Position, Time) = A,
+    (Position == Start_P,
+    Time =< Start_T),
+    %B = (Id_Loc, End_P, End_T),
+    B = (Id_Loc, Position, Time), %%% selecionada
+    find_locomotives(S, L1, L2 ).
+
+find_locomotives(S, Linp, Lout ) =>
+    Linp =  [ A | L1],
+    Lout =  L2 ,
+    S = (Id_Serv, Start_P, Start_T, End_P, End_T),
+    A = (Id_Loc, Position, Time),
+    (Position != Start_P ;
+        Time > Start_T),
+    find_locomotives(S, L1, L2 ).   
+
+%%%%%%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
+update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
+update_position((A_Loc, E_Next, T_Next), [(Loc_Curr, Where_is, When) | Rest]) = New_Loc_Place
+              , (A_Loc == Loc_Curr) =>
+               New_Loc_Place = [(A_Loc, E_Next, T_Next) | Rest].
+
+update_position((A_Loc, E_Next, T_Next), [(Loc_Curr, Where_is, When)|Rest]) = New_Loc_Place
+        , (A_Loc != Loc_Curr) => 
+        New_Loc_Place = [(Loc_Curr, Where_is, When) | update_position((A_Loc, E_Next, T_Next), Rest) ].
+
+/*
+x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',bwur,0),('159-004',lqb,0)],
+    write(L),
+    update_position(('159-002',flor,0), L) = K,
+    write(K).
+*/
+
+% Recursiva - predicativa
+build_tuple_3([],[],[]) = [].
+build_tuple_3([A|L1], [B|L2], [C|L3]) = Ys =>
+            Ys = [ (A,B,C) | build_tuple_3(L1,L2,L3)].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

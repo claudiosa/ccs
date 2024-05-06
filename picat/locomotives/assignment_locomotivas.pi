@@ -1,0 +1,164 @@
+%%picat
+/* input data  */
+import data_26_services.
+import util.
+
+main ?=>
+    locomotives(Loc),
+    init_location(Init_Location), 
+    init_time(Init_Time), 
+
+    Loc_Place_Time = build_tuple_3(Loc, Init_Location, Init_Time),
+    print(Loc_Place_Time),
+
+    services(Services), %% from Excell
+    printf("\n Num de servicos: %w\n", len(Services)),
+    printf("\n Num de Loc: %w\n", len(Loc)),
+
+    assign(Services, Loc_Place_Time, [], Resp, P) ,
+    printf("\n Servicos executados:  %w", len(Resp)),
+    printf("\n Servicos: %w\n\n P:%w", Resp, P).
+    %,
+    %fail.
+    
+main => printf("\n\n NO MORE SOLUTIONS").
+
+%%% always with current position of ALL locomotives 
+%table(+,+,+,-, min)
+% para quando todos serviços forem designados
+/*
+assign( Sevices_OVER , Loc, Curr_Serv_Assigned, R, P),
+    Sevices_OVER == [] ?=>
+    R = Curr_Serv_Assigned,      
+    P = 0.
+*/
+assign( [] , Loc, Curr_Serv_Assigned, R, P) ?=>
+    %Sevices_OVER == [],
+    R = Curr_Serv_Assigned,      
+    P = 0.
+    %Sevices_OVER == []  ;  
+       
+%%% always with current position of ALL locomotives  in Loc_Places
+%%%Loc_Class, Serv_Class_Equiv ==> tabelas de consulta
+%Loc_Class, Serv_Class_Equiv ===> usar como consulta apenas
+
+%%% Services ALREADY SORTED
+%%% services, locomotives, positions and time; and Serv_Assigned until
+assign( L_inp, Loc, Serv_Assigned, R, P) ?=>    
+    % Current: lista das designações  até em então, começa com vazia
+    % All_Serv: usado para retorno de Current, pois Current veio como vazia inicialmente
+    % It is a function to get the early service in the list
+    %%% ESTE EH O SERVICO
+    [S | Services_To_Do] = L_inp, 
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+   
+    find_locomotives( S, Loc, L_Locomotives ),
+    printf("\n\n SERVICO CORRENTE na FILA: %w \n ONDE ESTAO LOCOMOTIVAS:   %w \n", S, Loc),
+    printf(" Candidatas: %w", L_Locomotives ),
+    %!,
+    if (L_Locomotives != []) then
+        member(A_Locomotive, L_Locomotives),
+        (Loc_Assigned, Position, Time) = A_Locomotive,
+    
+    % (S_Next: where my service start STATION, Loc_Place_Time, - )        
+    % T1_Next: when this service starts
+    % E_Next: where this service finish
+    % T2_Next: when this service ends
+    
+    % printf("\n => Serv: %w Precisa_em: %w  no_T1:%w  FIM_em:%w no_T2:%w ", Id_Next, S_Next, T1_Next, E_Next, T2_Next),
+    % As a predicate to allow backtracking over this search
+       
+        append([(Id_Serv, Loc_Assigned)], Serv_Assigned, New_Current),
+        New_Loc = update_position( (Loc_Assigned, End_P, End_T), Loc )
+    else
+        append([(Id_Serv, 'NO LOCOMOTIVE UNDER THIS CONFIGURATION')], Serv_Assigned, New_Current),
+        New_Loc =  Loc 
+    end,
+
+    assign(Services_To_Do, New_Loc, New_Current, R,  P_temp),
+    P = P_temp + 1.
+
+    %  printf(" -> %w", W ).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+        Picat> "250"==to_string(250).
+        Picat> '111'==to_atom("111").
+
+Picat> X=to_string(250). 
+X = ['2','5','0']
+yes
+
+Picat> X=to_string('250').
+X = ['2','5','0']
+
+*/       
+%% id	locomotiveClass 	location	locationDatetime
+%%%find_a_locomotive(A_Candidate, Loc, New_Loc, Loc_Assigned )
+
+find_locomotives(_, [], R ) ?=>  R = [].
+find_locomotives(S, Linp, Lout ) ?=>
+    %printf("\n S: %w \t %w ", S , Linp),	
+    Linp =  [ A | L1],
+    Lout = [ B | L2 ],
+    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+    (Id_Loc, Position, Time) = A,
+    (Position == Start_P,
+    Time =< Start_T),
+    %B = (Id_Loc, End_P, End_T),
+    B = (Id_Loc, Position, Time), %%% selecionada
+    find_locomotives(S, L1, L2 ).
+
+find_locomotives(S, Linp, Lout ) =>
+    Linp =  [ A | L1],
+    Lout =  L2 ,
+    S = (Id_Serv, Start_P, Start_T, End_P, End_T),
+    A = (Id_Loc, Position, Time),
+    (Position != Start_P ;
+        Time > Start_T),
+    find_locomotives(S, L1, L2 ).        %% pensar depois aqui. 
+
+
+%%%Picat> locomotives(X), init_location(Y), T= build_tuple(X,Y), find_a_L(ahroo, T)= Z.
+%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
+update_position((A_Loc, E_Next, T2_Next), [] ) = R => R = [].
+update_position((A_Loc, E_Next, T2_Next), [(Loc_Curr, Where_is, When) | Rest]) = New_Loc_Place
+              , (A_Loc == Loc_Curr) =>
+               New_Loc_Place = [(A_Loc, E_Next, T2_Next) | Rest].
+update_position((A_Loc, E_Next, T2_Next), [(Loc_Curr, Where_is, When)|Rest]) = New_Loc_Place
+        , (A_Loc != Loc_Curr) => 
+        New_Loc_Place = [(Loc_Curr, Where_is, When) | update_position((A_Loc, E_Next, T2_Next), Rest) ].
+
+/*
+x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',bwur,0),('159-004',lqb,0)],
+    write(L),
+    update_position(('159-002',flor,0), L) = K,
+    write(K).
+
+Picat> update_position(('159-010',flor,10) , [('159-008',ahroo,0) , ('159-002',bwur,0) , ('159-010', bwur,0)]) = X.  
+X = [('159-008',ahroo,0),('159-002',bwur,0),('159-010',flor,10)]
+yes
+*/
+
+% Fazer recursiva - predicativa
+
+%n_3_tupla((_, _, X, _, _)) = X.
+
+
+fil_1(L) = R , len(L) == 0 => R = [].
+fil_1([(A,B)|L]) = R , B == 'xxx' =>
+    R = [(A,B) | fil_1(L)].
+fil_1([(A,B)|L]) = R  =>
+    R =  fil_1(L).
+
+fil_2(L) = R , len(L) == 0 => R = [].
+fil_2([(A,B)|L]) = R , B != 'xxx' =>
+    R = [(A,B) | fil_2(L)].
+fil_2([(A,B)|L]) = R  => R = fil_2(L).
+
+build_tuple_3([],[],[]) = [].
+build_tuple_3([A|L1], [B|L2], [C|L3]) = Ys =>
+            Ys = [ (A,B,C) | build_tuple_3(L1,L2,L3)].
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,53 @@
+import util.
+main =>
+   
+   S=[(b0020,egbk,439200,bwur,475200),
+      (b5001,dro,0,dro,28800),
+      (b5002,bno,72000,bno,108000),
+      (b5003,dro,165600,dro,194400),
+      (b5004,bno,241260,bno,280800),
+      (b5005,dro,345600,dro,363600),
+      (b5006,bno,-363601,bno,374400)], 
+   printf("\n %w \n", S),
+   my_sort(S,L1),
+   h_sort(S,L2), 
+   write(L1), nl,
+   write(L2),
+   printf("\n %w %w %w \n", len(S), len(L1), len(L2)) .
+
+%my_sort([], R) ?=> R  = [].
+%my_sort([A], [R]), len([A]) == 1  ?=>  R = A.
+my_sort([], A) ?=> A = [].
+my_sort([A], AL) ?=> AL = [A].
+
+my_sort([A,B|L], Menor_L1) ?=>
+   %[Menor|L1] = Menor_L1, % fixed by hakank
+    (_,_,Xa,_,_) = A,
+    (_,_,Xb,_,_) = B,
+    Xa @< Xb, % hakank: Using @< instead of <
+    Menor = A,
+    Menor_L1 = [Menor|L1],
+    my_sort([B|L], L1).
+
+my_sort([A,B|L], Menor_L1) =>
+    %[Menor|L1] = Menor_L1,  % fixed by hakank
+    (_,_,Xa,_,_) = A,
+    (_,_,Xb,_,_) = B,
+    Xa @>= Xb,
+    Menor = B,
+    Menor_L1 = [Menor|L1],
+    my_sort([A|L], L1).
+
+%%% by Hakan
+h_sort([], []).
+h_sort([A], [A]).
+h_sort([A,B|L], [Menor|L1]) :-
+    (_,_,Xa,_,_) = A,
+    (_,_,Xb,_,_) = B,
+    ( Xa @< Xb ->
+       Menor = A,
+       h_sort([B|L], L1)
+    ;
+      Menor = B,    
+      h_sort([A|L], L1)
+    ).

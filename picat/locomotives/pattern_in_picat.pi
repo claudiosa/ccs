@@ -1,0 +1,49 @@
+
+import util.
+main ?=>
+ L = [(5,dro), (11,dro), (51,dro), (488,dro)],
+ X = (50,dro),
+  printf("\n X:%w  L:%w \n L2:%w", X, L, L2),
+ L3 = find_2(X, L),
+ find_N(X,L,L2),
+ printf("\n X:%w  L:%w \n L2:%w \n L3:%w", X, L, L2, L3).  
+
+main => true.
+
+%%% FUNCTIONAL VIEW -- ANY BACKTRACKING IS ALLOWED
+find_2( _ , L ) = R,  len(L)==0 =>  R = [].
+find_2( S, Linp ) = R =>
+    Linp =  [ A | L],
+    (Num, Name) = S,
+    (Num_A, Name_A) = A,
+    %printf("\n S:%w  A:%w", S, A), 
+    %% NO BACKTRACKING
+    if (Num <= Num_A &&  Name == Name_A) then
+    	R = [ A | find_2(S, L) ]
+    else
+    	R = find_2(S, L)
+    end.
+
+/*****************************/
+%%% LOGIC VIEW --  BACKTRACKING IS ALLOWED AND EXPLICITED
+find_N(_, L, R ) ?=>  len(L)==0 , R = [].
+find_N( S, Linp, Lout ) ?=>
+    Linp =  [ A | L1],
+    Lout = [ B | L2 ],
+    (Num, Name) = S,
+    (Num_A, Name_A) = A,
+     B = (Num_A, Name_A),
+    %printf("\n A:%w  S:%w", A, S), 
+    Num <= Num_A,
+    Name == Name_A,
+    find_N(S, L1, L2 ).
+
+find_N( S, Linp, Lout ) =>
+    Linp =  [ A | L1],
+    Lout =  L2 ,
+    (Num, Name) = S,
+    (Num_A, Name_A) = A,
+     (Num > Num_A ;
+      Name != Name_A),
+     find_N(S, L1, L2 ).
+       

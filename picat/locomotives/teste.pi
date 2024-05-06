@@ -1,0 +1,138 @@
+%%picat
+import input_conectividade_100.
+import a_graph_100_nodes.
+import util.
+
+main ?=>
+    init_location(Init), 
+    locomotives(Loc),
+    services(S),
+    %printf("\n Init Locations: %w ",Init),
+    %printf("\n Locomotives: %w ", Loc ),
+    %printf("\n ARCOS: ORIGEM -> DESTINO: "),
+    %listar_arcos(S),
+    %transform_S_G(S,G),
+%% EXEMPLOS 
+%[{a001,ahroo,dro},{a002,dro,bno},{a003,bno,dro},{a004,dro,brc},{a005,bss u,dro},{a006,dro,am n},{a007,am n,ahroo},{a008,ahroo,dro}
+    %printf("\n Grafo: %w" , G),
+    Start = (a001,ahroo,dro),
+    % End = (a004,dro,brc),
+    % End = (a006,dro,am n),
+    End = (a008, 'ahroo', 'dro'),
+    print(End),
+    printf("\n Init: %w \t End : %w \n\n" , Start, End),
+    %listar_arcos(S),
+    %find_all(arc(X,Y,Z), S)
+    %trace,
+    conectado_DFS(End, [Start] , L_sol),
+    %notrace,
+    printf("\n SOL: %w" , reverse(L_sol)),
+    printf("\n END MAIN OK").
+    
+main => true.
+
+%%%%%%%%%%%%%%% CASAMENTO DE PADROES   %%%%%%%%%%%%  SURRA
+%% cond. de parada.... o n� corrente � o desejado
+conectado_DFS(End, [ Current | Caminho] , L_sol) ?=>
+     %%% condicao de parada 1
+    (Arco_1, Origem_1, Destino_1 ) = End,
+    (Arco_2, Origem_2, Destino_2 ) = Current,
+    printf(" \n  ==> End: %w  || Current: %w ", End, Current),
+    %printf(" \n  ==> O1: %w  || D2: %w ",  Origem_1, Destino_2),
+    ( End == Current ),
+
+    /*
+    ;
+    (Size = len([ Current | Caminho]),
+     printf("\n Size %w", Size),
+     Size == 10),
+     */
+     L_sol = [ Current | Caminho ],
+      
+     printf(" \n UMA SOLUCAO ....: OK\n ==>"). 
+
+ conectado_DFS(End, [ Current | Caminho] , L_sol) ?=>
+    
+       (Arco_2, Origem_2, Destino_2 ) = Current,
+       (Arco_2 == 'xxxx'; Origem_2 =='xxxx'),
+        L_sol = [ Current | Caminho ],
+        %%% condicao de parada 2
+          
+        printf(" \n SEM SOLUCAO ....: OK\n ==>"). 
+ 
+conectado_DFS(End,  L_inp , L_sol) =>
+    [ Current | Caminho] = L_inp ,
+    
+%%% explorar um novo movimento ou um novo noh
+    %novo_no(Current , Novo_NoH, Graph), 
+    new_node(Current , Novo_NoH),
+    printf("\n   Current: %w :: Novo: %w   Caminho: %w", Current,  Novo_NoH,  Caminho ), /*** UM NEXT ****/
+           %% testar se este novo noh nao foi visitado ainda
+           %% ou novo_NOH eh permitido
+    not( member(Novo_NoH, L_inp ) ),
+           %printf(" \n novo %w %w %w", Novo_NoH, NoH, Caminho),
+           %OU  append([Novo_NoH], Linp, Lout),
+           %%%%
+    conectado_DFS(End,  [Novo_NoH , Current | Caminho ] , L_sol).
+
+/**********************************************************/
+
+listar_arcos( [] ) ?=> true.
+listar_arcos([ No | L]) =>
+    (Arco, Origem, _, Destino,_ ) = No, %%%% CUIDAR # de argumentos...
+    %printf("\n %w: %w -> %w", Arco, Origem, Destino ),
+    printf("\n arc(%w, '%w', '%w').", Arco, to_string(Origem), to_string(Destino) ),
+    listar_arcos( L ).
+
+%%%%[{h007,uim,uei g},{h008,uei g,bwur},{a005,bss u,dro},{a006,dro,am n}]
+/*
+conectado(X,Y) ?=> 
+    {X1,X2,X3} = X,
+    {Y1,Y2,Y3} = Y,
+     X3 == Y2,
+    arco(X,Y).
+conectado(X,Y) => arco(X,Z), 
+                  conectado(Z,Y).
+*/
+
+new_node(X,Y) ?=> 
+    X = (Arco_1, Origem_1, Destino_1 ),
+    arc(Arco_1, Origem_1, Destino_1 ),
+    arc(Arco_2, Origem_2, Destino_2 ),
+    Y = (Arco_2, Origem_2, Destino_2 ),                 
+    to_string(Destino_1) == to_string(Origem_2).
+    
+new_node(X,Y) => Y = ('xxxx','xxxx', 'xxxx').
+    
+novo_no(No_corrente , Novo_No, Graph) ?=>
+     {Arco, Origem, Destino} = No_corrente,
+     Graph == [],
+     Novo_No = {'PAROU AQUI', Origem, Destino}.
+
+     novo_no(No_corrente , Novo_No, Graph) ?=>
+        {Arco, Origem, Destino} = No_corrente,
+        [Next | L ] = Graph,  
+        {A2, O2, D2} = Next,
+        to_string(Destino) == to_string(O2),
+        Novo_No =  {A2, O2, D2},
+        printf("\n Dest %w == O2 %w [Next %w]", Destino, O2, Next ). /*** UM NEXT ****/
+   
+novo_no(No_corrente , Novo_No, Graph) =>
+     {Arco, Origem, Destino} = No_corrente,
+     [Next | L ] = Graph,  
+     {A2, O2, D2} = Next,
+     to_string(Destino) != to_string(O2),
+     printf("\n Dest %w != %w (O2) [Next %w]", Destino, O2, Next ), /*** UM NEXT ****/
+     novo_no(No_corrente , Novo_No, L).
+
+     transform_S_G(S, R), S==[] ?=>  R=[].   
+        transform_S_G( Linp, Lout ) ?=>  
+            [Serv|L1] = Linp, 
+            [No|L2] = Lout,
+            (Arco, Origem, _, Destino,_ ) = Serv,
+            to_string(Origem) = O2,
+            to_string(Destino) = D2,
+            {Arco, O2, D2} = No,
+            transform_S_G(L1, L2).
+        
+

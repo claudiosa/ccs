@@ -1,0 +1,24 @@
+
+main =>
+    L = [('b5004', 'bno', 1672732860, 'bno', 1672772400),
+         ('b5005', 'dro', 1672837200, 'dro', 1672855200),
+         ('b5006', 'bno', 1672855201, 'bno', 1672866000)],
+   my_sort(L,L1),
+   write(L1).
+
+my_sort([], []) ?=> true.
+my_sort([A], [A]) ?=> true.
+my_sort([(A),(B)|L], [(Menor)|L1]) ?=>
+    write('xxx'),
+    (_,_,Xa,_,_) = A,
+    (_,_,Xb,_,_) = B,
+    Xa < Xb,
+    Menor = A,
+    my_sort([(B)|L], L1).
+my_sort([(A),(B)|L], [(Menor)|L1]) =>
+    write('yyy'),
+    (_,_,Xa,_,_) = A,
+    (_,_,Xb,_,_) = B,
+    Xa >= Xb,
+    Menor = B,
+    my_sort([(A)|L], L1).

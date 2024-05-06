@@ -236,3 +236,27 @@ update_position(Locomotive , Final, [(Loc_CURR, Where_is) | Rest]) = New_Loc_Pla
 
 %update_position('159-008', jlle, [('159-008',ahroo),('159-002',bwur),('159-219',bwur),('159-010',bwur)], X).
 %            cl('my_lists.pi').          
+
+% L = [(5,dro), (11,dro), (51,dro), (488,dro)],
+% X = (50,dro),
+
+find_N(_, L, R ) ?=>  len(L)==0 , R = [].
+find_N( S, Linp, Lout ) ?=>
+    Linp =  [ A | L1],
+    Lout = [ B | L2 ],
+    (Num, Name) = S,
+    (Num_A, Name_A) = A,
+     B = (Num_A, Name_A),
+    printf("\n A:%w  S:%w", A, S), 
+    Num <= Num_A,
+    Name == Name_A,
+    find_N(S, L1, L2 ).
+
+find_N( S, Linp, Lout ) =>
+    Linp =  [ A | L1],
+    Lout =  L2 ,
+    (Num, Name) = S,
+    (Num_A, Name_A) = A,
+     (Num > Num_A ;
+      Name != Name_A),
+     find_N(S, L1, L2 ).
