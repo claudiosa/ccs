@@ -1,4 +1,7 @@
 %%picat
+%%% REACHABILITY of a GRAPH ... practical application
+%%% TEMPORAL QUESTIONS ARE NOT CONSIDERED
+
 import input_conectividade_100.
 import a_graph_100_nodes.
 import util.
@@ -15,14 +18,19 @@ main ?=>
     %listar_arcos(S),
     %transform_S_G(S,G),
     %printf("\n Grafo: %w" , G),
-    %Start = (a001,ahroo,dro),
+    %Start = (f005,lbrw,'hsr o'), %(a001,ahroo,dro),
+    %Start = (_,_,'hsr o'), %(a001,ahroo,dro),
+    %End = (f010,lbrw,lmuk), %(a006,dro,'am n'),
+    %End = (_,_,lmuk),
     %Start = (_,_,dro), %%% OK
-    Start = (_,_,bwur), %%% OK
+    %Start = (_,_,bwur), %%% OK
     %End = (a0024,dro,brc),
-    %End = (a006,dro,'am n'),
+    %
     %End = (a008, 'ahroo', 'dro'),
-    End = (f012,'hsr o','hold'), %%% OK
+    %End = (f012,'hsr o','hold'), %%% OK
     %End = (_,_,'hold'),
+/*    
+    %%% to run isolated
     printf("\n Init: %w \t End : %w " , Start, End),
 
     Depth := 1,%% tem um na lista... o nos Start
@@ -31,12 +39,14 @@ main ?=>
     connected_DFS(End, [Start] , L_sol, Depth, Max_Nodes),
     printf("\n SOL: %w \n  Serv Number: %w" , reverse(L_sol), len(L_sol)),
 
-
-/* %%% BLOCk
-
-    foreach(I in Init_Locations )
-        Start := (_,_,I),
-        printf("\n Init: %w \t End : %w " , Start, End),
+*/
+ %%% BLOCk
+%End = (_,_,lmuk),
+End = (_,_,_), %%% ANY NODE to END from these locations
+Locations = [ahroo,bwur,bwur,bwur,lqb,bspj,hesh,habz,wak,dsut,fwki], 
+    foreach(I in Locations )
+        Start := (_,I,_),
+        printf("\n Init Location: %w \t Any End Node: %w " , I , End),
     
         Depth := 1,%% tem um na lista... o nos Start
       
@@ -44,7 +54,7 @@ main ?=>
         connected_DFS(End, [Start] , L_sol, Depth, Max_Nodes),
         printf("\n SOL: %w \n  Serv Num: %w" , reverse(L_sol), len(L_sol))
     end,   
-*/
+
     printf("\n END MAIN OK\n").
     
 main => true.
@@ -57,21 +67,21 @@ connected_DFS(End, [ Current | Caminho] , L_sol, Depth, Max_Nodes) ?=>
     (Arco_2, Origem_2, Destino_2 ) = Current,
     %printf(" \n  ==> End: %w  || Current: %w ", End, Current),
     %printf(" \n  ==> O1: %w  || D2: %w ",  Origem_1, Destino_2),
-    End == Current ,
+    Destino_1 == Origem_2,
+  %  End == Current ,   %%% FULL MATCH -- DANGEROUS
     Depth <= Max_Nodes,
-   
-    L_sol = [ Current | Caminho ],
+    L_sol = [ Current | Caminho ].
       
-    printf(" \n A SOLUTION:%w \n Depth %w \n ==>", L_sol, Depth). 
+ %   printf(" \n ONE SOLUTION:%w \n Depth %w \n ==>", L_sol, Depth). 
 
  connected_DFS(End, [ Current | Caminho] , L_sol, Depth, Max_Nodes) ?=>
-    
+%%% condicao de parada 2    
        (Arco_2, Origem_2, Destino_2 ) = Current,
        ((Arco_2 == 'xxxx'; Origem_2 =='xxxx');
         ( Depth > Max_Nodes )),
-        L_sol = [ Current | Caminho ],
-        %%% condicao de parada 2
-        printf(" \n SEM SOLUCAO .... <==>"),!. 
+        L_sol = [ Current | Caminho ].
+
+%        printf(" \n No Solution: %w until node: %w", L_sol, End). 
  
 connected_DFS(End,  L_inp , L_sol, Depth, Max_Nodes) =>
  
@@ -87,7 +97,7 @@ connected_DFS(End,  L_inp , L_sol, Depth, Max_Nodes) =>
     connected_DFS(End,  [Novo_NoH , Current | Caminho ] , L_sol, Depth+1, Max_Nodes).
 
 /******************************************************************************************/
-
+/* USED to build the graph in arcs */
 listar_arcos( [] ) ?=> true.
 listar_arcos([ No | L]) =>
     (Arco, Origem, _, Destino,_ ) = No, %%%% CUIDAR # de argumentos...
@@ -114,42 +124,25 @@ new_node(X,Y) ?=>
     Y = (Arco_2, Origem_2, Destino_2 ),                 
     to_string(Destino_1) == to_string(Origem_2).
 
-new_node(X,Y) => 
-    X = (Arco_1, Origem_1, Destino_1 ),
+/*** NO REACHABLE or no solution  for this NODE Y*/
+new_node(X,Y) => Y = ('xxxx','xxxx', 'xxxx').
+/* USED for halt condition */    
+
+/*
+ A route can be derived from here without DFS,
+ but as we using a DFS ... not necessary
+
+new_node(X,Y) ?=> 
     arc(Arco_1, Origem_1, Destino_1 ),
     arc(Arco_2, Origem_2, Destino_2 ),
+    X = (Arco_1, Origem_1, Destino_1 ),
     Z = (Arco_2, Origem_2, Destino_2 ),                 
     to_string(Destino_1) == to_string(Origem_2),
    new_node(Z,Y).
-           
-%novo_no(X,Y) => Y = ('xxxx','xxxx', 'xxxx').
-
-/*    
-novo_no(No_corrente , Novo_No, Graph) ?=>
-     {Arco, Origem, Destino} = No_corrente,
-     Graph == [],
-     Novo_No = {'PAROU AQUI', Origem, Destino}.
-
-    new_node(No_corrente , Novo_No, Graph) ?=>
-        {Arco, Origem, Destino} = No_corrente,
-        [Next | L ] = Graph,  
-        {A2, O2, D2} = Next,
-        to_string(Destino) == to_string(O2),
-        Novo_No =  {A2, O2, D2},
-        printf("\n Dest %w == O2 %w [Next %w]", Destino, O2, Next ). 
-   
-novo_no(No_corrente , Novo_No, Graph) =>
-     {Arco, Origem, Destino} = No_corrente,
-     [Next | L ] = Graph,  
-     {A2, O2, D2} = Next,
-     to_string(Destino) != to_string(O2),
-     printf("\n Dest %w != %w (O2) [Next %w]", Destino, O2, Next ),
-    new_node(No_corrente , Novo_No, L).
-
 */
 
-     transform_S_G(S, R), S==[] ?=>  R=[].   
-        transform_S_G( Linp, Lout ) ?=>  
+transform_S_G(S, R), S==[] ?=>  R=[].   
+transform_S_G( Linp, Lout ) =>  
             [Serv|L1] = Linp, 
             [No|L2] = Lout,
             (Arco, Origem, _, Destino,_ ) = Serv,
@@ -158,4 +151,4 @@ novo_no(No_corrente , Novo_No, Graph) =>
             {Arco, O2, D2} = No,
             transform_S_G(L1, L2).
         
-
+/***************************************************/

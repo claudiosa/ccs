@@ -1,5 +1,6 @@
 %module a_graph_100_nodes.
-
+index (-,-,-) 
+%%% not indexed
  arc(a001, 'ahroo', 'dro').
  arc(a002, 'dro', 'bno').
  arc(a003, 'bno', 'dro').
