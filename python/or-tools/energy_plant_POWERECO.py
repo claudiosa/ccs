@@ -114,12 +114,14 @@ def model_powereco_plant():
     solver_OUT = cp_model.CpSolver()
     solver_OUT.parameters.max_time_in_seconds = 10
     status = solver_OUT.Solve(the_model)
-
+    #print(the_model.Proto) 	
+    
     if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
         raise ValueError("No solution was found for the given input values")
     else :
         my_print_VARS( x , suppliers, cities,  f_objective, solver_OUT )
         print("\n END SOLVER and Model ")
+       
         print_t(40)
 
     return ###### end function
