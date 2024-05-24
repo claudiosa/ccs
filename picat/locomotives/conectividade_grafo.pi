@@ -1,0 +1,73 @@
+import a_graph_11_nodes.
+import util.
+import ordset.
+
+graph([
+('02', '22', 'none'), 
+('12', '22', 'none'), 
+('22', '31', 'a001'), 
+('22', '72', 'none'), 
+('31', '41', 'none'), 
+('41', '52', 'a002'), 
+('41', '61', 'none'), 
+('52', '72', 'none'), 
+('61', '71', 'none'), 
+('61', '72', 'a003'), 
+('71', '80', '#bno'), 
+('72', '80', '#dro')
+]).
+
+
+
+main =>
+    % Lista de arestas do grafo
+    /*
+    graph(G),
+    [Node_INIT| L] = G,
+    */
+    % Seleciona um nó inicial
+    %(Start_Node,_,_) = Node_INIT,
+    arc(Start_Node,_,_),
+    print(Start_Node),
+    L_Nodes = all_nodes(),
+    print(L_Nodes).
+      
+
+
+    all_nodes() = Set => 
+        L1 = findall(X, arc(X,Y,_)),
+        L2 = findall(Y, arc(X,Y,_)),
+        new_ordset(L1) = Set_1,
+        new_ordset(L2) = Set_2,
+        Set = union(Set_1, Set_2).
+
+   % connected_DFS(End, [Start] , L_sol, Depth, Max_Nodes),
+
+
+
+
+/*
+    % Executa DFS para verificar conexidade
+    dfs(StartNode, Edges, Visited),
+
+    % Verifica se todos os nós foram visitados
+    (Visited == Nodes ->
+        println("O grafo é conexo");
+        println("O grafo não é conexo")
+    ).
+
+dfs(Node, Edges, Visited) =>
+    dfs(Node, Edges, {}, Visited).
+
+
+
+
+dfs(Node, Graph, L_Edges, L_Visited) => 
+         
+        take_next
+    (member(Node, Visited0) ->
+        Visited = Visited0;
+        findall(Y, (member((Node, Y, _), Edges); member((Y, Node, _), Edges)), Neighbors),
+        foldl(dfs, Neighbors, Edges, {Node|Visited0}, Visited)
+    ).
+*/
