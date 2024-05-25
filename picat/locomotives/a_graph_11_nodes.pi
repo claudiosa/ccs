@@ -1,3 +1,4 @@
+%%%module a_graph_11_nodes.
 
 index (-,-,-)
 arc('02', '22', 'none'). 
