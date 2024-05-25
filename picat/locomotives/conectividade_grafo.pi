@@ -5,15 +5,35 @@ import a_graph_11_nodes.
 
 main ?=>
     
-    Init_Node= '02',
-    End_Node = '80',
-    
+    Graph = findall((X,Y,Z) , arc(X,Y,Z)),
+    printf("\n Oriented Graph %w", Graph),
     L_Nodes = all_nodes(), %%%% to be used in the future
+    Init_Node= min(L_Nodes),
+   
+    L_Edges = all_edges(),
+    printf("\n Start: %w", Init_Node),
+    printf("\n All Nodes: %w", L_Nodes),
+    printf("\n All Edges: %w", L_Edges),
     
-    printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
-    dfs_connected(Init_Node, End_Node, [Init_Node], [], Sol),
-    printf("\n Caminho: %w", reverse(Sol[1])),
-    printf("\n Arestas: %w", reverse(Sol[2])).
+    %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
+    delete(L_Nodes, Init_Node) = Rest,
+
+    foreach(End_Node in Rest)
+        printf("\n Start: %w\t  End: %w", Init_Node, End_Node),
+        dfs_connected(Init_Node, End_Node, [Init_Node], [], Sol),
+        if (Sol == 'NO' )   then
+            printf("\n ==> NO reachable from: %w to: %w\n", Init_Node, End_Node)
+        else
+            printf("\n Path: %w",   reverse(Sol[1])),
+            printf("\t Edges: %w\n", reverse(Sol[2]))
+        end
+        
+    end,
+    %%%% TESTING A WRONG RESULT
+    dfs_connected('41', '61', ['41'], [], Sol2),        
+    print(Sol2),
+    arc('41', '61',X), 
+    print(X).
 
 main => printf("\n End of main with fail ... NO SOLUTION").   
 
@@ -24,21 +44,27 @@ all_nodes() = Set =>
         new_ordset(L2) = Set_2,
         Set = union(Set_1, Set_2).
 
-dfs_connected(Node, End_Node, Visitados, L_Arestas, Sol) ?=>
+all_edges() = Set => 
+    L = findall(X, arc(_,_,X)),
+    new_ordset(L) = Set.  %%% remove duplicacoes ...
 
+dfs_connected(Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     Node == End_Node,
-    Sol = {Visitados, L_Arestas},
-    printf("\n Theres is a path!"), !.
+    Sol = {L_Nodes_Visited, L_Edges}.
+    %%%printf("\n Theres is a path!").
 
-dfs_connected(Node, End_Node, Partial_Caminho, Partial_Arestas, Sol) =>
+dfs_connected(Node, End_Node, Partial_Path, Partial_Edges, Sol) ?=>
     
-   arc(Node, Prox, Aresta),
-   not member(Prox,Partial_Caminho),
-   append([Prox], Partial_Caminho,  L_Visitados),
-   append([Aresta], Partial_Arestas, L_Arestas),
-   dfs_connected(Prox, End_Node,  L_Visitados, L_Arestas, Sol).
-    
+   arc(Node, Next, Edge),
+   not member(Next, Partial_Path),
+   append([Next], Partial_Path,  L_Nodes_Visited),
+   append([Edge], Partial_Edges, L_Edges),
+   dfs_connected(Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
+ 
+dfs_connected(_, _, _, _, Sol) =>
+    Sol='NO'.
 
+%   {[],[]},!.
 
 /*
     % Executa DFS para verificar conexidade
