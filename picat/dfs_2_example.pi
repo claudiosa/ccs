@@ -29,7 +29,7 @@ main ?=>
     end
     end,
     printf("\n End of main: OK").
-    %%%% 
+    %%%% TESTING A WRONG RESULT
     %spy($dfs_connected/5),
     %nospy,
 
