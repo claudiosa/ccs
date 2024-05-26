@@ -1,7 +1,9 @@
 
 import util.
 import ordset.
-import a_graph_11_nodes.
+import sys.
+%import a_graph_11_nodes.
+load("a_graph_11_nodes.pi").
 
 main ?=>
     
@@ -11,24 +13,44 @@ main ?=>
     
     Init_Node= min(L_Nodes),
    
-    L_Edges = all_edges(),
+    Set_Edges = new_ordset(all_edges()),
     printf("\n Start: %w", Init_Node),
     printf("\n All Nodes: %w", L_Nodes),
-    printf("\n All Edges: %w", L_Edges),
+    printf("\n All Edges: %w\n", Set_Edges),
     
     %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
     delete(L_Nodes, Init_Node) = Rest,
 
+    All_Edges =[],
     foreach(End_Node in Rest)
         printf("\n Start: %w\t  End: %w", Init_Node, End_Node),
     if ( dfs_connected(Init_Node, End_Node, [Init_Node], [], Sol) ) then
             printf("\n Path: %w",   reverse(Sol[1])),
-            printf("\t Edges: %w\n", reverse(Sol[2])) 
+            printf("\t Edges: %w\n", reverse(Sol[2])),
+            All_Edges := All_Edges++Sol[2]
         else
             printf("\n ==> NO reachable from: %w to: %w\n", Init_Node, End_Node)
     end
     end,
-    printf("\n End of main: OK").
+    Edges_Not_Repeated = remove_dups(All_Edges),
+    Set_Edges_Visited = new_ordset(Edges_Not_Repeated),
+    printf("\n All Edges Visited: %w ", Set_Edges_Visited ),
+    %subtract(OSet1,OSet2)=OSet3: This function returns an ordered set that contains all of the elements of OSet1 which are not in OSet2.
+    Not_Visited = subtract(Set_Edges, Set_Edges_Visited),
+    printf("\n NOT Visited Edges: %w ", Not_Visited ),
+
+    %%% ARRAY usefull
+    %%%% ESTUDO AQUI ....
+
+    printf("\n\n UM ESTUDO AQUI"), 
+    Estudo = findall(Sol,  (dfs_connected('02', '72', ['02'], [], Sol))  ),
+    Temp1 = get_second_elements(Estudo),
+    printf("\n Numero de Caminhos de  '02', '72': %w ", len(Temp1)), 
+    printf("\n Caminhos Alternativos de  '02', '72': %w ", Temp1), 
+    Temp2 =  remove_dups(flatten(Temp1)),
+    printf("\n Estudo de  '02', '72': %w ", Temp2),        
+
+    printf("\n End of main: OK\n").
     %%%% 
     %spy($dfs_connected/5),
     %nospy,
@@ -46,6 +68,14 @@ all_edges() = Set =>
     L = findall(X, arc(_,_,X)),
     new_ordset(L) = Set.  %%% remove duplicates ...
 
+
+get_second_elements(L) = Result =>
+    Result = [Array[2] : Array in L]. 
+
+
+
+
+% KERNEL DFS
 dfs_connected(Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     Node == End_Node,
     N = len(L_Edges),
