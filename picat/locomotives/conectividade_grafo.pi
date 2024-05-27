@@ -2,9 +2,9 @@
 import util.
 import ordset.
 import sys.
-%import a_graph_11_nodes.
-load("a_graph_11_nodes.pi").
-
+import a_graph_11_nodes.
+%load("a_graph_11_nodes.pi").
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 main ?=>
     
     Graph = findall((X,Y,Z) , arc(X,Y,Z)),
@@ -42,13 +42,13 @@ main ?=>
     %%% ARRAY usefull
     %%%% ESTUDO AQUI ....
 
-    printf("\n\n UM ESTUDO AQUI"), 
+    printf("\n\n PAUSA AQUI: UM ESTUDO "), 
     Estudo = findall(Sol,  (dfs_connected('02', '72', ['02'], [], Sol))  ),
     Temp1 = get_second_elements(Estudo),
-    printf("\n Numero de Caminhos de  '02', '72': %w ", len(Temp1)), 
-    printf("\n Caminhos Alternativos de  '02', '72': %w ", Temp1), 
+    printf("\n Numero de Caminhos de  '02' -> '72': %w ", len(Temp1)), 
+    printf("\n Caminhos Alternativos de  '02' -> '72': %w ", Temp1), 
     Temp2 =  remove_dups(flatten(Temp1)),
-    printf("\n Estudo de  '02', '72': %w ", Temp2),        
+    printf("\n Estudo de  '02' até '72': %w ", Temp2),        
 
     printf("\n End of main: OK\n").
     %%%% 
@@ -56,7 +56,7 @@ main ?=>
     %nospy,
 
 main => printf("\n End of main with fail ... NO SOLUTION").   
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 all_nodes() = Set => 
         L1 = findall(X, arc(X,Y,_)),
         L2 = findall(Y, arc(X,Y,_)),
@@ -72,8 +72,7 @@ all_edges() = Set =>
 get_second_elements(L) = Result =>
     Result = [Array[2] : Array in L]. 
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % KERNEL DFS
 dfs_connected(Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
@@ -90,11 +89,8 @@ dfs_connected(Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     N==0,
     Sol = 'NO'.
 */   
-    
  
-
 dfs_connected(Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
-    
    arc(Node, Next, Edge),
    not member(Next, Partial_Path),
    append([Next], Partial_Path,  L_Nodes_Visited),
@@ -106,7 +102,7 @@ dfs_connected(_, _, _, _, Sol) =>
     Sol='NO'.
 */
 %   {[],[]},!.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
 HAKAN 
 Graph(Graph) => 
