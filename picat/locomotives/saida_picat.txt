@@ -1,0 +1,47 @@
+
+ Oriented Graph [(02,22,none),(12,22,none),(22,31,a001),(22,72,none),(31,41,none),(41,52,a002),(41,61,none),(52,72,none),(61,71,none),(61,72,a003),(71,80,#bno),(72,80,#dro),(111,222,fake_arc)]
+ Start: 02
+ All Nodes: [02,111,12,22,222,31,41,52,61,71,72,80]
+ All Edges: [#bno,#dro,a001,a002,a003,fake_arc,none]
+
+ Start: 02	  End: 111
+ ==> NO reachable from: 02 to: 111
+
+ Start: 02	  End: 12
+ ==> NO reachable from: 02 to: 12
+
+ Start: 02	  End: 22
+ Path: [02,22]	 Edges: [none]
+
+ Start: 02	  End: 222
+ ==> NO reachable from: 02 to: 222
+
+ Start: 02	  End: 31
+ Path: [02,22,31]	 Edges: [none,a001]
+
+ Start: 02	  End: 41
+ Path: [02,22,31,41]	 Edges: [none,a001,none]
+
+ Start: 02	  End: 52
+ Path: [02,22,31,41,52]	 Edges: [none,a001,none,a002]
+
+ Start: 02	  End: 61
+ Path: [02,22,31,41,61]	 Edges: [none,a001,none,none]
+
+ Start: 02	  End: 71
+ Path: [02,22,31,41,61,71]	 Edges: [none,a001,none,none,none]
+
+ Start: 02	  End: 72
+ Path: [02,22,31,41,52,72]	 Edges: [none,a001,none,a002,none]
+
+ Start: 02	  End: 80
+ Path: [02,22,31,41,52,72,80]	 Edges: [none,a001,none,a002,none,#dro]
+
+ All Edges Visited: [#dro,a001,a002,none] 
+ NOT Visited Edges: [#bno,a003,fake_arc] 
+
+ PAUSA AQUI: UM ESTUDO 
+ Numero de Caminhos de  '02' -> '72': 3 
+ Caminhos Alternativos de  '02' -> '72': [[none,a002,none,a001,none],[a003,none,none,a001,none],[none,none]] 
+ Estudo de  '02' até '72': [none,a002,a001,a003] 
+ End of main: OK

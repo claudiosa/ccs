@@ -91,7 +91,7 @@ connected_DFS(End,  L_inp , L_sol, Depth, Max_Nodes) =>
     %printf("\n   Current: %w :: Novo_NOH: %w   Caminho: %w", Current,  Novo_NoH,  Caminho ), 
            %% testar se este novo noh nao foi visitado ainda
            %% ou novo_NOH eh permitido
-    not( member(Novo_NoH, L_inp ) ),
+    not( membchk(Novo_NoH, L_inp ) ),
            %OU  append([Novo_NoH], Linp, Lout),
            %%%%
     connected_DFS(End,  [Novo_NoH , Current | Caminho ] , L_sol, Depth+1, Max_Nodes).

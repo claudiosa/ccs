@@ -1,10 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 import util.
 import ordset.
 import sys.
+%import set.
 import a_graph_11_nodes.
 %load("a_graph_11_nodes.pi").
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% commented by Hakan
 main ?=>
     
     Graph = findall((X,Y,Z) , arc(X,Y,Z)),
@@ -57,7 +60,9 @@ main ?=>
 
 main => printf("\n End of main with fail ... NO SOLUTION").   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-all_nodes() = Set => 
+/*
+
+all_nodes() = Set =>  membchk(
         L1 = findall(X, arc(X,Y,_)),
         L2 = findall(Y, arc(X,Y,_)),
         new_ordset(L1) = Set_1,
@@ -67,7 +72,10 @@ all_nodes() = Set =>
 all_edges() = Set => 
     L = findall(X, arc(_,_,X)),
     new_ordset(L) = Set.  %%% remove duplicates ...
+*/
 
+all_nodes() = findall([X,Y], arc(X,Y,_)).flatten.remove_dups.
+all_edges() = findall(X, arc(_,_,X)).remove_dups.
 
 get_second_elements(L) = Result =>
     Result = [Array[2] : Array in L]. 
@@ -92,7 +100,7 @@ dfs_connected(Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
  
 dfs_connected(Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
    arc(Node, Next, Edge),
-   not member(Next, Partial_Path),
+   not  membchk(Next, Partial_Path),
    append([Next], Partial_Path,  L_Nodes_Visited),
    append([Edge], Partial_Edges, L_Edges),
    dfs_connected(Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
@@ -104,6 +112,20 @@ dfs_connected(_, _, _, _, Sol) =>
 %   {[],[]},!.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
+Picat> L=[a,b,c], member(X,L).
+L = [a,b,c]
+X = a ?
+
+Picat> L=[a,b,c], membchk(X,L).
+
+no
+
+Picat> L=[a,b,c], membchk(c,L).
+L = [a,b,c]
+yes
+
+
+
 HAKAN 
 Graph(Graph) => 
   Graph = 
