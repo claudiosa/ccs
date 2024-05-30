@@ -1,0 +1,137 @@
+%%picat
+import util.
+import ordset.
+import sys.
+%%%%import a_graph_11_nodes.
+%load("a_graph_11_nodes.pi").
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+data(Graph) =>
+        Graph =
+        [('02', '22', 'none'),
+        ('12', '22', 'none'), 
+        ('22', '31', 'a001'),
+        ('22', '72', 'none'),
+        ('31', '41', 'none'),
+        ('41', '52', 'a002'), 
+        ('41', '61', 'none'),
+        ('52', '72', 'none'), 
+        ('61', '71', 'none'),
+        ('61', '72', 'a003'),
+        ('71', '80', '#bno'), 
+        ('72', '80', '#dro'), 
+        ('111', '222', 'fake_arc') ].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+main ?=>
+
+    data(Graph),    
+    
+    printf("\n Oriented Graph %w", Graph),
+    L_Nodes = all_nodes(Graph), %%%% to be used in the future
+    Init_Node= min(L_Nodes),
+    L_Edges = all_edges(Graph),
+   
+    printf("\n Start: %w", Init_Node),
+    printf("\n All Nodes: %w", L_Nodes),
+    printf("\n All Edges: %w\n", L_Edges),
+    %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
+    delete(L_Nodes, Init_Node) = Rest,
+
+    All_Edges =[],
+    foreach(End_Node in Rest)
+        printf("\n Start: %w\t  End: %w", Init_Node, End_Node),
+    if ( dfs_connected(Graph, Init_Node, End_Node, [Init_Node], [], Sol) ) then
+            printf("\n Path: %w",   reverse(Sol[1])),
+            printf("\t Edges: %w\n", reverse(Sol[2])),
+            All_Edges := All_Edges++Sol[2]
+        else
+            printf("\n ==> NO reachable from: %w to: %w\n", Init_Node, End_Node)
+    end
+    end,
+    printf("\n Finally \n"),       
+    Edges_Not_Repeated = remove_dups(All_Edges),
+    Set_Edges_Visited = new_ordset(Edges_Not_Repeated),
+    printf("\n All Edges Visited: %w ", Set_Edges_Visited ),
+    %subtract(OSet1,OSet2)=OSet3: This function returns an ordered set that contains all of the elements of OSet1 which are not in OSet2.
+    Set_Edges = new_ordset(L_Edges),
+    Not_Visited = subtract(Set_Edges, Set_Edges_Visited),
+    printf("\n NOT Visited Edges: %w ", Not_Visited ),
+
+    %%% ARRAY usefull
+    %%%% ESTUDO AQUI ....
+
+    printf("\n\n PAUSA AQUI: UM ESTUDO "), 
+    Estudo = findall(Sol,  (dfs_connected(Graph,'02', '72', ['02'], [], Sol))  ),
+    Temp1 = get_second_elements(Estudo),
+    printf("\n Alternative Number Paths from  '02' -> '72': %w ", len(Temp1)), 
+    printf("\n Alternative Paths de  '02' -> '72': %w ", Temp1), 
+    Temp2 =  remove_dups(flatten(Temp1)),
+    printf("\n Estudo de  '02' até '72': %w ", Temp2),        
+
+    printf("\n End of main: OK\n").
+    %%%% 
+    %spy($dfs_connected/5),
+    %nospy,
+
+main => printf("\n End of main with fail ... NO SOLUTION").   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*** pegar da lista */
+all_edges(L) = Edges =>
+    Edges = sort_remove_dups( [N : T in L, (N1, N2, N) = T ] ) . 
+    
+all_nodes(L) = Nodes =>
+    Nodes = sort_remove_dups( [N : T in L, (N1, N2, _) = T, N in [N1, N2]] ) . 
+
+get_second_elements(L) = Result =>
+    Result = [Array[2] : Array in L]. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% KERNEL DFS
+dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
+    Node == End_Node,
+    N = len(L_Edges),
+    N>0,
+    %%%printf("\n Theres is a path!").
+    Sol = {L_Nodes_Visited, L_Edges}.
+    
+/*
+dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
+    Node == End_Node,
+    N = len(L_Edges),
+    N==0,
+    Sol = 'NO'.
+*/   
+ 
+
+dfs_connected(Graph, Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
+    
+   next_node(Graph, Node, Next, Edge),
+   not membchk(Next, Partial_Path),
+   append([Next], Partial_Path,  L_Nodes_Visited),
+   append([Edge], Partial_Edges, L_Edges),
+   dfs_connected(Graph, Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
+
+
+ /*
+dfs_connected(_, _, _, _, Sol) =>
+    Sol='NO'.
+*/
+%   {[],[]},!.      
+
+%%next_node(Graph, Node, Next, Edge) =>
+
+next_node([], Node, Next, Edge) ?=>
+    printf("\n None sucessor in this graph for the node: %w", [Node]).
+
+next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) ?=>
+    Source == Node,
+    Next = Target,
+    Edge = Arc.
+
+next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) =>
+        Source != Node,
+        next_node( Graph, Node, Next, Edge).        
+
+     
+
+/* ****************************************************************************/

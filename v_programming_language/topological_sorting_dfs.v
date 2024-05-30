@@ -8,6 +8,13 @@
 
 // THE DFS RECURSIVE .... classical searchig for leaves nodes
 // the arguments are used in the function to avoid global variables....
+/*
+IDEA of usage:
+
+You have  a graph in n-dimension (edges and nodes without any order), the idea
+is a "new draw" linearized for this graph, such a precedence arc is follow
+
+*/
 fn dfs_recursive(u string, mut visited map[string]bool, graph map[string][]string, mut top_sorting []string) {
 	print(' Visiting: $u -> ')
 	visited[u] = true
@@ -66,6 +73,7 @@ fn main() {
 	}
 
 	mut graph := map[string][]string{} // the graph: adjacency matrix
+
 	for index, g_value in [graph_01, graph_02, graph_03] {
 		println('Topological sorting for the graph $index using a DFS recursive')
 		graph = g_value.clone() // graphs_sample[g].clone() // choice your SAMPLE
