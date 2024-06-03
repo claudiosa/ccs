@@ -1,0 +1,89 @@
+%%picat
+import util.
+import ordset.
+import sys.
+%import planner. 
+import datetime. 
+%%%%import a_graph_11_nodes.
+%load("a_graph_11_nodes.pi").
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+data(Graph) =>
+        Graph =
+        [('02', '22', 'none'),
+        ('12', '22', 'none'), 
+        ('22', '31', 'a001'),
+        ('22', '72', 'none'),
+        ('31', '41', 'none'),
+        ('41', '52', 'a002'), 
+        ('41', '61', 'none'),
+        ('52', '72', 'none'), 
+        ('61', '71', 'none'),
+        ('61', '72', 'a003'),
+        ('71', '80', '#bno'), 
+        ('72', '80', '#dro'), 
+        ('111', '222', 'fake_arc') ].
+
+
+main ?=>
+            data(Graph),
+            Start_Node = '02',
+            End_Node = '72',
+            start_dfs_memo(Graph, Start_Node, End_Node, Sol),
+            printf("\n Caminho encontrado de %w até %w:\n", Start_Node, End_Node),
+            println( Sol),
+            all_SOL = findall(Sol, start_dfs_memo(Graph, Start_Node, End_Node, Sol)),
+            println(all_SOL),
+            printf("\n Findall sem sucesso... eis o problema!!!!") .
+        
+main => printf("\n End of main with fail ... NO SOLUTION").
+
+
+%%% Função para iniciar a busca DFS com memoização
+start_dfs_memo(Graph, Start_Node, End_Node, Sol) =>
+    dfs_connected_memo(Graph, Start_Node, End_Node, [], [], Sol).
+
+
+
+
+%%% Função principal para executar o DFS com memoização
+dfs_connected_memo(Graph, Node, End_Node, Visited, Path, Sol) ?=>
+    % Verifica se o nó atual é o nó de destino
+    Node == End_Node,
+    % Verifica se ainda há arestas para explorar
+    len(Path) > 0,
+    % Retorna o caminho encontrado
+    Sol = Path.
+
+%%% Caso base: nó de destino alcançado, mas sem arestas para explorar
+dfs_connected_memo(_, _, _, _, [], _) ?=> fail.
+
+%%% Caso recursivo: continua a busca em profundidade
+dfs_connected_memo(Graph, Node, End_Node, Visited, Path, Sol) =>
+    % Verifica se o nó atual já foi visitado
+    not membchk(Node, Visited),
+    % Adiciona o nó atual aos visitados
+    Visited := Visited ++ [Node],
+    % Encontra o próximo nó e aresta a serem explorados
+    next_node(Graph, Node, Next, Edge),
+    % Adiciona o próximo nó ao caminho parcial
+    NewPath = Path ++ [(Node, Next, Edge)],
+    % Executa a busca em profundidade recursivamente
+    dfs_connected_memo(Graph, Next, End_Node, Visited, NewPath, Sol).
+
+
+
+
+    next_node([], Node, Next, Edge) ?=>
+        printf("\n None sucessor in this graph for the node: %w", [Node]).
+    
+    next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) ?=>
+        Source == Node,
+        Next = Target,
+        Edge = Arc.
+    
+    next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) =>
+            Source != Node,
+            next_node( Graph, Node, Next, Edge).        
+    
+         
+    

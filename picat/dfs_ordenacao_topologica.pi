@@ -1,0 +1,148 @@
+
+import util.
+import ordset.
+import sys.
+/*
+% Função DFS recursiva
+dfs(Node, Graph, Visited, Stack) =>
+    (not member(Node, Visited)),
+     Visited := Visited ++ [Node],
+        %%% Neighbor from Graph NOD
+        neighbour(Node, L_Vizinhos),
+        foreach (Neighbor in L_Vizinhos) {
+            dfs(Neighbor, Graph, Visited, Stack)
+        },
+        %Stack := Stack ++ [Node].
+
+*/
+
+
+%%% dfs inspirado na solução de HAKAN
+dfs(Graph, InitNode, EndNode, L_Nodes) =>
+    S := InitNode,
+    Path_Temp := [InitNode],
+    while (S != EndNode ) do
+        % select( (S,To,Info), Graph, GraphRest),
+         % Graph := GraphRest  SE USAR SELECT PARA MEXER NO GRAFO
+        next_node(Graph, S , Next, EndNode, Graph),
+        not membchk(Next, Path_Temp),
+        Path_Temp := Path_Temp ++ [Next],
+        S := Next
+    end,
+    L_Nodes = Path_Temp.
+
+%
+% next_node([], Node, Next, End_Node, G) ?=>
+%    printf("\n None sucessor in this graph for the node: %w", [Node]).
+%
+next_node([ Term | Graph], Node, Next, End_Node, G) ?=>
+    Term[1] == Node,
+    member(Next, Term[2]), %% to force a backtracking over list adjacencies
+    neighbours(Next, G) != []. %%% to avoid a  leaf node ... due the while in main loop
+    %Next != End_Node.
+
+next_node([ Term | Graph], Node, Next, End_Node, G) ?=>
+    Term[1] == Node,
+    member(Next, Term[2]), %% to force a backtracking over list adjacencies
+    neighbours(Next, G) == [], %%% for leave node as END
+    Next == End_Node.
+/*
+next_node([ Term | Graph], Node, Next, End_Node, G) ?=>
+        Term[1] == Node,
+        member(Next, Term[2]).
+*/
+next_node([ _ | Graph], Node, Next, End_Node, G) =>
+    next_node( Graph, Node, Next, End_Node, G).        
+
+
+% Função de ordenação tpopológica
+topological_sort(Graph) = R =>
+    All_Nodes = all_nodes(Graph),
+    Stack_Sol :=[],
+    foreach (Node in All_Nodes) 
+        
+        Stack := [],
+        dfs(Node, Graph,  Stack, Sol),
+        Stack_Sol := Stack_Sol ++ Sol
+    end,
+
+    TopologicalOrder = reverse(Stack_Sol),
+    R = TopologicalOrder.
+
+
+% Grafo de exemplo
+graph() = G => 
+    G = [
+    {'17', ['16']},
+    {'16', ['15']},
+    {'15', ['7']},
+    {'5', ['11']},
+    %%{'8', ['9']},
+    {'8', ['19']},
+    {'7', ['11', '8']},
+    {'3', ['8', '10']},
+    {'11', ['2', '19', '10']},
+    {'9',  ['2', '19', '10']},
+    {'2',  []},
+    {'19', []},
+    {'10', ['3']}
+   ]. 
+
+%   all_edges(L) = Edges =>
+%    Edges = sort_remove_dups( [N : T in L, (N1, N2, N) = T ] ) . 
+    
+all_nodes( L ) = Nodes =>
+    Nodes = [N : Termo in L, {N, _} = Termo ] . 
+
+neighbours(Node, Graph) = Viz =>
+    Viz = flatten([ Term[2] : Term in Graph, Term = {Node, Viz}]) . 
+
+
+/*
+get_second_elements(L) = Result =>
+        Result = [Array[2] : Array in L]. 
+    
+  neighbour(Node, Graph) = Viz =>
+        Viz = flatten([Neighbours : {N, Neighbours} in Graph, N = Node]).
+*/
+% Chamada para ordenação topológica
+main =>
+    G = graph(),
+    %sort_down(Array,KeyIndex) = SArray
+    println(graph= G),
+    printf("\n%w\n", G),
+    println(all_Nodes= all_nodes(G)),
+    %T = all_nodes(G),
+    %println(all_Nodes= T),
+    %L = sort(T),
+    %println(all_Sorted= L),
+    
+  %% println(ordena_topol= TopologicalOrder).
+    Init = '17',
+    println(init=Init),
+    
+    all_nodes(G) = All_Nodes,
+    Nodes_Sorted = sort(All_Nodes),
+    println(all_sorted= Nodes_Sorted),
+    foreach(End_Node in Nodes_Sorted)
+        printf("\n Start: %w\t  End: %w", Init, End_Node),
+        %dfs(Graph, InitNode, EndNode, L_Nodes)
+        if ( dfs(G, Init, End_Node, Sol) ) then
+            printf("\n Path: %w",   Sol)
+        else
+            printf("\n ==> NO reachable from: %w to: %w\n", Init, End_Node)
+        end
+    end,
+
+    printf("\n ==>......SUPERBE "),
+    Sol2 = findall(S1, dfs(G, '17', '19', S1 )),
+    println(sol=Sol2),       
+
+    printf("\n End of main: OK\n").
+
+main => printf("\n End of main with fail ... NO SOLUTION"). 
+ 
+ 
+  %  TopologicalOrder = topological_sort(G),
+  % printf("Ordenação Topológica: %w", TopologicalOrder).
+

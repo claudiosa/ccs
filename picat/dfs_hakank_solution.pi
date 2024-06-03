@@ -1,0 +1,158 @@
+/*
+  This is hakank's version of Claudio's dfs_3_example.pi 
+  showing graph search for a list representation of a graph.
+  (If this is still is DFS is another matter).
+*/ 
+
+%%picat
+import util.
+import ordset.
+import sys.
+
+data(Graph) =>
+        Graph =
+        [('02', '22', 'none'),
+        ('12', '22', 'none'), 
+        ('22', '31', 'a001'),
+        ('22', '72', 'none'),
+        ('31', '41', 'none'),
+        ('41', '52', 'a002'),
+        ('41', '61', 'none'),
+        ('52', '72', 'none'), 
+        ('61', '71', 'none'),
+        ('61', '72', 'a003'),
+        ('71', '80', '#bno'), 
+        ('72', '80', '#dro'), 
+        ('111', '222', 'fake_arc')
+
+        % hakank
+        % ,
+        % ('41', '02', 'a002'),  % hakank
+        % ('80', '41', '#bno')  
+        ].
+
+/*
+ Start: 02	  End: 111
+no_solution1
+no_solution2
+
+ Start: 02	  End: 12
+no_solution1
+no_solution2
+
+ Start: 02	  End: 22
+solution1 = [[02,22,none]]
+solution2 = [(02,22,none)]
+
+ Start: 02	  End: 222
+no_solution1
+no_solution2
+
+ Start: 02	  End: 31
+solution1 = [[02,22,none],[22,31,a001]]
+solution2 = [(02,22,none),(22,31,a001)]
+
+ Start: 02	  End: 41
+solution1 = [[02,22,none],[22,31,a001],[31,41,none]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none)]
+
+ Start: 02	  End: 52
+solution1 = [[02,22,none],[22,31,a001],[31,41,none],[41,52,a002]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none),(41,52,a002)]
+
+ Start: 02	  End: 61
+solution1 = [[02,22,none],[22,31,a001],[31,41,none],[41,61,none]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none),(41,61,none)]
+
+ Start: 02	  End: 71
+solution1 = [[02,22,none],[22,31,a001],[31,41,none],[41,61,none],[61,71,none]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none),(41,61,none),(61,71,none)]
+
+ Start: 02	  End: 72
+solution1 = [[02,22,none],[22,31,a001],[31,41,none],[41,52,a002],[52,72,none]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none),(41,52,a002),(52,72,none)]
+
+ Start: 02	  End: 80
+solution1 = [[02,22,none],[22,31,a001],[31,41,none],[41,52,a002],[52,72,none],[72,80,#dro]]
+solution2 = [(02,22,none),(22,31,a001),(31,41,none),(41,52,a002),(52,72,none),(72,80,#dro)]
+
+ End of main: OK
+
+*/
+
+get_path1(Graph,InitNode, EndNode, Path) =>
+  S := InitNode,
+  Path1 := [],
+  while (S != EndNode ) do
+    select( (S,To,Info),Graph,GraphRest),
+    not membchk((_To,_), Path),
+    Path1 := Path1 ++ [[S,To,Info]],
+    S := To,
+    Graph := GraphRest
+  end,
+  Path = Path1.
+
+get_path2(_Graph,EndNode, EndNode, Path, Path). % ?=> true.
+get_path2(Graph,InitNode, EndNode, Path0, Path) :- 
+ 	select( (InitNode,To,Info), Graph, GraphRest),
+	not membchk((_To,_), Path), 
+	get_path2(GraphRest,To, EndNode,[(InitNode,To,Info) | Path0], Path).
+
+main ?=>
+    data(Graph),    
+    
+    printf("\n Oriented Graph %w", Graph),
+    L_Nodes = all_nodes(Graph), %%%% to be used in the future
+    InitNode= min(L_Nodes),
+    % select(InitNode,L_Nodes,_),
+    L_Edges = all_edges(Graph),
+   
+    printf("\n Start: %w", InitNode),
+    printf("\n All Nodes: %w", L_Nodes),
+    printf("\n All Edges: %w\n", L_Edges),
+    delete(L_Nodes, InitNode) = Rest,
+
+    println(graph=Graph),
+    println(to_check=Rest),
+    foreach(EndNode in Rest)
+        printf("\n Start: %w\t  End: %w\n", InitNode, EndNode),
+        if get_path1(Graph,InitNode, EndNode, Path) then
+          println(solution1=Path)
+        else
+          println(no_solution1)
+        end,
+        if get_path2(Graph,InitNode, EndNode,[],Path2) then
+          println(solution2=Path2.reverse)
+        else
+          println(no_solution2)
+        end
+        
+    end,
+
+
+    %get_path1(Graph,InitNode, EndNode, Path)
+    Temp1 = findall(Sol,  (get_path1(Graph,'02', '72', Sol))  ),
+    printf("\n Alternative Number Paths from  '02' -> '72': %w ", len(Temp1)), 
+    printf("\n Alternative Paths de  '02' -> '72': %w ", Temp1), 
+    Temp2 =  remove_dups(flatten(Temp1)),
+    printf("\n Nodes from '02' until '72': %w ", Temp2), 
+
+/*
+    %get_path2(_Graph,EndNode, EndNode, Path, Path)
+    Temp3 = findall(Sol,  (get_path2(Graph,'02', '72', Sol, Sol))  ),
+    printf("\n Alternative Number Paths from  '02' -> '72': %w ", len(Temp3)), 
+    printf("\n Alternative Paths de  '02' -> '72': %w ", Temp3), 
+    Temp4 =  remove_dups(flatten(Temp4)),
+    printf("\n Nodes from '02' until '72': %w ", Temp4), 
+*/
+
+
+    printf("\n End of main: OK\n").
+
+main => printf("\n End of main with fail ... NO SOLUTION").   
+
+all_edges(L) = Edges =>
+    Edges = sort_remove_dups( [N : T in L, (_N1, _N2, N) = T ] ) . 
+    
+all_nodes(L) = Nodes =>
+    Nodes = sort_remove_dups( [[N1,N2] : (N1,N2,_) in L].flatten ) . 

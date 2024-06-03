@@ -19,7 +19,7 @@ data(Graph) =>
         ('61', '72', 'a003'),
         ('71', '80', '#bno'), 
         ('72', '80', '#dro'), 
-        ('111', '222', 'fake_arc') ].
+        ('111', '222', 'fake_arc')].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 main ?=>
@@ -46,7 +46,7 @@ main ?=>
             All_Edges := All_Edges++Sol[2]
         else
             printf("\n ==> NO reachable from: %w to: %w\n", Init_Node, End_Node)
-    end
+        end
     end,
     printf("\n Finally \n"),       
     Edges_Not_Repeated = remove_dups(All_Edges),
@@ -87,10 +87,11 @@ get_second_elements(L) = Result =>
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % KERNEL DFS
+
 dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     Node == End_Node,
-    N = len(L_Edges),
-    N>0,
+    %N = len(L_Edges),
+    %N>0,
     %%%printf("\n Theres is a path!").
     Sol = {L_Nodes_Visited, L_Edges}.
     
@@ -101,15 +102,16 @@ dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     N==0,
     Sol = 'NO'.
 */   
- 
 
 dfs_connected(Graph, Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
-    
-   next_node(Graph, Node, Next, Edge),
-   not membchk(Next, Partial_Path),
-   append([Next], Partial_Path,  L_Nodes_Visited),
-   append([Edge], Partial_Edges, L_Edges),
+        % next_node(Graph, Node, Next, Edge), % ORIG
+        next_node(Graph, Node, Next, End_Node, Edge), % hakank
+        % nonvar(Edge), % hakank: A fix for 02 -> 222
+        not membchk(Next, Partial_Path), 
+        append([Next], Partial_Path,  L_Nodes_Visited),
+        append([Edge], Partial_Edges, L_Edges),
    dfs_connected(Graph, Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
+
 
 
  /*
@@ -120,18 +122,22 @@ dfs_connected(_, _, _, _, Sol) =>
 
 %%next_node(Graph, Node, Next, Edge) =>
 
-next_node([], Node, Next, Edge) ?=>
+%
+% hakank: Added End_Node to next_node.
+%
+next_node([], Node, Next, End_Node, Edge) ?=>
+    nonvar(Next), % hakank: A fix for 02 -> 222
     printf("\n None sucessor in this graph for the node: %w", [Node]).
 
-next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) ?=>
+next_node([(Source, Target, Arc)| Graph], Node, Next, End_Node, Edge) ?=>
     Source == Node,
     Next = Target,
     Edge = Arc.
 
-next_node([(Source, Target, Arc)| Graph], Node, Next, Edge) =>
-        Source != Node,
-        next_node( Graph, Node, Next, Edge).        
+next_node([(Source, Target, Arc)| Graph], Node, Next, End_Node, Edge) =>
+    % Source != Node, % ORIG
+    Source != End_Node, % hakank
+    next_node( Graph, Node, Next, End_Node, Edge).        
 
-     
 
 /* ****************************************************************************/
