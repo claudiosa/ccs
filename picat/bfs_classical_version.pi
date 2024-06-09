@@ -1,7 +1,7 @@
   
 %%%%% by a big HELP ... from guess who?
-bfs_search(Graph, [], _, _, []) => true.
-bfs_search(Graph, [EndNode | _], _, EndNode, Path) => Path = [EndNode].
+bfs_search(Graph, [], _, _, []) ?=> true.
+bfs_search(Graph, [EndNode | _], _, EndNode, Path) ?=> Path = [EndNode].
 bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
     Neighbours = [N : N in get_neighbors(Graph, Node), not membchk(N, Visited)],
     NewVisited = Visited ++ Neighbours,
@@ -9,13 +9,20 @@ bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
     bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
     Path = [Node | TempPath].
 
+
+
+membchk_array(Element, Array) => 
+    List = to_list(Array),
+    membchk(Element,List).
+
+/* MUITO TOP ESTA VERSAO FUNCIONAL */
 get_neighbors([], _) = [].
 get_neighbors([{Node, Neighbours} | _], Node) = Neighbours.
 get_neighbors([_ | Rest], Node) = get_neighbors(Rest, Node).
 
 main =>
     % Definindo um grafo simples
-    Graph = [
+/*    Graph = [
         {1, [2, 3]},
         {2, [4]},
         {3, [4]},
@@ -34,9 +41,25 @@ main =>
     |
     5
    \n"),
+*/
+   Graph = [
+        {1, [2, 3]},
+        {2, [4, 5]},
+        {3, [4, 6]},
+        {4, [5, 7]},
+        {5, [8]},
+        {6, [9]},
+        {7, [10]},
+        {8, []},
+        {9, [11]},
+        {10, []},
+        {11, []}
+        ],
 
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 4,
+    EndNode = 8,
+    printf("\n Start: %w\t  End: %w \t", InitNode, EndNode),
+  
     bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
-    printf("Caminho encontrado: %w \n", Sol).
+    printf("Nós Visitados: %w \n", Sol).

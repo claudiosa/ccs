@@ -1,56 +1,81 @@
-bfs_functional(Graph, InitNode, EndNode) = Sol =>
-    Queue := [InitNode],
-    Visited := [InitNode],
-    while ((Queue != []) && (Queue[1] != EndNode)) do
+bfs_iterative(Graph, InitNode, EndNode) = Sol =>
+    Queue := {InitNode},
+    Visited := {InitNode},
+    printf("\n Queue:%w , Visited:%w", Queue, Visited),
+    while ((Queue != {}) && (Queue[1] != EndNode)) do
         S := Queue[1],
-        (Queue := slice(Queue,2,Queue.length);
-        Queue := S),
+        Queue := slice(Queue,2,Queue.length),
+        printf("\n Queue: %w , Top: %w", Queue, S),
         next_nodes(Graph, S, NextNodes),
+        %% ERRO AQUI ....
+        %not membchk(NextNodes, Queue), 
         foreach (Next in NextNodes)
-            not membchk(Next, Visited),
-            Queue := Queue ++ [Next],
-            Visited := Visited ++ [Next]
+            not membchk_array(Next, Visited),
+            Queue := Queue ++ {Next},
+            Visited := Visited ++ {Next}
         end
     end,
-    Sol = Visited.
+    Sol = remove_dups(Visited).
 
-next_nodes([ {Node, Neighbours} | _], Node, Neighbours) => true.
-next_nodes([ _ | Graph], Node, Neighbours) => next_nodes(Graph, Node, Neighbours).
+membchk_array(Element, Array) => 
+    List = to_list(Array),
+    membchk(Element,List).
 
 /*
-    1
-   / \
-  2   3
-   \ /
-    4
-    |
-    5
+member_array(Element, Array) =>
+    Len = Array.length,
+    print(Len),
+    belongs_to_array(Element, Array, Len).
+
+belongs_to_array(_, Array, Index), Index > 1 ?=> false.
+belongs_to_array(Element, Array, Index) ?=>
+    Element == Array[Index], !.
+belongs_to_array(Element, Array, Index) =>
+ belongs_to_array(Element, Array, (Index - 1)).
+*/
+
+
+next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
+    %printf("\n N:%w , N:%w", Node, Neighbours),
+    N == Node, 
+    R = Neighbours.
+    
+next_nodes([ _ | Graph], Node, Neighbours) => 
+        next_nodes(Graph, Node, Neighbours).
+
+/*
+  
+       1
+      / \
+     2   3
+    / \ / \
+   4   5   6
+  / \ /     \
+ 7   8       9
+ |           |
+ 10         11
+
+
 */
 
 main =>
     % Definindo um grafo simples
-    G = [
+    Graph = [
         {1, [2, 3]},
-        {2, [4]},
-        {3, [4]},
-        {4, [5]},
-        {5, []}
-    ],
-    printf("
-1 --> 2 --> 4 --> 5
- \\--> 3 ---/
- or \n
-    1
-   / \\
-  2   3
-   \\ /
-    4
-    |
-    5
-   \n"),
-
+        {2, [4, 5]},
+        {3, [4, 6]},
+        {4, [5, 7]},
+        {5, [8]},
+        {6, [9]},
+        {7, [10]},
+        {8, []},
+        {9, [11]},
+        {10, []},
+        {11, []}
+        ],
+ 
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 5,
-    Sol = bfs_functional(G, InitNode, EndNode),
-    printf("Caminho encontrado: %w \n", Sol).
+    EndNode = 8,
+    Sol = bfs_iterative(Graph , InitNode, EndNode),
+    printf("\n Nós Visitados: %w \n", Sol).
