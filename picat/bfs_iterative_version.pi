@@ -1,0 +1,56 @@
+bfs_functional(Graph, InitNode, EndNode) = Sol =>
+    Queue := [InitNode],
+    Visited := [InitNode],
+    while ((Queue != []) && (Queue[1] != EndNode)) do
+        S := Queue[1],
+        (Queue := slice(Queue,2,Queue.length);
+        Queue := S),
+        next_nodes(Graph, S, NextNodes),
+        foreach (Next in NextNodes)
+            not membchk(Next, Visited),
+            Queue := Queue ++ [Next],
+            Visited := Visited ++ [Next]
+        end
+    end,
+    Sol = Visited.
+
+next_nodes([ {Node, Neighbours} | _], Node, Neighbours) => true.
+next_nodes([ _ | Graph], Node, Neighbours) => next_nodes(Graph, Node, Neighbours).
+
+/*
+    1
+   / \
+  2   3
+   \ /
+    4
+    |
+    5
+*/
+
+main =>
+    % Definindo um grafo simples
+    G = [
+        {1, [2, 3]},
+        {2, [4]},
+        {3, [4]},
+        {4, [5]},
+        {5, []}
+    ],
+    printf("
+1 --> 2 --> 4 --> 5
+ \\--> 3 ---/
+ or \n
+    1
+   / \\
+  2   3
+   \\ /
+    4
+    |
+    5
+   \n"),
+
+    % Testando o BFS funcional
+    InitNode = 1,
+    EndNode = 5,
+    Sol = bfs_functional(G, InitNode, EndNode),
+    printf("Caminho encontrado: %w \n", Sol).

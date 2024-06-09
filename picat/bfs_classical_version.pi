@@ -1,0 +1,42 @@
+  
+%%%%% by a big HELP ... from guess who?
+bfs_search(Graph, [], _, _, []) => true.
+bfs_search(Graph, [EndNode | _], _, EndNode, Path) => Path = [EndNode].
+bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
+    Neighbours = [N : N in get_neighbors(Graph, Node), not membchk(N, Visited)],
+    NewVisited = Visited ++ Neighbours,
+    NewQueue = Rest ++ Neighbours,
+    bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
+    Path = [Node | TempPath].
+
+get_neighbors([], _) = [].
+get_neighbors([{Node, Neighbours} | _], Node) = Neighbours.
+get_neighbors([_ | Rest], Node) = get_neighbors(Rest, Node).
+
+main =>
+    % Definindo um grafo simples
+    Graph = [
+        {1, [2, 3]},
+        {2, [4]},
+        {3, [4]},
+        {4, [5]},
+        {5, []}
+    ],
+    printf("
+1 --> 2 --> 4 --> 5
+ \\--> 3 ---/
+ or \n
+    1
+   / \\
+  2   3
+   \\ /
+    4
+    |
+    5
+   \n"),
+
+    % Testando o BFS funcional
+    InitNode = 1,
+    EndNode = 4,
+    bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
+    printf("Caminho encontrado: %w \n", Sol).
