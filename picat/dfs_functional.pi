@@ -1,0 +1,66 @@
+dfs_functional(Graph, InitNode, EndNode) = Sol =>
+    S := InitNode,
+    Path_Temp := [InitNode],
+    while (S != EndNode) do
+        next_node(Graph, S , Next, EndNode, Graph),
+        not membchk(Next, Path_Temp),
+        Path_Temp := Path_Temp ++ [Next],
+        S := Next
+    end,
+    Sol = Path_Temp.
+
+next_node([ {Node,Neighbours} | Graph], Node, Next, End_Node, _) ?=>
+    member(Next, Neighbours),
+    Next == End_Node.
+
+next_node([ {Node,Neighbours} | Graph], Node, Next, End_Node, _) ?=>
+    member(Next, Neighbours),
+    neighbours(Next, Graph) != [].
+
+next_node([ _ | Graph], Node, Next, End_Node, G_Static) =>
+    next_node( Graph, Node, Next, End_Node, G_Static).
+
+neighbours(Node, Graph) = Viz =>
+%%    Viz = flatten([ Term[2] : Term in Graph, Term = {Node,Neighbours}]). ou ainda
+      Viz = flatten([ Neighbours : Term in Graph, Term = {Node,Neighbours}]).
+
+/*
+    1
+   / \
+  2   3
+   \ /
+    4
+    |
+    5
+*/
+
+
+main =>
+    % Definindo um grafo simples
+    G = [
+        {1, [2, 3]},
+        {2, [4]},
+        {3, [4]},
+        {4, [5]},
+        {5, []}
+    ],
+	printf("
+1 --> 2 --> 4 --> 5
+ \\--> 3 ---/
+ or \n
+    1
+   / \\
+  2   3
+   \\ /
+    4
+    |
+    5
+   \n"),			
+
+
+    % Testando o DFS funcional
+    InitNode = 1,
+    EndNode = 5,
+    Sol = dfs_functional(G, InitNode, EndNode),
+    printf("Caminho encontrado: %w \n", Sol).
+

@@ -3,7 +3,7 @@ import util.
 import ordset.
 import sys.
 
-%%% a DFS -- original idea from HAKAN
+%%% a DFS -- original idea from HAKAN -- adapted by myself
 %%% some changings
 dfs(Graph, InitNode, EndNode, L_Nodes) =>
     S := InitNode,
@@ -19,7 +19,7 @@ dfs(Graph, InitNode, EndNode, L_Nodes) =>
     L_Nodes = Path_Temp.
 %% if a path is not found it ... could be here modified 
 %dfs(Graph, InitNode, EndNode, L_Nodes) => L_Nodes = [].
-/*-------------------------------------------------*/
+/*--------------------NOT USED EITHER TESTED -----------------------------*/
 dfs_functional(Graph, InitNode, EndNode) = Sol =>
         S := InitNode,
         Path_Temp := [InitNode],
@@ -31,20 +31,21 @@ dfs_functional(Graph, InitNode, EndNode) = Sol =>
         end,
         Sol = Path_Temp.
 %%% a list is returned -- not tested
-/*-------------------------------------------------*/
+/*--------------------------------------------------------------------*/
 %
 % next_node([], Node, Next, End_Node, G_Static) ?=>
 %    printf("\n None sucessor in this graph for the node: %w", [Node]).
 %
-% TO IMPROVE
-next_node([ Term | Graph], Node, Next, End_Node, G_Static) ?=>
-    Term[1] == Node,
-    member(Next, Term[2]), %% to force a backtracking over list adjacencies
+% Suggestions  from Hakan
+
+next_node([ {Node,Neighbours} | Graph], Node, Next, End_Node, G_Static) ?=>
+    %Term[1] == Node,
+    %Term[2] = Neighbours
+    member(Next, Neighbours), %% to force a backtracking over list adjacencies
     neighbours(Next,G_Static) != []. %%% to avoid a  leaf node ... due the while in main loop
   
-next_node([ Term | Graph], Node, Next, End_Node, G_Static) ?=>
-    Term[1] == Node,
-    member(Next, Term[2]), %% to force a backtracking over list adjacencies
+next_node([ {Node,Neighbours}  | Graph], Node, Next, End_Node, G_Static) ?=>
+    member(Next, Neighbours), %% to force a backtracking over list adjacencies
     Next == End_Node. %%% COMPARING AND FINISHING 
 
 %% to avance or search in the graph for next node 
@@ -52,7 +53,7 @@ next_node([ _ | Graph], Node, Next, End_Node, G_Static) =>
     next_node( Graph, Node, Next, End_Node, G_Static).        
 
 /*-------------------------------------------------*/
-% TO FIX
+% 
 % Função de ordenação tpopológica
 topological_sort(Graph) = R =>
     All_Nodes = all_nodes(Graph),
@@ -66,7 +67,7 @@ topological_sort(Graph) = R =>
         end
     end,
     R = {Stack_Sol, reverse(Stack_Sol)}.
-/*    Returning an array with 2 lists ... the STACK and  reversed */
+/* Returning an array with 2 lists ... the STACK and  reversed */
   
 /*-------------------------------------------------*/
 % Original Graph
@@ -105,14 +106,15 @@ all_nodes( Graph ) = Nodes =>
 %%% take care with the format or layout of input graph 
 
 neighbours(Node, Graph) = Viz =>
-    Viz = flatten([ Term[2] : Term in Graph, Term = {Node, Viz}]) . 
+    Viz = flatten([ Neighbours : Term in Graph, Term = {Node,Neighbours}]).
+%%    Viz = flatten([ Term[2] : Term in Graph, Term = {Node, Viz}]) . 
 %%% take care with the input graph here
 
 /*
-AUX not used but OK
+AUX functions  not used but OK
 get_second_elements(L) = Result =>
         Result = [Array[2] : Array in L]. 
-    
+   
 neighbour(Node, Graph) = Viz =>
         Viz = flatten([Neighbours : {N, Neighbours} in Graph, N = Node]).
 */
@@ -127,7 +129,7 @@ main =>
     Nodes_Sorted = sort(T),
     println(all_Sorted= Nodes_Sorted),
     
-  %% A TEST 
+  %% A simple TEST 
     Init = 7,                    
     foreach(End_Node in Nodes_Sorted)
         printf("\n Start: %w\t  End: %w", Init, End_Node),
