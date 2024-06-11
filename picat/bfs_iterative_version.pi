@@ -1,38 +1,55 @@
 bfs_iterative(Graph, InitNode, EndNode) = Sol =>
-    Queue := {InitNode},
-    Visited := {InitNode},
+    Queue := {InitNode},  %%%% ARRAY
+    Visited := [InitNode], %%% List
     printf("\n Queue:%w , Visited:%w", Queue, Visited),
-    while ((Queue != {}) && (Queue[1] != EndNode)) do
-        S := Queue[1],
-        Queue := slice(Queue,2,Queue.length),
-        printf("\n Queue: %w , Top: %w", Queue, S),
-        next_nodes(Graph, S, NextNodes),
+    while (Queue != {} || get_top(Queue) != EndNode ) do
+        %
+        {Front, Temp_Queue} =  dequeue(Queue),
+        %Queue := New_Queue,
+        printf("\n Temp_Queue: %w , Top: %w", Temp_Queue, Front),
+        if (Front == 11) then
+            exit()
+        end,
+        next_nodes(Graph, Front, NextNodes),
         %% ERRO AQUI ....
         %not membchk(NextNodes, Queue), 
         foreach (Next in NextNodes)
-            not membchk_array(Next, Visited),
-            Queue := Queue ++ {Next},
-            Visited := Visited ++ {Next}
+            not membchk(Next, Visited),
+            Queue := enqueue(Next, Temp_Queue),
+            Visited := [Next] ++ Visited , 
+            printf("\n Visited: %w Queue: %w", Visited, Queue )
         end
     end,
-    Sol = remove_dups(Visited).
+    %Sol = remove_dups(Visited).
+    Sol = reverse(Visited).
 
+
+/******************* AUX PREDICATES **********/
 membchk_array(Element, Array) => 
     List = to_list(Array),
     membchk(Element,List).
 
-/*
-member_array(Element, Array) =>
-    Len = Array.length,
-    print(Len),
-    belongs_to_array(Element, Array, Len).
 
-belongs_to_array(_, Array, Index), Index > 1 ?=> false.
-belongs_to_array(Element, Array, Index) ?=>
-    Element == Array[Index], !.
-belongs_to_array(Element, Array, Index) =>
- belongs_to_array(Element, Array, (Index - 1)).
-*/
+get_top(Queue) = R =>
+    R = last(Queue).
+
+enqueue(V,Queue) = R => 
+    to_list(Queue) = L1,
+    append([V], L1, L2),
+    R = L2.to_array().
+
+dequeue(Queue) = R =>
+    if (length(Queue) > 0) then
+        L1 = Queue.to_list(),
+        reverse(L1) = [Front|ResList],
+        reverse(ResList) = L2,
+        New_Queue = L2.to_array(),
+        R = {Front, New_Queue}
+    else
+        printf("\n The queue is empty"),
+        %exit()
+        R = {9999,{}}
+    end.
 
 
 next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
@@ -76,6 +93,6 @@ main =>
  
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 8,
+    EndNode = 6,
     Sol = bfs_iterative(Graph , InitNode, EndNode),
     printf("\n Nós Visitados: %w \n", Sol).

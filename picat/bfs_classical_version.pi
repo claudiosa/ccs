@@ -41,6 +41,21 @@ main =>
     |
     5
    \n"),
+Picat> X := {2}, X:=X++{3}.
+X = {2,3}
+yes
+
+Picat> X := {2}, X:= {3}++X.
+X = {3,2}
+yes
+Picat> X={}, Y = slice(X,3,X.length), Y=={}. 
+X = '{}'
+Y = '{}'
+yes
+
+
+
+
 */
    Graph = [
         {1, [2, 3]},
