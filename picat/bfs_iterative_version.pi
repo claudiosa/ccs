@@ -1,10 +1,13 @@
+
+%%% Functional or Procedural Version of BFS -- By CCS
+%%% There's a small error.
 bfs_iterative(Graph, InitNode, EndNode) = Sol =>
-    Queue := [InitNode],  %%%% 
+    Queue := [InitNode],  %%%% I did a queue using a list ... could be an array
     Visited := [InitNode], %%% List
     printf("\n Queue:%w  Visited:%w EndNode: %w", Queue, Visited, EndNode),
 
-    while ( Queue != []  ) do
-        %  Visited := [Next] ++ Visited,
+    while ( Queue != [] && (not membchk(EndNode, Visited))  ) do
+     
         % || get_top(Queue) != EndNode  || (not membchk(Next, Visited)) 
         printf("\n get_top: %w", get_top(Queue)),
         Aux = dequeue(Queue), %% departure ... remove front of queue
@@ -12,25 +15,21 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
         printf("\t Temp_Queue: %w  Front: %w  ", Temp_Queue, Front),
      
         next_nodes(Graph, Front, NextNodes),
-        println(next= NextNodes),
+        println(nextNODES= NextNodes),
        
-        foreach (Next in NextNodes)
-            not member(Next, Visited),
+        foreach (Next in NextNodes )
+            if (not membchk(Next, Visited) )  then
                 Queue := enqueue(Next, Temp_Queue),
                 Visited := [Next] ++ Visited,
                 Temp_Queue := Queue,
                 printf("\n NEXT: %w  Visited: %w Temp: %w Queue: %w", Next, Visited, Temp_Queue, Queue )
-%            else
-%                printf("\n NEXT %w already Visited: %w ", Next, Visited )
-%            end    
+            end    
         end
     end,
-    %Sol = remove_dups(Visited).
-    println(xFIM=Visited),
     
     Sol = reverse(Visited)
     ;
-    printf("\n END  %w", Visited )   
+    printf("\n Wrong INPUT in the Graph...stopped in:  %w", Visited )   
     .
 
 
@@ -102,7 +101,7 @@ main =>
     Graph = [
         {1, [2, 3]},
         {2, [4, 5]},
-        {3, [5, 6]},
+        {3, [5, 6, 12]},
         {4, [5, 7]},
         {5, [8]},
         {6, [9]},
@@ -110,11 +109,15 @@ main =>
         {8, []},
         {9, [11]},
         {10, []},
-        {11, []}
+        {11, []},
+        {12, []}
         ],
  
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 8,
+    EndNode = 4,
+   
     Sol = bfs_iterative(Graph , InitNode, EndNode),
-    printf("\n Nós Visitados: %w \n", Sol).
+    printf("\n\n INPUT DAT:"), 
+    printf("\n InitNode:%w  EndNode:%w  \n Graph: %w", InitNode, EndNode, Graph),
+    printf("\n Visiting sequence: %w \n", Sol).
