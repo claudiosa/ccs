@@ -21,37 +21,31 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
     Visited := [InitNode], %%% List
     printf("\n Queue:%w  Visited:%w  EndNode: %w", Queue, Visited, EndNode),
 
-    while ( Queue != []) do
-        % && (not membchk(EndNode, Visited))
+    while ( Queue != [] && (not membchk(EndNode, Visited))) do
+     
         % || get_top(Queue) != EndNode  || (not membchk(Next, Visited)) 
         printf("\n Get_top: %w", get_top(Queue)),
         Aux = dequeue(Queue), %% departure ... remove front of queue
         (Front, Temp_Queue) = Aux,  
-        printf("\t Temp_Queue: %w  + Front: %w = QUEUE ", Temp_Queue, Front),
+        printf("\t Temp_Queue: %w  Front: %w  ", Temp_Queue, Front),
      
         next_nodes(Graph, Front, NextNodes),
-        println(nextNODES = NextNodes),
-        if(NextNodes == [] && Front == EndNode) then %%% for a leave node and an end node
-           Queue := []
-            elseif (NextNodes == [] && Front != EndNode) then
-                Visited := [Front] ++ Visited,
-                Aux = dequeue(Queue), %% departure ... remove front of queue
-                (Front, Temp_Queue) = Aux,  
-                Queue := Aux
+        println(nextNODES= NextNodes),
+        %%%(Next != EndNode)
+        foreach (Next in NextNodes )
+            if ((not membchk(Next, Visited)) )  then
+                Queue := enqueue(Next, Temp_Queue),
+                Visited := [Next] ++ Visited,
+                Temp_Queue := Queue,
+                printf("\n NEXT: %w  Visited: %w Temp: %w Queue: %w", Next, Visited, Temp_Queue, Queue )
+            end
+           %%% if (NextNodes == []) then
 
-            else
-                foreach (Next in NextNodes )
-                    if (not membchk(Next, Visited) )  then
-                        Queue := enqueue(Next, Temp_Queue),
-                        Visited := [Next] ++ Visited,
-                        Temp_Queue := Queue,
-                        printf("\n NEXT: %w  Visited: %w Temp: %w Queue: %w", Next, Visited, Temp_Queue, Queue )
-                    end
-                end            
+
+                
         end,
     end,
-    %Sol = reverse(Visited)
-    %%%%%% Here it gets all nodes not included in that level/layer 
+    /** Here it gets all nodes not included in that level/layer ***/
     nth(Index,Visited,EndNode), 
     slice(Visited,Index,Visited.length) = Sub_L,
     Sol = reverse(Sub_L)
@@ -94,7 +88,7 @@ dequeue(Queue) = R =>
         printf("\n The queue is empty"),
         %exit()
         R = {9999,{ 
-*/
+
 next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
     N == Node, 
     R = Neighbours.
@@ -110,9 +104,9 @@ all_nodes( Graph ) = Nodes =>
   
        1
       / \
-     2   3  -------
-    / \ / \        \
-   4   5   6       ------> 12  
+     2   3  ---------- 12
+    / \ / \
+   4   5   6 
   / \ /     \
  7   8       9
  |           |
@@ -140,7 +134,7 @@ main ?=>
  
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 10,
+    EndNode = 12,
     Sol = bfs_iterative(Graph , InitNode, EndNode),
     printf("\n InitNode:%w  EndNode:%w  ", InitNode, EndNode),
     printf("\n Visiting sequence: %w \n", Sol),
