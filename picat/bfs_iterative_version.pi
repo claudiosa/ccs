@@ -14,87 +14,73 @@
  10         11
 
 */
-
-
 bfs_iterative(Graph, InitNode, EndNode) = Sol =>
     Queue := [InitNode],  %%%% I did a queue using a list ... could be an array
     Visited := [InitNode], %%% List
     printf("\n Queue:%w  Visited:%w  EndNode: %w", Queue, Visited, EndNode),
 
-    while ( Queue != []) do
-        % && (not membchk(EndNode, Visited))
-        % || get_top(Queue) != EndNode  || (not membchk(Next, Visited)) 
-        printf("\n Get_top: %w", get_top(Queue)),
-        Aux = dequeue(Queue), %% departure ... remove front of queue
-        (Front, Temp_Queue) = Aux,  
-        printf("\t Temp_Queue: %w  + Front: %w = QUEUE ", Temp_Queue, Front),
-     
-        next_nodes(Graph, Front, NextNodes),
-        println(nextNODES = NextNodes),
-        if(NextNodes == [] && Front == EndNode) then %%% for a leave node and an end node
-           Queue := []
-            elseif (NextNodes == [] && Front != EndNode) then
-                Visited := [Front] ++ Visited,
-                Aux = dequeue(Queue), %% departure ... remove front of queue
-                (Front, Temp_Queue) = Aux,  
-                Queue := Aux
+    while ( Queue != [] ) do
+        
+        %printf("\n Get_front: %w", get_front(Queue)),
+        printf(" Queue: %w \n ", Queue),
+        Front := get_front(Queue), % take it before of dequeue
+        Queue := dequeue(Queue), %% departure ... remove front of queue
+        
+        printf(" New_Queue: %w  + Front: %w = QUEUE\t ", Queue, Front),
+        if (Front == EndNode) then
+           
+            %%% Ha alguns na pilha que não foram VISITADOS ainda
+            %%% serão descartados da pilha com esta ação
+            %%% Mas constam em listados ... 
+            %%% Logo é remover todos da lista de visitados que estão na fila 
+            % A differente between 2 lists with the same subsequences
+            nth(Index,Visited,EndNode), 
+            Visited := slice(Visited, Index, Visited.length),
+            Queue := []      %%% like a return inside of this while
+        else
+            next_nodes(Graph, Front, NextNodes),
+            println(nextNODES = NextNodes),
 
-            else
-                foreach (Next in NextNodes )
-                    if (not membchk(Next, Visited) )  then
-                        Queue := enqueue(Next, Temp_Queue),
-                        Visited := [Next] ++ Visited,
-                        Temp_Queue := Queue,
-                        printf("\n NEXT: %w  Visited: %w Temp: %w Queue: %w", Next, Visited, Temp_Queue, Queue )
-                    end
-                end            
-        end,
-    end,
-    %Sol = reverse(Visited)
-    %%%%%% Here it gets all nodes not included in that level/layer 
-    nth(Index,Visited,EndNode), 
-    slice(Visited,Index,Visited.length) = Sub_L,
-    Sol = reverse(Sub_L)
+            foreach (Next in NextNodes )
+                if (not membchk(Next, Visited) )  then
+                    Visited := [Next] ++ Visited,
+                    Queue := enqueue(Next, Queue)
+                    
+                end
+            end %% foreach
+        end %%% if
+    end, %%% while
+      
+    Sol = reverse(Visited),
+    %%%%%% Here
+    printf("\n Visited: %w", Sol)
+
     ;
     printf("\n Wrong INPUT in the Graph...stopped in:  %w", Visited )   
     .
-
-
-/******************* AUX PREDICATES **********/
+/******************* AUX PREDICATES for queue operations **********/
 membchk_array(Element, Array) => 
     List = to_list(Array),
     membchk(Element,List).
 
-
-get_top(Queue) = R =>
+get_front(Queue) = R =>
     R = last(Queue).
 
 enqueue(V,Queue) = R => 
-    R = [V]++Queue.
+    R = [V] ++ Queue.
 
 dequeue(Queue) = R =>
     if (len(Queue) > 0) then
         Front = last(Queue),
         append(New_Queue, [Front], Queue),
-        R = (Front, New_Queue)
+        R = New_Queue
     else
         printf("\n The queue is empty"),
         %exit()
-        R = (9999,[])
+        R = []
     end.
 
-
-/* e) > 0) then
-        L1 = Queue.to_list(),
-        reverse(L1) = [Front|ResList],
-        reverse(ResList) = L2,
-        New_Queue = L2.to_array(),
-        R = {Front, New_Queue}
-    else
-        printf("\n The queue is empty"),
-        %exit()
-        R = {9999,{ 
-*/
+/*  kernel of BFS ... how to represent the graph and nodes */
 next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
     N == Node, 
     R = Neighbours.
@@ -140,20 +126,49 @@ main ?=>
  
     % Testando o BFS funcional
     InitNode = 1,
-    EndNode = 10,
+    /*
+     %%% INDIVIDUAL TESTS
+    EndNode = 11,
     Sol = bfs_iterative(Graph , InitNode, EndNode),
     printf("\n InitNode:%w  EndNode:%w  ", InitNode, EndNode),
     printf("\n Visiting sequence: %w \n", Sol),
-
-    T = all_nodes(Graph),
-    Nodes_Sorted = sort(T),
-   /* foreach(EndNode in Nodes_Sorted)
+    */    
+    Nodes = all_nodes(Graph),
+    %Nodes_Sorted = sort(T),
+    foreach(EndNode in Nodes)
         Sol = bfs_iterative(Graph , InitNode, EndNode),
         printf("\n\n INPUT DAT:"), 
-        printf("\n InitNode:%w  EndNode:%w  ", InitNode, EndNode),
+        printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
         printf("\n Visiting sequence: %w \n", Sol)
     end,
-    */
+   
         printf("\n End of main: OK\n").   
 
 main => printf("\n End of main with fail ... NO SOLUTION"). 
+
+/************************* OLD PIECES ********************/
+  /*
+        if(NextNodes == [] && Front == EndNode) then %%% for a leave node and an end node
+           %% Case 1
+                Visited := [Front] ++ Visited,
+                Queue := [] %%% END if a leave was a END NODE
+            elseif (NextNodes == [] && Front != EndNode) then
+            %% Case 2    
+                Visited := [Front] ++ Visited,
+                Queue := dequeue(Queue) %% departure ... remove front of queue
+                
+            else
+            %% Case 3
+                foreach (Next in NextNodes )
+                    if (not membchk(Next, Visited) )  then
+                       Queue := enqueue(Next, Queue),
+                       Visited := [Next] ++ Visited
+                       
+        %                printf("\n NEXT: %w  Visited: %w Temp: %w Queue: %w", Next, Visited, New_Queue, Queue )
+                    end
+                end            
+        end
+
+    % && (not membchk(EndNode, Visited))
+        % || get_front(Queue) != EndNode  || (not membchk(Next, Visited)) 
+    */    
