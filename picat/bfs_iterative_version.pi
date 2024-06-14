@@ -1,5 +1,6 @@
 
-%%% Functional or Procedural Version of BFS -- By CCS
+%%% Functional or Procedural Version of a BFS -- By CCS
+%%% A classical QUEUE is usedd as kernel of this structure
 %%% There's a small error.
 /*
   
@@ -54,7 +55,6 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
     Sol = reverse(Visited),
     %%%%%% Here
     printf("\n Visited: %w", Sol)
-
     ;
     printf("\n Wrong INPUT in the Graph...stopped in:  %w", Visited )   
     .
