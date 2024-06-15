@@ -307,10 +307,7 @@ diff3_A_B(A, []) = A.
 diff3_A_B(A, [H|B]) = R =>
     Temp = delete_all(A, H),
     R = diff3_A_B(Temp, B).
-
-
-      
-    
+ 
 
 
     
