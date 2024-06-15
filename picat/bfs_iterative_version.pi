@@ -35,9 +35,10 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
             %%% Mas constam em listados ... 
             %%% Logo é remover todos da lista de visitados que estão na fila 
             % A differente between 2 lists with the same subsequences
-            nth(Index,Visited,EndNode), 
-            Visited := slice(Visited, Index, Visited.length),
-            Queue := []      %%% like a return inside of this while
+            % nth(Index,Visited,EndNode), 
+            % Visited := slice(Visited, Index, Visited.length),
+            Visited := diff_A_B(Visited,Queue),
+            Queue := []  %%% like a return inside of this while
         else
             next_nodes(Graph, Front, NextNodes),
             println(nextNODES = NextNodes),
@@ -46,7 +47,6 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
                 if (not membchk(Next, Visited) )  then
                     Visited := [Next] ++ Visited,
                     Queue := enqueue(Next, Queue)
-                    
                 end
             end %% foreach
         end %%% if
@@ -91,6 +91,9 @@ next_nodes([ _ | Graph], Node, Neighbours) =>
 all_nodes( Graph ) = Nodes =>
         %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
         Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
+
+
+diff_A_B(A,B) = [X : X in A, not membchk(X, B)].   
 
 /*
   
@@ -137,7 +140,7 @@ main ?=>
     %Nodes_Sorted = sort(T),
     foreach(EndNode in Nodes)
         Sol = bfs_iterative(Graph , InitNode, EndNode),
-        printf("\n\n INPUT DAT:"), 
+        printf("\n\n INPUT DATA:"), 
         printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
         printf("\n Visiting sequence: %w \n", Sol)
     end,

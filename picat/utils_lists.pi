@@ -260,3 +260,57 @@ find_N( S, Linp, Lout ) =>
      (Num > Num_A ;
       Name != Name_A),
      find_N(S, L1, L2 ).
+
+
+/* versao declarativa */
+diff_A_B(A,[], R) ?=> R = A.
+diff_A_B(A,[H|B], Temp_2) ?=>
+        membchk(H,A),
+        Temp_1 = delete(A, H),
+        diff_A_B(Temp_1, B, Temp_2).
+
+diff_A_B(A,[H|B], Temp) =>
+        not membchk(H,A),
+        diff_A_B(A, B, Temp).
+
+
+/* versao declarativa */
+/*
+OU ...
+diff_A_B(A, [], R) ?=> R = A.
+diff_A_B(A, [H|B], R) ?=>
+    (membchk(H, A) ->
+        Temp = delete(A, H),
+        diff_A_B(Temp, B, R)
+    ;
+        diff_A_B(A, B, R)
+    ).
+
+*/
+
+% Função funcional melhorada
+diff1_A_B(A,[]) = R => R = A.
+diff1_A_B(A, [H|B]) = R =>
+        (membchk(H, A) ->
+            Temp = delete(A, H),
+            R = diff1_A_B(Temp, [H|B])
+        ;
+            R = diff1_A_B(A, B)
+        ).
+
+% list comppreenhsion
+diff2_A_B(A, B) = [X : X in A, not membchk(X, B)].   
+%   R = [Y | Y in A,  (not member(Y,B))].
+
+%% 100% funcional
+diff3_A_B(A, []) = A.
+diff3_A_B(A, [H|B]) = R =>
+    Temp = delete_all(A, H),
+    R = diff3_A_B(Temp, B).
+
+
+      
+    
+
+
+    

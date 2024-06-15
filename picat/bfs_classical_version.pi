@@ -1,5 +1,20 @@
   
-%%%%% by a big HELP ... from guess who?
+/*
+Sample of BFS
+  
+       1
+      / \
+     2   3  -------
+    / \ / \        \
+   4   5   6       ------> 12  
+  / \ /     \
+ 7   8       9
+ |           |
+ 10         11
+
+
+*/
+%%%%% This code is not mine .... but it's clean and elegant
 bfs_search(Graph, [], _, _, []) ?=> true.
 bfs_search(Graph, [EndNode | _], _, EndNode, Path) ?=> Path = [EndNode].
 bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
@@ -9,16 +24,16 @@ bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
     bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
     Path = [Node | TempPath].
 
-
-
-membchk_array(Element, Array) => 
-    List = to_list(Array),
-    membchk(Element,List).
+/* ********************************************* */
 
 /* MUITO TOP ESTA VERSAO FUNCIONAL */
 get_neighbors([], _) = [].
 get_neighbors([{Node, Neighbours} | _], Node) = Neighbours.
 get_neighbors([_ | Rest], Node) = get_neighbors(Rest, Node).
+
+all_nodes( Graph ) = Nodes =>
+    %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
+    Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
 
 main =>
     % Definindo um grafo simples
@@ -53,28 +68,40 @@ X = '{}'
 Y = '{}'
 yes
 
-
-
-
 */
-   Graph = [
-        {1, [2, 3]},
-        {2, [4, 5]},
-        {3, [4, 6]},
-        {4, [5, 7]},
-        {5, [8]},
-        {6, [9]},
-        {7, [10]},
-        {8, []},
-        {9, [11]},
-        {10, []},
-        {11, []}
-        ],
+     % Definindo um grafo simples
+    Graph = [
+    {1, [2, 3]},
+    {2, [4, 5]},
+    {3, [5, 6, 12]},
+    {4, [5, 7]},
+    {5, [8]},
+    {6, [9]},
+    {7, [10]},
+    {8, []},
+    {9, [11]},
+    {10, []},
+    {11, []},
+    {12, []}
+    ],
 
-    % Testando o BFS funcional
+ % Testando o BFS Classico
     InitNode = 1,
+/*  
     EndNode = 8,
     printf("\n Start: %w\t  End: %w \t", InitNode, EndNode),
-  
-    bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
+      bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
     printf("Nós Visitados: %w \n", Sol).
+*/
+    Nodes = all_nodes(Graph),
+  
+    foreach(EndNode in Nodes)
+        bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
+        printf("\n\n INPUT DATA:"), 
+        printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
+        printf("\n Visiting sequence: %w \n", Sol)
+    end,
+    printf("\n End of main: OK\n").   
+
+main => printf("\n End of main with fail ... NO SOLUTION").     
+
