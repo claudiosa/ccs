@@ -1,0 +1,139 @@
+
+import util.
+import ordset.
+%%% 'import' must appear before all definitions.
+/*
+Grafo orientado ciclico - NAO EH UM DAG
+       1
+      /|\ 
+     / | \
+    /  |  \
+   /   |   \
+->2    3    4
+ |\    |   /|
+|  \   |  / |
+|   \  | /  | 
+|      5    |
+|     / \  |
+|    /   \|
+|   /     7----> 1
+|  /     (volta ao 1) 
+| /
+|/
+6     
+*/
+
+grafo() = G =>
+    G = [
+        {1,[2,3,4]},
+        {2,[5,6]},
+        {3,[5]},
+        {4,[5,7]},
+        {5,[6,7]},
+        {6,[]},
+        {7,[1]}
+    ].
+
+%%% varias maneiras para esta função -- exibindo o findall
+all_nodes( Graph ) = Nodes =>
+        %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
+        Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
+
+/****************************************/
+
+le_pilha(P) = first(P).
+
+desempilha(Topo, [T|R], New) =>
+    Topo = T,
+    New = R.
+
+empilha(Elemento, Pilha) = New =>
+    New = [Elemento|Pilha].
+
+/*
+desempilha(Pilha) = New =>
+    length(Pilha) > 0,
+    Pilha = [T|R], 
+    New = (T, R).
+
+desempilha(Pilha)  = New =>
+    length(Pilha) == 0,
+    New = (9999,[]).
+*/
+main ?=>
+    
+    Grafo = grafo(),
+    Init_Node = 2, %%%% ficou mais interessante 
+    %%End_Node =  vira do foreach,
+    Nodes = all_nodes(Grafo), %%%%
+    
+    foreach(End_Node in Nodes)
+        printf("\n\n Start Node: %w\t  End Node: %w",Init_Node, End_Node),
+        Sol = dfs_iterative(Grafo, Init_Node, End_Node),
+        printf("\n Caminho: %w", Sol)
+        %printf("\n Valores das Arestas: %w\n", reverse(Sol[2]))
+    end,
+    printf("\n FIM do main: OK\n"). 
+
+main => printf("\n Fim do main com falha em alguma busca ... NO SOLUTION").   
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
+    Pilha := [Init_Node],
+    Visitados := [Init_Node],
+    
+    while ( Pilha != [] ) do
+       
+       %(Topo, Pilha) = desempilha(Pilha),
+       desempilha(Topo, Pilha, Nova),
+       Pilha := Nova,
+       %printf("\n Desempilha: %w %w %w ",Topo, Pilha, Nova),
+       
+        if (not membchk(Topo, Visitados) )  then  %%%
+            if (Topo == End_Node) then
+                Pilha := []   %% parada mesmo
+            end
+        else 
+            next_nodes(Graph, Topo, Vizinhos),
+            
+            foreach (Next in Vizinhos)
+                if (not membchk(Next, Visitados) )  then
+                    Visitados := [Next] ++ Visitados,
+                    %printf("\n Empilha: %w %w %w ", Next, Pilha, Nova),
+                    %empilha(Next, Pilha, Nova ),  %%% CUIDAR
+                    Pilha := empilha(Next,Pilha)
+                end
+            end %% foreach
+        end %%% if
+
+    end, %%% while      
+
+    printf("\n TODOS Visitados: %w", reverse(Visitados)),
+    Visitados := remove_nao_pertence_ao_caminho(Visitados, End_Node),
+
+    Sol = reverse(Visitados)
+    %%%%%% Here
+    % printf("\n Visitados: %w", Sol)
+    ;
+    printf("\n Entrada errada do Grafo:  %w", Visitados ).   
+    
+
+/* =============================== */
+/*  TRUQUE é ... how to represent the graph and nodes */
+next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
+    N == Node, 
+    R = Neighbours.
+    
+next_nodes([ _ | Graph], Node, Neighbours) => 
+        next_nodes(Graph, Node, Neighbours).
+
+/* algo veloz e simples */
+
+remove_nao_pertence_ao_caminho(Visitados, End_Node) = R =>
+    nth(Index,Visitados,End_Node), 
+    %Size = length(Visitados),
+    %if (Size != Index) then
+    R = slice(Visitados,Index,Visitados.length).
+    
+
