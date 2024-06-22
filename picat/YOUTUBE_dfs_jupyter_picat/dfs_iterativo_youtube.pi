@@ -83,30 +83,32 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
     Pilha := [Init_Node],
     Visitados := [Init_Node],
     
-    while ( Pilha != [] ) do
+    while (Pilha != [] ) do
        
        %(Topo, Pilha) = desempilha(Pilha),
        desempilha(Topo, Pilha, Nova),
+       printf("\n Desempilha: %w %w %w ",Topo, Pilha, Nova),
        Pilha := Nova,
-       %printf("\n Desempilha: %w %w %w ",Topo, Pilha, Nova),
        
-        if (not membchk(Topo, Visitados) )  then  %%%
-            if (Topo == End_Node) then
-                Pilha := []   %% parada mesmo
-            end
+        if ( not membchk(Topo, Visitados)  )  then  %%%
+           Visitados := [Topo] ++ Visitados  
+        %% Se era um noh aberto ... agora sera visitado ou fechado
+        end,
+        if (Topo == End_Node) then
+            Pilha := []   %% A parada mesmo
         else 
             next_nodes(Graph, Topo, Vizinhos),
-            
+            %Reverse := reverse(Vizinhos),
+            %% nos vizinhos do nó topo ... serão empilhados
             foreach (Next in Vizinhos)
-                if (not membchk(Next, Visitados) )  then
-                    Visitados := [Next] ++ Visitados,
+                if (not membchk(Next, Visitados) )  then 
+                    %Visitados := [Next] ++ Visitados,
                     %printf("\n Empilha: %w %w %w ", Next, Pilha, Nova),
                     %empilha(Next, Pilha, Nova ),  %%% CUIDAR
                     Pilha := empilha(Next,Pilha)
                 end
             end %% foreach
         end %%% if
-
     end, %%% while      
 
     printf("\n TODOS Visitados: %w", reverse(Visitados)),
@@ -121,7 +123,7 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
 
 /* =============================== */
 /*  TRUQUE é ... how to represent the graph and nodes */
-next_nodes([ {Node, Neighbours} | _], N, R) ?=> 
+next_nodes([ {Node, Neighbours} | _ ], N, R) ?=> 
     N == Node, 
     R = Neighbours.
     
