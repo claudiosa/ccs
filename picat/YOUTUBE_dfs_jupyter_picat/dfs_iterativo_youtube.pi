@@ -1,4 +1,5 @@
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PRECISA SER MELHORADO 
+%% mas FUNCIONA BEM ....
 import util.
 import ordset.
 %%% 'import' must appear before all definitions.
@@ -16,7 +17,7 @@ Grafo orientado ciclico - NAO EH UM DAG
 |      5    |
 |     / \  |
 |    /   \|
-|   /     7----> 1
+|   /     7----------------> 1
 |  /     (volta ao 1) 
 | /
 |/
@@ -42,7 +43,6 @@ all_nodes( Graph ) = Nodes =>
 /****************************************/
 
 le_pilha(P) = first(P).
-
 desempilha(Topo, [T|R], New) =>
     Topo = T,
     New = R.
@@ -51,6 +51,7 @@ empilha(Elemento, Pilha) = New =>
     New = [Elemento|Pilha].
 
 /*
+
 desempilha(Pilha) = New =>
     length(Pilha) > 0,
     Pilha = [T|R], 
@@ -73,6 +74,7 @@ main ?=>
         printf("\n Caminho: %w", Sol)
         %printf("\n Valores das Arestas: %w\n", reverse(Sol[2]))
     end,
+    printf("\n NOS FOLHAS %w", all_leaves(Grafo)),
     printf("\n FIM do main: OK\n"). 
 
 main => printf("\n Fim do main com falha em alguma busca ... NO SOLUTION").   
@@ -85,34 +87,43 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
     
     while (Pilha != [] ) do
        
-       %(Topo, Pilha) = desempilha(Pilha),
+       %(Topo, Pilha) := desempilha(Pilha) , NAO FUNCIONA devido a atribuição de TUPLAS
        desempilha(Topo, Pilha, Nova),
        printf("\n Desempilha: %w %w %w ",Topo, Pilha, Nova),
        Pilha := Nova,
-       
-        if ( not membchk(Topo, Visitados)  )  then  %%%
-           Visitados := [Topo] ++ Visitados  
-        %% Se era um noh aberto ... agora sera visitado ou fechado
-        end,
+       %    Visitados := [Topo] ++ Visitados  
+       % Se era um noh aberto ... agora sera visitado ou fechado
+       % end,
         if (Topo == End_Node) then
+            printf("\n Pilha FINAL: %w ", Pilha),
+            Visitados := diff_A_B( Visitados, Pilha ),
             Pilha := []   %% A parada mesmo
         else 
             next_nodes(Graph, Topo, Vizinhos),
+        
             %Reverse := reverse(Vizinhos),
             %% nos vizinhos do nó topo ... serão empilhados
             foreach (Next in Vizinhos)
-                if (not membchk(Next, Visitados) )  then 
-                    %Visitados := [Next] ++ Visitados,
-                    %printf("\n Empilha: %w %w %w ", Next, Pilha, Nova),
-                    %empilha(Next, Pilha, Nova ),  %%% CUIDAR
+                if ( not membchk(Next, Visitados) )  then 
+                    Visitados := [Next] ++ Visitados,
                     Pilha := empilha(Next,Pilha)
-                end
-            end %% foreach
+                    %printf("\n Empilha: %w %w %w ", Next, Pilha, Nova),
+                    %empilha(Next, Pilha, Nova ),  %%% CUIDAR IDEM OBS ACIMA            
+                end %%% if interno
+            end %%% foreach
         end %%% if
     end, %%% while      
 
     printf("\n TODOS Visitados: %w", reverse(Visitados)),
+    % if (not membchk(Next, all_leaves(Graph)) && Next != End_Node) then 
+
+    %%%%% MELHORAR .....
+    Nos_Folhas := all_leaves(Graph),
     Visitados := remove_nao_pertence_ao_caminho(Visitados, End_Node),
+    if (not membchk(End_Node, Nos_Folhas)) then 
+        Visitados := diff_A_B(Visitados, Nos_Folhas)
+    end,
+
 
     Sol = reverse(Visitados)
     %%%%%% Here
@@ -122,7 +133,12 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
     
 
 /* =============================== */
+
+diff_A_B(A,B) = [X : X in A, not membchk(X, B)]. 
+%%% diferença entre DUAS LISTAS 
 /*  TRUQUE é ... how to represent the graph and nodes */
+/* algo veloz e simples */
+
 next_nodes([ {Node, Neighbours} | _ ], N, R) ?=> 
     N == Node, 
     R = Neighbours.
@@ -130,7 +146,8 @@ next_nodes([ {Node, Neighbours} | _ ], N, R) ?=>
 next_nodes([ _ | Graph], Node, Neighbours) => 
         next_nodes(Graph, Node, Neighbours).
 
-/* algo veloz e simples */
+%%% TODOS NOS FOLHAS -- COOL
+all_leaves(Graph) = [Node : {Node, Neighbours} in Graph,  Neighbours == [] ].
 
 remove_nao_pertence_ao_caminho(Visitados, End_Node) = R =>
     nth(Index,Visitados,End_Node), 
@@ -138,4 +155,4 @@ remove_nao_pertence_ao_caminho(Visitados, End_Node) = R =>
     %if (Size != Index) then
     R = slice(Visitados,Index,Visitados.length).
     
-
+/*****************************************************************************/

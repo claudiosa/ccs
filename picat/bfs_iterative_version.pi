@@ -30,8 +30,8 @@ bfs_iterative(Graph, InitNode, EndNode) = Sol =>
         printf(" New_Queue: %w  + Front: %w = QUEUE\t ", Queue, Front),
         if (Front == EndNode) then
            
-            %%% Ha alguns na pilha que não foram VISITADOS ainda
-            %%% serão descartados da pilha com esta ação
+            %%% Ha alguns na FILA que não foram VISITADOS ainda
+            %%% serão descartados da FILA com esta ação
             %%% Mas constam em listados ... 
             %%% Logo é remover todos da lista de visitados que estão na fila 
             % A differente between 2 lists with the same subsequences
