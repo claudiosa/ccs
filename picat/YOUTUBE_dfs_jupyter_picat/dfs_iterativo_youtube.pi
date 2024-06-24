@@ -1,5 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PRECISA SER MELHORADO 
-%% mas FUNCIONA BEM ....
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% FUNCIONA BEM ....MAS PRECISA SER MELHORADO 
 import util.
 import ordset.
 %%% 'import' must appear before all definitions.
@@ -35,11 +35,6 @@ grafo() = G =>
         {7,[1]}
     ].
 
-%%% varias maneiras para esta função -- exibindo o findall
-all_nodes( Graph ) = Nodes =>
-        %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
-        Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
-
 /****************************************/
 
 le_pilha(P) = first(P).
@@ -51,7 +46,7 @@ empilha(Elemento, Pilha) = New =>
     New = [Elemento|Pilha].
 
 /*
-
+Valido ... também
 desempilha(Pilha) = New =>
     length(Pilha) > 0,
     Pilha = [T|R], 
@@ -65,23 +60,23 @@ main ?=>
     
     Grafo = grafo(),
     Init_Node = 2, %%%% ficou mais interessante 
-    %%End_Node =  vira do foreach,
+    %% End_Node =  vira do foreach,
     Nodes = all_nodes(Grafo), %%%%
     
     foreach(End_Node in Nodes)
         printf("\n\n Start Node: %w\t  End Node: %w",Init_Node, End_Node),
         Sol = dfs_iterative(Grafo, Init_Node, End_Node),
-        printf("\n Caminho: %w", Sol)
+        printf("\n Caminho SOL: %w", Sol)
         %printf("\n Valores das Arestas: %w\n", reverse(Sol[2]))
     end,
-    printf("\n NOS FOLHAS %w", all_leaves(Grafo)),
+    printf("\n NÓS FOLHAS: %w", all_leaves(Grafo)),
     printf("\n FIM do main: OK\n"). 
 
 main => printf("\n Fim do main com falha em alguma busca ... NO SOLUTION").   
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
+dfs_iterative(Grafo, Init_Node, End_Node) = Sol =>
     Pilha := [Init_Node],
     Visitados := [Init_Node],
     
@@ -99,7 +94,7 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
             Visitados := diff_A_B( Visitados, Pilha ),
             Pilha := []   %% A parada mesmo
         else 
-            next_nodes(Graph, Topo, Vizinhos),
+            next_nodes(Grafo, Topo, Vizinhos),
         
             %Reverse := reverse(Vizinhos),
             %% nos vizinhos do nó topo ... serão empilhados
@@ -111,15 +106,15 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
                     %empilha(Next, Pilha, Nova ),  %%% CUIDAR IDEM OBS ACIMA            
                 end %%% if interno
             end %%% foreach
-        end %%% if
+        end, %%% if 
+        printf("\n Pilha antes do While:  %w ", Pilha)
     end, %%% while      
 
-    printf("\n TODOS Visitados: %w", reverse(Visitados)),
-    % if (not membchk(Next, all_leaves(Graph)) && Next != End_Node) then 
-
-    %%%%% MELHORAR .....
-    Nos_Folhas := all_leaves(Graph),
-    Visitados := remove_nao_pertence_ao_caminho(Visitados, End_Node),
+    printf("\n Todos os NÓS Visitados: %w", reverse(Visitados)),
+    
+    %%%%% MELHORAR .....acima para eliminar estas verificacoes
+    Visitados := achou_fim_com_nos_a_visitar(Visitados, End_Node),
+    Nos_Folhas := all_leaves(Grafo),
     if (not membchk(End_Node, Nos_Folhas)) then 
         Visitados := diff_A_B(Visitados, Nos_Folhas)
     end,
@@ -128,31 +123,41 @@ dfs_iterative(Graph, Init_Node, End_Node) = Sol =>
     Sol = reverse(Visitados)
     %%%%%% Here
     % printf("\n Visitados: %w", Sol)
-    ;
+    ;  %% caso de falha acima
     printf("\n Entrada errada do Grafo:  %w", Visitados ).   
     
 
 /* =============================== */
 
 diff_A_B(A,B) = [X : X in A, not membchk(X, B)]. 
-%%% diferença entre DUAS LISTAS 
-/*  TRUQUE é ... how to represent the graph and nodes */
+%%% diferença entre DUAS LISTAS  : A - B
+
+%%% não testado
+diff_SIMETRICA(A,B) = [X : X in A, not membchk(X, B)] ++ 
+                      [Y : Y in B, not membchk(Y, A)].  
+
+
+%%% TODOS NOS FOLHAS -- COOL
+all_leaves(Grafo) = [Node : {Node, Neighbours} in Grafo,  Neighbours == [] ].
+%%% varias maneiras para esta função -- exibindo o findall
+all_nodes( Grafo ) = Nodes =>
+    %Nodes = sort( [N : Termo in Grafo, {N, _} = Termo ]) . 
+    Nodes = [N : Termo in Grafo, {N, _} = Termo ] .   
+
+/*  TRUQUE é ... how to represent the Grafo and nodes */
 /* algo veloz e simples */
 
 next_nodes([ {Node, Neighbours} | _ ], N, R) ?=> 
     N == Node, 
     R = Neighbours.
     
-next_nodes([ _ | Graph], Node, Neighbours) => 
-        next_nodes(Graph, Node, Neighbours).
+next_nodes([ _ | Grafo], Node, Neighbours) => 
+        next_nodes(Grafo, Node, Neighbours).
 
-%%% TODOS NOS FOLHAS -- COOL
-all_leaves(Graph) = [Node : {Node, Neighbours} in Graph,  Neighbours == [] ].
 
-remove_nao_pertence_ao_caminho(Visitados, End_Node) = R =>
+%%% MELHORAR ISTO ......
+achou_fim_com_nos_a_visitar(Visitados, End_Node) = R =>
     nth(Index,Visitados,End_Node), 
-    %Size = length(Visitados),
-    %if (Size != Index) then
     R = slice(Visitados,Index,Visitados.length).
     
 /*****************************************************************************/
