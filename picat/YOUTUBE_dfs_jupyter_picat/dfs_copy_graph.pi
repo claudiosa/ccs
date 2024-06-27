@@ -5,42 +5,55 @@ import sys.
 %%%%import a_graph_11_nodes.
 %load("a_graph_11_nodes.pi").
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-data(Graph) =>
-        Graph =
-        [('02', '22', 'none'),
-        ('12', '22', 'none'), 
-        ('22', '31', 'a001'),
-        ('22', '72', 'none'),
-        ('31', '41', 'none'),
-        ('41', '52', 'a002'), 
-        ('41', '61', 'none'),
-        ('52', '72', 'none'), 
-        ('61', '71', 'none'),
-        ('61', '72', 'a003'),
-        ('71', '80', '#bno'), 
-        ('72', '80', '#dro'), 
-        ('111', '222', 'fake_arc')].
+/*
+Grafo orientado ciclico - NAO EH UM DAG
+                     1
+                    /|\ 
+                   / | \
+                 /  |  \
+                /   |   \
+            ->2    3    4
+             |\    |   /|
+            |  \   |  / |
+            |   \  | /  | 
+            |      5    |
+            |     / \  |
+            |    /   \|
+            |   /     7----------------> 1
+            |  /     (volta ao 1) 
+            | /
+            |/
+            6     
+*/
+grafo() = G =>
+    G = [
+        {1,[2,3,4]},
+        {2,[5,6]},
+        {3,[5]},
+        {4,[5,7]},
+        {5,[6,7]},
+        {6,[]},
+        {7,[1]}
+    ].
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 main ?=>
-
-    data(Graph),    
     
-    printf("\n Oriented Graph %w", Graph),
-    L_Nodes = all_nodes(Graph), %%%% to be used in the future
-    Init_Node= min(L_Nodes),
-    L_Edges = all_edges(Graph),
+    Grafo = grafo(),
+    Init_Node = 2, %%%% ficou mais interessante 
+    %% End_Node =  vira do foreach,
+    Nodes = all_nodes(Grafo), %%%%
+    %Init_Node= min(L_Nodes),
    
-    printf("\n Start: %w", Init_Node),
     printf("\n All Nodes: %w", L_Nodes),
-    printf("\n All Edges: %w\n", L_Edges),
+    
     %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
-    delete(L_Nodes, Init_Node) = Rest,
+    %delete(Nodes, Init_Node) = Rest,
 
     All_Edges =[],
-    foreach(End_Node in Rest)
+    foreach(End_Node in Nodes)
         printf("\n Start: %w\t  End: %w", Init_Node, End_Node),
-    if ( dfs_connected(Graph, Init_Node, End_Node, [Init_Node], [], Sol) ) then
+    if ( dfs_copied(Graph, Init_Node, End_Node, [Init_Node], [], Sol) ) then
             printf("\n Path: %w",   reverse(Sol[1])),
             printf("\t Edges: %w\n", reverse(Sol[2])),
             All_Edges := All_Edges++Sol[2]
@@ -76,11 +89,10 @@ main ?=>
 main => printf("\n End of main with fail ... NO SOLUTION").   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*** pegar da lista */
-all_edges(L) = Edges =>
-    Edges = sort_remove_dups( [N : T in L, (N1, N2, N) = T ] ) . 
-    
-all_nodes(L) = Nodes =>
-    Nodes = sort_remove_dups( [N : T in L, (N1, N2, _) = T, N in [N1, N2]] ) . 
+
+all_nodes( Grafo ) = Nodes =>
+        %Nodes = sort( [N : Termo in Grafo, {N, _} = Termo ]) . 
+        Nodes = [N : Termo in Grafo, {N, _} = Termo ] .   
 
 get_second_elements(L) = Result =>
     Result = [Array[2] : Array in L]. 
@@ -88,7 +100,7 @@ get_second_elements(L) = Result =>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % KERNEL DFS
 
-dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
+dfs_copied(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     Node == End_Node,
     %N = len(L_Edges),
     %N>0,
@@ -103,14 +115,14 @@ dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
     Sol = 'NO'.
 */   
 
-dfs_connected(Graph, Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
+dfs_copied(Graph, Node, End_Node, Partial_Path, Partial_Edges, Sol) =>
         % next_node(Graph, Node, Next, Edge), % ORIG
         next_node(Graph, Node, Next, End_Node, Edge), % hakank
         % nonvar(Edge), % hakank: A fix for 02 -> 222
         not membchk(Next, Partial_Path), 
         append([Next], Partial_Path,  L_Nodes_Visited),
         append([Edge], Partial_Edges, L_Edges),
-   dfs_connected(Graph, Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
+    dfs_copied(Graph, Next, End_Node, L_Nodes_Visited, L_Edges, Sol).
 
 
 
@@ -125,19 +137,18 @@ dfs_connected(_, _, _, _, Sol) =>
 %
 % hakank: Added End_Node to next_node.
 %
-next_node([], Node, Next, End_Node, Edge) ?=>
+next_node([], Node, Next, End_Node) ?=>
     nonvar(Next), % hakank: A fix for 02 -> 222
     printf("\n None sucessor in this graph for the node: %w", [Node]).
 
-next_node([(Source, Target, Arc)| Graph], Node, Next, End_Node, Edge) ?=>
+next_node([(Source, Target)| Graph], Node, Next, End_Node ?=>
     Source == Node,
-    Next = Target,
-    Edge = Arc.
+    Next = Target.
 
-next_node([(Source, Target, Arc)| Graph], Node, Next, End_Node, Edge) =>
+next_node([(Source, Target)| Graph], Node, Next, End_Node) =>
     % Source != Node, % ORIG
     Source != End_Node, % hakank
-    next_node( Graph, Node, Next, End_Node, Edge).        
+    next_node( Graph, Node, Next, End_Node).        
 
 
 /* ****************************************************************************/
