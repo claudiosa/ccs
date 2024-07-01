@@ -1,4 +1,5 @@
-
+%%picat
+%%%%%%%%%%%%%%%%%% CCS
 import util.
 import ordset.
 %%% 'import' must appear before all definitions.
@@ -36,6 +37,7 @@ arc(5, 7, 1).
 arc(7, 1, 1). 
 
 %%% varias maneiras para esta função -- exibindo o findall
+%%% ilustra o findall e a biblioteca de conjuntos
 all_nodes() = Set => 
     L1 = findall(X, arc(X,Y,_)),
     L2 = findall(Y, arc(X,Y,_)),
@@ -51,31 +53,35 @@ main ?=>
     Nodes = all_nodes(), %%%%
     
     foreach(End_Node in Nodes)
-        printf("\n\n Start Node: %w\t  End Node: %w",Init_Node, End_Node),
-        dfs_1(Init_Node, End_Node, [Init_Node], [], Sol),
+        printf("\n\n Início: %w\t  Fim: %w",Init_Node, End_Node),
+        dfs_classico(Init_Node, End_Node, [Init_Node], [], Sol),
         printf("\n Caminho: %w", reverse(Sol[1]))
         %printf("\n Valores das Arestas: %w\n", reverse(Sol[2]))
     end,
+
+    /**** Caminho com mais opcoes ****/
+    Todas_SOL = findall(Um_Cam, (dfs_classico(Graph, 2, 6, [2], Sol), Um_Cam = Sol[1] )),
+    printf("\n\n Caminhos de 2 a 6 (findall): %w", Todas_SOL ),
+    
     printf("\n FIM do main: OK\n"). 
 
 main => printf("\n Fim do main com falha em alguma busca ... NO SOLUTION").   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-dfs_1(Node, End_Node, Visitados, L_Arestas, Sol) ?=>
+dfs_classico(Node, End_Node, Visitados, Arestas, Sol) ?=>
     Node == End_Node,
-    Sol = {Visitados, L_Arestas}, %%%% UM BOM TRUQUE ...
-    printf("\n Há um caminho (cláusula aterrada -- parada da recursão)").
+    Sol = {Visitados, Arestas}. %%%% UM BOM "TRUQUE" ...
+    %printf("\n Há um caminho (cláusula aterrada -- parada da recursão)").
 
-dfs_1(Node, End_Node, Partial_Caminho, Partial_Arestas, Sol) =>
+dfs_classico(Node, End_Node, Partial_Caminho, Partial_Arestas, Sol) =>
     
-   arc(Node, Prox, Aresta),
-   not membchk(Prox,Partial_Caminho), %%%% faster 
-   %append([Prox], Partial_Caminho,  L_Visitados),
-   %append([Aresta], Partial_Arestas, L_Arestas),
-   % OU
-   L_Visitados = [Prox] ++ Partial_Caminho,
-   L_Arestas = [Aresta] ++ Partial_Arestas,
-   dfs_1(Prox, End_Node,  L_Visitados, L_Arestas, Sol).
-
+        arc(Node, Prox, Valor),
+        not membchk(Prox,Partial_Caminho), %%%% faster 
+        %append([Prox], Partial_Caminho,  L_Visitados),
+        %append([Aresta], Partial_Arestas, L_Arestas),
+        % OU
+        Visitados = [Prox] ++ Partial_Caminho,
+        Arestas = [Valor] ++ Partial_Arestas,
+    dfs_classico(Prox, End_Node, Visitados, Arestas, Sol).
 
 /* =============================== */

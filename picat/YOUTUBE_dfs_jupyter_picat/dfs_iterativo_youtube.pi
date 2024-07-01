@@ -1,4 +1,5 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%picat
+%%%%%%%%%%%%%%%%%% CCS
 %% FUNCIONA BEM ....MAS PRECISA SER MELHORADO 
 import util.
 import ordset.
@@ -14,9 +15,9 @@ Grafo orientado ciclico - NAO EH UM DAG
  |\    |   /|
 |  \   |  / |
 |   \  | /  | 
-|      5    |
-|     / \  |
-|    /   \|
+|     5    |
+|    / \  |
+|   /   \|
 |   /     7----------------> 1
 |  /     (volta ao 1) 
 | /
@@ -119,14 +120,12 @@ dfs_iterative(Grafo, Init_Node, End_Node) = Sol =>
         Visitados := diff_A_B(Visitados, Nos_Folhas)
     end,
 
-
     Sol = reverse(Visitados)
     %%%%%% Here
     % printf("\n Visitados: %w", Sol)
     ;  %% caso de falha acima
     printf("\n Entrada errada do Grafo:  %w", Visitados ).   
-    
-
+  
 /* =============================== */
 
 diff_A_B(A,B) = [X : X in A, not membchk(X, B)]. 

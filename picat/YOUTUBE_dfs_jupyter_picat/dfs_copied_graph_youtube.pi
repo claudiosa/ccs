@@ -1,0 +1,119 @@
+%%picat
+%%%%%%%%%%%%%%%%%% CCS
+import util.
+import ordset.
+import sys.
+%%%% TRAZER DE UM ARQUIVO
+%import a_graph_11_nodes.
+%load("a_graph_11_nodes.pi").
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+Grafo orientado ciclico - NAO EH UM DAG
+                     1
+                    /|\ 
+                   / | \
+                 /  |  \
+                /   |   \
+            ->2    3    4
+             |\    |   /|
+            |  \   |  / |
+            |   \  | /  | 
+            |     5     |
+            |     / \  |
+            |    /   \|
+            |   /     7----------------> 1
+            |  /     (volta ao 1) 
+            | /
+            |/
+            6     
+*/
+grafo() = G =>
+    G = [
+        {1,[2,3,4]},
+        {2,[5,6]},
+        {3,[5]},
+        {4,[5,7]},
+        {5,[6,7]},
+        {6,[]},
+        {7,[1]}
+    ].
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+main ?=>
+    
+    Graph = grafo(),
+    Init_Node = 2, %%%% ficou mais interessante 
+    %% End_Node =  vira do foreach,
+    Nodes = all_nodes(Graph), %%%%
+    %Init_Node= min(Nodes),
+   
+    printf("\n All Nodes: %w", Nodes),
+    
+    %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
+ 
+    foreach(End_Node in Nodes)
+        printf("\n Início: %w\t  Fim: %w", Init_Node, End_Node),
+        if ( dfs_copied(Graph, Init_Node, End_Node, [Init_Node], Sol) ) then
+            printf("\n Caminho: %w",   reverse(Sol)),
+        else
+            printf("\n ==> Não alcançável de: %w até: %w\n", Init_Node, End_Node)
+        end
+    end,
+    
+    /**** Caminho com mais opcoes ****/
+    Todas_SOL = findall(Sol, dfs_copied(Graph, 2, 6, [2], Sol) ),
+    printf("\n\n Caminhos de 2 a 6 (findall): %w", Todas_SOL ),
+
+    printf("\n End of main: OK\n").
+  
+
+main => printf("\n End of main with fail ... NO SOLUTION").   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*** UMA lista com todos os nós */
+all_nodes( Grafo ) = Nodes =>
+        %Nodes = sort( [N : Termo in Grafo, {N, _} = Termo ]) . 
+        Nodes = [N : Termo in Grafo, {N, _} = Termo ] .   
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% KERNEL do DFS com copia
+
+dfs_copied(Graph, Node, End_Node, L_Nodes_Visited,  Sol) ?=>
+    Node == End_Node,
+    Sol = L_Nodes_Visited.
+    
+/*
+SE tiver cálculo de arestas ou pesos dos arcos ... mais um argumento
+dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
+*/   
+
+dfs_copied(Graph, Node, End_Node, Partial_Path,  Sol) =>
+        next_node(Graph, Node, Next, End_Node), % hakank
+        not membchk(Next, Partial_Path), 
+        append([Next], Partial_Path, L_Visited),
+        
+    dfs_copied(Graph, Next, End_Node, L_Visited, Sol).
+
+ /*
+dfs_connected(_, _, _, _, Sol) =>
+    Sol='NO'.
+*/
+
+%%next_node(Graph, Node, Next, Edge) =>
+% hakank: Added End_Node to next_node.
+%
+/* ==> MEIO QUE EH O SEGREDO DE TUDO  ... ASSIM COMO O DFS */
+/** CASO DO GRAFO NÃO TER ENCONTRADO UM NO EM NEXT */  
+  
+next_node([], Node, Next, End_Node) ?=>
+    nonvar(Next), % hakank: A fix for 02 -> 222
+    printf("\n None sucessor in this graph for the node: %w", [Node]).
+
+next_node([ {Node, Neighbours} | _ ], Current, Next, End_Node) ?=> 
+        Current == Node, 
+        member(Next, Neighbours). 
+        %%% se next falhar em dfs, então ele pega o proximo POR MEMBER COM BACKTRACKING
+       
+next_node([ _ | Grafo], Current, Next, End_Node) => 
+        next_node(Grafo, Current, Next, End_Node).  
+
+/* ****************************************************************************/
