@@ -1,6 +1,8 @@
 %%picat
 /* input data  */
-import data_26_services.
+%import data_26_services. -- OK
+import input_173.
+%import input_100. -- 100%
 import util.
 import datetime.
 import planner.
@@ -26,21 +28,67 @@ main ?=>
     printf("\n Services : %w\n", Services),
     printf("\n Locomotives, Stations, Times : %w\n", Loc_Place_Time),
     %plan(S0, Sol_Acoes),
-
-    best_plan_unbounded(S0 , Sol_Acoes), 
+    printf("\n Readings OK -- Starting the planner ... "),
+    plan_unbounded(S0 , Sol_Acoes), 
+    %best_plan_unbounded(S0 , Sol_Acoes), 
     println(sol_ACTIONS=Sol_Acoes),
+    Total = len(Sol_Acoes),
+   %% printf("\n Services Assigned X Locomotives: \n"),
     
-    printf("\n Services Assigned X Locomotives: \n"),
+    printf("\n Services Assigned in Jason:  %w\n", Total),
     print_list(Sol_Acoes),
-    printf("\n Services Assigned:  %w\n", len(Sol_Acoes)).
+    printf("\n Writing in Jason, file: output_planner_jason.txt"),
+    write_to_file("output_planner_jason.txt", Sol_Acoes), 
+    printf("\n Done: Total of Services: %w\n", Total).
     
 main => printf("\n\n NO MORE SOLUTIONS").
+
+
+%%% writing to a file
+write_to_file(FileName, List) =>
+    File = open(FileName, write),
+    print_list_2(File, List),
+    close(File).
+
 
 print_list([]) =>
     true.
 print_list([ X | Xs]) =>
     printf("\n => %w", X),
     print_list(Xs).
+
+print_services([]) =>
+    true.
+print_services([ {(_,B)} | Xs]) =>
+    printf("\n %w", B),
+    print_services(Xs).
+
+%% writing formatted in Jason
+print_list_2(_, []) ?=> true.
+print_list_2(FileName,[{(A,B)}| Rest ] ) =>
+    ServiceID = new_uppercase(A),
+    LocomotiveID = to_atom(to_uppercase(to_string(B))),
+    %%%to_uppercase("41-5yx") = X, to_atom(X) =Y.
+    printf(FileName,"{\"service_id\": \"%w\", \"locomotiveId\": [\"%w\"]}\n", ServiceID, LocomotiveID),
+    print_list_2(FileName, Rest).
+
+new_uppercase(Atom) = UpperAtom =>
+    %string_uppercase(Atom.to_string(), UpperStr),
+    String = to_string(Atom),
+    UpperStr = to_uppercase(String),
+    %UpperAtom = UpperStr.to_atom().
+    UpperAtom = to_atom(UpperStr).
+
+/*
+Picat> to_atom(['X','9']) = X.
+X = 'X9'
+yes
+
+Picat> ['X','9'].to_atom()= X.
+X = 'X9'
+*/
+%to_lowercase(String) = LString: This function converts all uppercase alphabetic characters into lowercase characters, returning the result in LString.
+%to_uppercase(String) = UString: This function converts all lowercase alphabetic characters into uppercase characters, returning the result in UString.
 
 
 /* Describing the possible actions ==> for the planner */
