@@ -11,7 +11,6 @@ import planner.
 %% for the planner
 final( {[] , _ } ) => true .
 
-
 main ?=>
     locomotives(Loc),
     init_location(Init_Location), 
@@ -43,20 +42,20 @@ main ?=>
     
 main => printf("\n\n NO MORE SOLUTIONS").
 
-
 %%% writing to a file
 write_to_file(FileName, List) =>
     File = open(FileName, write),
     print_list_2(File, List),
     close(File).
 
-
+%%% writing a list  ... 
 print_list([]) =>
     true.
 print_list([ X | Xs]) =>
-    printf("\n => %w", X),
+    printf("\t => %w", X),
     print_list(Xs).
 
+%% only services
 print_services([]) =>
     true.
 print_services([ {(_,B)} | Xs]) =>
@@ -66,11 +65,13 @@ print_services([ {(_,B)} | Xs]) =>
 %% writing formatted in Jason
 print_list_2(_, []) ?=> true.
 print_list_2(FileName,[{(A,B)}| Rest ] ) =>
-    ServiceID = new_uppercase(A),
+    %ServiceID = new_uppercase(A),
+    %% OU
+    ServiceID =  to_atom(to_uppercase(to_string(A))),
     LocomotiveID = to_atom(to_uppercase(to_string(B))),
-    %%%to_uppercase("41-5yx") = X, to_atom(X) =Y.
     printf(FileName,"{\"service_id\": \"%w\", \"locomotiveId\": [\"%w\"]}\n", ServiceID, LocomotiveID),
     print_list_2(FileName, Rest).
+
 
 new_uppercase(Atom) = UpperAtom =>
     %string_uppercase(Atom.to_string(), UpperStr),
