@@ -94,7 +94,7 @@ services([
     (f004,bhc,310800,wgi,357900,ldual),
     (f005,wgi,397500,lgs,436200,ldual),
     (f006,lgs,480600,hlcp,527100,ldual),
-    (f007,hclp,578100,lfg,603120,ldual),
+    (f007,hlcp,578100,lfg,603120,ldual),
     (f008,lfg,762300,haho,780900,ldual),
     (f009,haho,822000,hcg,837900,ldual),
     (f010,hcg,875340,hbsr,878580,ldual),

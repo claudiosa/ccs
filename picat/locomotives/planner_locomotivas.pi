@@ -16,35 +16,33 @@ main ?=>
     /* LER AS PLANILHAS */
     services(Services), %% from Excell
     locomotives(Locomotives),
-   % init_location(Init_Location), 
-   % init_time(Init_Time), 
+   % VIRÃO OUTROS AQUI ....
 
     % dados para locomotivas - sem classes etc
     
     printf("\n Initial STATES \n"),
-    printf("\n Services : %w\n", Services),
-    printf("\n Services : %w\n", Locomotives),
+ %   printf("\n Services : %w\n", Services),
+ %   printf("\n Locomotives : %w\n", Locomotives),
 
     printf("\n Num de servicos: %w\n", len(Services)),
-    printf("\n Num de Loc: %w\n", len(Locomotives)),
+    printf("\n Num de locomotivas: %w\n", len(Locomotives)),
     S0 = {Services, Locomotives},
     
     %printf("\n Locomotives, Stations, Times : %w\n", Loc_Place_Time),
-    %plan(S0, Sol_Acoes),
-    printf("\n Readings OK -- Starting the planner ... ").
+    plan(S0, Sol_Acoes),
+    printf("\n Readings OK -- Starting the planner ... "),
     %plan_unbounded(S0 , Sol_Acoes), 
     %best_plan_unbounded(S0 , Sol_Acoes), 
-    %println(sol_ACTIONS=Sol_Acoes),
-    %Total = len(Sol_Acoes),
+  %  println(sol_ACTIONS=Sol_Acoes),
+    Total = len(Sol_Acoes),
    %% printf("\n Services Assigned X Locomotives: \n"),
     
-    %printf("\n Services Assigned in Jason:  %w\n", Total),
-    %print_list(Sol_Acoes),
-    %printf("\n Writing in Jason, file: output_planner_jason.txt"),
-    %write_to_file("output_planner_jason.txt", Sol_Acoes), 
-    %printf("\n Done: Total of Services: %w\n", Total).
-
-
+    printf("\n Services Assigned in Jason:  %w\n", Total),
+    print_list(Sol_Acoes),
+    printf("\n Writing in Jason, file: output_planner_jason.txt"),
+    write_to_file("output_planner_jason.txt", Sol_Acoes), 
+    %print_services(Sol_Acoes),
+    printf("\n Done: Total of Services: %w\n", Total).
 
  
 main => printf("\n\n NO MORE SOLUTIONS").
@@ -52,53 +50,63 @@ main => printf("\n\n NO MORE SOLUTIONS").
 
 /* Describing the possible actions ==> for the planner */
 /* ONE LOCOMOTIVE */
-action({L_inp, Loc}, S1, Action, Action_Cost ) ?=>
+action({Services, Locomotives}, S1, Action, Action_Cost ) ?=>
     Action_Cost = 1,
-    [ S | Services_To_Do ] = L_inp, 
-    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+
+    [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
    
-    find_locomotives( S, Loc, L_Locomotives ),
-    ( len(L_Locomotives) >= 1
-    ),  %% conditions
+    find_locomotives( S, Locomotives, Loc_Candidates ),
     % printf("\n Candidatas: %w \n em S: %w", L_Locomotives, S ),
-    [(A_Candidate, _, _) | _ ] = L_Locomotives,
-    
-    Loc_New = update_position((A_Candidate, End_P, End_T), Loc),
+    % exemplo: ('159-001', 159, 'hgrd', 37740),
+    (len(Loc_Candidates) >= 1
+    ),  %% conditions
+
+    [(A_Candidate, _, _ , _ ) | _ ] = Loc_Candidates,
+    %membchk((A_Candidate, _, _,_), Loc_Candidates),
+    %%%% ATUALIZAR a escolhida na lista de locomotivas
+    %%% novas posicoes da locomotiva, e tempo em que está disponível lá
+    %%% atualizar os 2 itens que mudam posicao e tempo
+    Loc_New = update_position((A_Candidate, End_P, End_T), Locomotives),
    
+   %%% OK aqui
 	Action = {(Id_Serv, A_Candidate)} , %%a description
 	S1 = { Services_To_Do, Loc_New}.
 
 /* TWO LOCOMOTIVES */
-action({L_inp, Loc}, S1, Action, Action_Cost ) ?=>
+action({Services, Locomotives}, S1, Action, Action_Cost )?=>
     Action_Cost = 10,
-    [ S | Services_To_Do ] = L_inp, 
-    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
+
+    [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
+    
    
-    find_locomotives( S, Loc, L_Locomotives ),
-    (len(L_Locomotives) >= 2
+    find_locomotives( S, Locomotives, Loc_Candidates ),
+    (len(Loc_Candidates) >= 2
     ),  %% conditions
 
-    [(Locomotive_01, Station_01, T_01), (Locomotive_02, Station_02, T_02) | _ ] = L_Locomotives,
+    [(Locomotive_01, Station_01, T_01), (Locomotive_02, Station_02, T_02) | _ ] =  Loc_Candidates,
     % printf("\n Candidatas: %w e %w", Locomotive_01, Locomotive_02 ),
-    Loc_New_01 = update_position((Locomotive_01, End_P, End_T), Loc),
+    Loc_New_01 = update_position((Locomotive_01, End_P, End_T), Locomotives),
     Loc_New_02 = update_position((Locomotive_02, End_P, End_T), Loc_New_01),
    
 	Action = {(Id_Serv, Locomotive_01), (Id_Serv, Locomotive_02)} , %%a description
     % printf("\n ACTION: %w", Action ),
 	S1 = { Services_To_Do, Loc_New_02 }.	
 
-action({L_inp, Loc}, S1, Action, Action_Cost ) =>
+
+action({Services, Locomotives}, S1, Action, Action_Cost ) =>
     Action_Cost = 100,
-    [ S | Services_To_Do ] = L_inp, 
-    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
-   
-    find_locomotives( S, Loc, L_Locomotives ),
-    ( len(L_Locomotives) == 0
+    [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
+
+    find_locomotives( S, Locomotives, Loc_Candidates  ),
+    ( len(Loc_Candidates) == 0
     ),  %% conditions
     
-    Loc_New =  Loc,
+    Loc_New =  Locomotives,
    
-	Action = {(Id_Serv, "NO LOCOMOTIVE AVAILBLE")} , %%a description
+	Action = {(Id_Serv, "NO LOCOMOTIVEs AVAILBLE")} , %%a description
 	S1 = { Services_To_Do, Loc_New}.
     
 /* END PLANNER */
@@ -109,34 +117,36 @@ action({L_inp, Loc}, S1, Action, Action_Cost ) =>
 find_locomotives(_, [], R ) ?=>  R = [].
 find_locomotives(S, Linp, Lout ) ?=>
     %printf("\n S: %w \t %w ", S , Linp),	
-    Linp =  [ A | L1],
+    Linp =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],
     Lout = [ B | L2 ],
-    (Id_Serv, Start_P, Start_T, End_P, End_T) = S,
-    (Id_Loc, Position, Time) = A,
+    (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) = S,
+    %(Id_Loc, Position, Time) = A,
     (Position == Start_P,
     Time =< Start_T),
     %B = (Id_Loc, End_P, End_T),
-    B = (Id_Loc, Position, Time), %%% selecionada
+    B = (Loc_ID, Loc_Class, Position, Time), %%% selecionada
     find_locomotives(S, L1, L2 ).
 
 find_locomotives(S, Linp, Lout ) =>
-    Linp =  [ A | L1],
+    Linp =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],
     Lout =  L2 ,
-    S = (Id_Serv, Start_P, Start_T, End_P, End_T),
-    A = (Id_Loc, Position, Time),
+    S = (Id_Serv, Start_P, Start_T, End_P, End_T,_),
+    %A = (Id_Loc, Position, Time),
     (Position != Start_P ;
         Time > Start_T),
     find_locomotives(S, L1, L2 ).   
 
 %%%%%%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
 update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
-update_position((A_Loc, E_Next, T_Next), [(Loc_Curr, Where_is, When) | Rest]) = New_Loc_Place
-              , (A_Loc == Loc_Curr) =>
-               New_Loc_Place = [(A_Loc, E_Next, T_Next) | Rest].
+%%% achou a locomotiva então atualize       
+update_position((A_Loc, E_Next, T_Next), [(Loc_ID, Class, Where_is, When) | Rest]) = New_Loc_Place
+        , (A_Loc == Loc_ID) =>
+        New_Loc_Place = [(Loc_ID, Class,  E_Next, T_Next) | Rest].
 
-update_position((A_Loc, E_Next, T_Next), [(Loc_Curr, Where_is, When)|Rest]) = New_Loc_Place
-        , (A_Loc != Loc_Curr) => 
-        New_Loc_Place = [(Loc_Curr, Where_is, When) | update_position((A_Loc, E_Next, T_Next), Rest) ].
+update_position((A_Loc, E_Next, T_Next), [(Loc_ID,  Class, Where_is, When) |Rest]) = New_Loc_Place
+    , (A_Loc != Loc_ID) => 
+    New_Loc_Place = [(Loc_ID,  Class, Where_is, When)  | update_position((A_Loc, E_Next, T_Next), Rest) ].
+    %%% avança na lista    
 
 /*
 x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',bwur,0),('159-004',lqb,0)],
@@ -146,9 +156,7 @@ x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',b
 */
 
 % Recursiva - predicativa
-build_tuple_3([],[],[]) = [].
-build_tuple_3([A|L1], [B|L2], [C|L3]) = Ys =>
-            Ys = [ (A,B,C) | build_tuple_3(L1,L2,L3)].
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% writing to a file ETC
