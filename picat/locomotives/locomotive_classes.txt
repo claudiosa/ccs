@@ -1,0 +1,7 @@
+
+locomotive_classes([
+    ('203', 'sdiesel', 'dt_203', 'dt_sdiesel'),
+    ('295', 'mdiesel', 'dt_295', 'dt_mdiesel'),
+    ('246', 'mdiesel', 'dt_246', 'dt_mdiesel'),
+    ('159', 'ldual', 'nan', 'nan')
+]).

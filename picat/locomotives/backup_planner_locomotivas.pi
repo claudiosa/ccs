@@ -16,7 +16,6 @@ main ?=>
     /* LER AS PLANILHAS */
     services(Services), %% from Excell
     locomotives(Locomotives),
-    locomotive_classes(Locomotive_Classes),
    % VIRÃO OUTROS AQUI ....
 
     % dados para locomotivas - sem classes etc
@@ -27,13 +26,11 @@ main ?=>
 
     printf("\n Num de servicos: %w\n", len(Services)),
     printf("\n Num de locomotivas: %w\n", len(Locomotives)),
-    printf("\n Num de Classes: %w\n", len(Locomotive_Classes)),
-    S0 = {Services, Locomotives, Locomotive_Classes},
-
-    printf("\n Readings OK -- Starting the planner ... "),
+    S0 = {Services, Locomotives},
+    
     %printf("\n Locomotives, Stations, Times : %w\n", Loc_Place_Time),
     plan(S0, Sol_Acoes),
-    
+    printf("\n Readings OK -- Starting the planner ... "),
     %plan_unbounded(S0 , Sol_Acoes), 
     %best_plan_unbounded(S0 , Sol_Acoes), 
   %  println(sol_ACTIONS=Sol_Acoes),
@@ -53,27 +50,19 @@ main => printf("\n\n NO MORE SOLUTIONS").
 
 /* Describing the possible actions ==> for the planner */
 /* ONE LOCOMOTIVE */
-action({Services, Locomotives, Loc_Classes}, S1, Action, Action_Cost ) ?=>
+action({Services, Locomotives}, S1, Action, Action_Cost ) ?=>
     Action_Cost = 1,
 
     [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
-    (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class) = S,
-    %% achar uma locomotiva que tenha esta classe de serviço... senão cairá na de equivalencias
-    Class_of_Locomotive = get_class_from_locomotive(Serv_Class, Loc_Classes), 
-    printf("\t %w => ", Class_of_Locomotive),
-    
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
    
-    find_locomotives( S, Locomotives, Class_of_Locomotive, Loc_Candidates ),
-     printf("\n Candidatas: %w \n em S: %w", L_Locomotives, S ),
+    find_locomotives( S, Locomotives, Loc_Candidates ),
+    % printf("\n Candidatas: %w \n em S: %w", L_Locomotives, S ),
     % exemplo: ('159-001', 159, 'hgrd', 37740),
     (len(Loc_Candidates) >= 1
     ),  %% conditions
 
-    %% vem varias  candidatas pegar UMA so, por exemplo
-    % exemplo: ('159-001', 159, 'hgrd', 37740),
-    [ (A_Candidate, _, _ , _ ) | _ ] = Loc_Candidates,
-    %(A_Candidate, _, _ , _ ) = Uma_Locomotiva ,
-    %printf("\n Uma: %w " , Uma_Locomotiva),
+    [(A_Candidate, _, _ , _ ) | _ ] = Loc_Candidates,
     %membchk((A_Candidate, _, _,_), Loc_Candidates),
     %%%% ATUALIZAR a escolhida na lista de locomotivas
     %%% novas posicoes da locomotiva, e tempo em que está disponível lá
@@ -82,19 +71,17 @@ action({Services, Locomotives, Loc_Classes}, S1, Action, Action_Cost ) ?=>
    
    %%% OK aqui
 	Action = {(Id_Serv, A_Candidate)} , %%a description
-	S1 = { Services_To_Do, Loc_New, Loc_Classes }.
+	S1 = { Services_To_Do, Loc_New}.
 
 /* TWO LOCOMOTIVES */
-action({Services, Locomotives, Loc_Classes}, S1, Action, Action_Cost ) ?=>
+action({Services, Locomotives}, S1, Action, Action_Cost )?=>
     Action_Cost = 10,
 
     [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
-    (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class) = S,
-
-    %% achar uma locomotiva que tenha esta classe de serviço... senão cairá na de equivalencias
-    Class_of_Locomotive = get_class_from_locomotive(Serv_Class, Loc_Classes),
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
     
-    find_locomotives( S, Locomotives, Class_of_Locomotive, Loc_Candidates ),
+   
+    find_locomotives( S, Locomotives, Loc_Candidates ),
     (len(Loc_Candidates) >= 2
     ),  %% conditions
 
@@ -105,101 +92,49 @@ action({Services, Locomotives, Loc_Classes}, S1, Action, Action_Cost ) ?=>
    
 	Action = {(Id_Serv, Locomotive_01), (Id_Serv, Locomotive_02)} , %%a description
     % printf("\n ACTION: %w", Action ),
-	S1 = { Services_To_Do, Loc_New_02, Loc_Classes }.	
+	S1 = { Services_To_Do, Loc_New_02 }.	
 
 
-action({Services, Locomotives, Loc_Classes}, S1, Action, Action_Cost ) =>
+action({Services, Locomotives}, S1, Action, Action_Cost ) =>
     Action_Cost = 100,
     [ S | Services_To_Do ] = Services, % S é uma tupla: (a001,hgrd,37740,hesh,62700,ldual),
-    (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class) = S,
-   
-    %% achar uma locomotiva que tenha esta classe de serviço... senão cairá na de equivalencias
-    Class_of_Locomotive = get_class_from_locomotive(Serv_Class, Loc_Classes),
-     
-    find_locomotives( S, Locomotives, Class_of_Locomotive, Loc_Candidates ),
+    (Id_Serv, Start_P, Start_T, End_P, End_T,_) = S,
+
+    find_locomotives( S, Locomotives, Loc_Candidates  ),
     ( len(Loc_Candidates) == 0
     ),  %% conditions
     
     Loc_New =  Locomotives,
    
-	Action = {(Id_Serv, "NO LOCOMOTIVEs AVAILABLE")} , %%a description
-	S1 = { Services_To_Do, Loc_New, Loc_Classes }.
+	Action = {(Id_Serv, "NO LOCOMOTIVEs AVAILBLE")} , %%a description
+	S1 = { Services_To_Do, Loc_New}.
     
 /* END PLANNER */
 
 %% id	locomotiveClass 	location	locationDatetime
 %% find_a_locomotive(A_Candidate, Loc, New_Loc, Loc_Assigned )
 
-
-%%% REPENSAR AQUI ....
-
-/*
-1. Pegar a classe de servico
-2. Ler em  locomotive_classes a classe correspondente a aquele servico
-3. Ir em locomotives e escolher uma daquela classe.
-*/
-/*
-get_class_from_locomotive(Serv_Class, Loc_Classes) = Class =>
-    printf("\n Serv_Class ==> %w", Serv_Class),
-    foreach (Item in Loc_Classes)
-        (Loc, Loc_Class, _, _) = Item, 
-        printf("\t ++> %w", Item),
-        if (Loc_Class == Serv_Class) then
-            Class := Loc
-        end
-    end.
-*/
-
-get_class_from_locomotive(Serv_Class, []) = '99999'  =>  
-    printf("\n ===> A locomotiva para esta classe não foi encontrada!!!\n").
-get_class_from_locomotive(Serv_Class, [(Loc, Loc_Class, _, _)|L] ) = Class =>
-        if (Loc_Class == Serv_Class) then
-            Class = Loc
-        else
-           Class = get_class_from_locomotive(Serv_Class, L)
-        end.
-    
-    %%% REFAZER QUASE-TUDO ...
-
-find_locomotives(_, [], _, R ) ?=>  R = [].
-find_locomotives(S, Loc, Class_of_Locomotive, Lout ) ?=>
+find_locomotives(_, [], R ) ?=>  R = [].
+find_locomotives(S, Linp, Lout ) ?=>
     %printf("\n S: %w \t %w ", S , Linp),	
-    Lout = [ B | Rest ],
-    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  %%% as locomotivas disponiveis
-    % EX ('159-001', 159, 'hgrd', 37740),
-
+    Linp =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],
+    Lout = [ B | L2 ],
     (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) = S,
     %(Id_Loc, Position, Time) = A,
-    (   Position == Start_P,        
-        Time =< Start_T,
-        Loc_Class == Class_of_Locomotive),
-
+    (Position == Start_P,
+    Time =< Start_T),
     %B = (Id_Loc, End_P, End_T),
-    
-    B = (Loc_ID, Position, Time), %%% selecionada
-    find_locomotives(S, L1,  Class_of_Locomotive, Rest ).
+    B = (Loc_ID, Loc_Class, Position, Time), %%% selecionada
+    find_locomotives(S, L1, L2 ).
 
-%%% avança na recursão
-find_locomotives(S, Loc, Class_of_Locomotive, Lout ) =>
-    
-    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  %%% as locomotivas disponiveis
-    
-    S = (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) ,
+find_locomotives(S, Linp, Lout ) =>
+    Linp =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],
+    Lout =  L2 ,
+    S = (Id_Serv, Start_P, Start_T, End_P, End_T,_),
     %A = (Id_Loc, Position, Time),
-    (   (Position != Start_P) ;
-        Time > Start_T;
-        Loc_Class !=   Class_of_Locomotive 
-    ), 
-    %%% se a classe da locomotiva não é a classe da classe que aceita o servico
-    %% o servico tem uma classe ... esta classe é atendida por uma classe de locomotivas
-    %% e a locomotiva candidadata deve estar nesta classe!
- 
-
-    %B = (Id_Loc, End_P, End_T),
-    %Lout = [ B | Rest ],
-    %B = (Loc_ID, Position, Time), %%% selecionada
-,
-    find_locomotives(S, L1, Class_of_Locomotive, Lout ).   
+    (Position != Start_P ;
+        Time > Start_T),
+    find_locomotives(S, L1, L2 ).   
 
 %%%%%%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
 update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
@@ -207,7 +142,7 @@ update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
 update_position((A_Loc, E_Next, T_Next), [(Loc_ID, Class, Where_is, When) | Rest]) = New_Loc_Place
         , (A_Loc == Loc_ID) =>
         New_Loc_Place = [(Loc_ID, Class,  E_Next, T_Next) | Rest].
-%% pega a proxima da lista de Locomotives
+
 update_position((A_Loc, E_Next, T_Next), [(Loc_ID,  Class, Where_is, When) |Rest]) = New_Loc_Place
     , (A_Loc != Loc_ID) => 
     New_Loc_Place = [(Loc_ID,  Class, Where_is, When)  | update_position((A_Loc, E_Next, T_Next), Rest) ].

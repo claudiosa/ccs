@@ -171,5 +171,5 @@ services([
     (q001,bwur,88800,lmof,91500,sdiesel),
     (q002,lmof,93300,bwur,95100,sdiesel),
     (q003,bwur,126600,lmof,128400,sdiesel),
-    (q004,lmof,135600,bwur,138300,sdiesel)    
-]).
+    (q004,lmof,135600,bwur,138300,sdiesel)
+    ]).
