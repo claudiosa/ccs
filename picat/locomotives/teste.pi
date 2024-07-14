@@ -1,0 +1,51 @@
+import input_test.
+
+main ?=>
+    /* LER AS PLANILHAS */
+    %services(Services), %% from Excell
+    %locomotives(Locomotives),
+    %locomotive_classes(Locomotive_Classes),
+    service_class_equivalence(Serv_EQUIV),
+    get_equivalent_serv(Serv_EQUIV, sdiesel, R),
+    writeln(lista = R),
+
+    replace_service_class('sdiesel', Serv_EQUIV, X, Y ),
+    printf("\n X: %w \tY: %w", X, Y),
+    replace_service_class('mdiesel', Serv_EQUIV, X1, Y1 ),
+    printf("\n X: %w \tY: %w", X1, Y1) .
+
+
+
+get_equivalent_serv(L, Serv_Class, R) =>
+        R = [(B, C) : (A, B, C) in L, A == Serv_Class].
+
+
+replace_service_class(_, [], _, _) => 
+    printf("\nNO SERVICE CLASS can be replaced\n").
+
+replace_service_class(Serv_Class, [(Current, Substitute, Penality) | _], New_Serv_Class, Penality) ?=>
+    Serv_Class == Current,
+    New_Serv_Class = Substitute.
+
+replace_service_class(Serv_Class, [(Current, Substitute, Penality) | Rest], New_Serv_Class, Penality) =>
+    Serv_Class != Current,
+    replace_service_class(Serv_Class, Rest, New_Serv_Class, Penality).
+/*
+replace_service_class(_, [], _, _) ?=>
+   % if (len(L)==0) then
+      %  L == [],
+        printf("\n NO SERVICE CLASS can be replaced").
+    %end.
+
+replace_service_class(Serv_Class, Service_Class_Equivalence, New_Serv_Class, Penality)
+    ?=>
+        Service_Class_Equivalence = [(Current, Substitute, Penality)| _ ],
+        Serv_Class == Current,
+        New_Serv_Class = Substitute.   
+
+replace_service_class(Serv_Class, Service_Class_Equivalence, New_Serv_Class, Penality)
+    =>
+    Service_Class_Equivalence = [(Current, Substitute, Penality)| L ],
+    Serv_Class != Current,
+    replace_service_class(Serv_Class, L , New_Serv_Class, Penality).
+*/

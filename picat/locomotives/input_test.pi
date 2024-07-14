@@ -1,11 +1,32 @@
 
+
+module input_test.
+
+%% the service class ARG1 can be replace by class ARG2 with penality 20, 30 etc.
+service_class_equivalence([
+    ('sdiesel', 'mdiesel', 20),
+    ('sdiesel', 'ldiesel', 30),
+    ('sdiesel', 'ldual', 30),
+    ('mdiesel', 'dt_sdiesel', 10),
+    ('mdiesel', 'ldiesel', 10),
+    ('mdiesel', 'ldual', 20),
+    ('ldiesel', 'dt_mdiesel', 30),
+    ('ldiesel', 'ldual', 20),
+    ('ldual', 'dt_mdiesel', 30),
+    ('ldual', 'ldiesel', 30),
+    ('meloco', 'mdiesel', 20),
+    ('meloco', 'ldiesel', 20),
+    ('meloco', 'ldual', 20)
+]).
+
+% CLASS of LOCOMOTIVE that attends a type of SERVICE ...{sdiesel, mdiesel, etc}
 locomotive_classes([
     ('203', 'sdiesel', 'dt_203', 'dt_sdiesel'),
     ('295', 'mdiesel', 'dt_295', 'dt_mdiesel'),
     ('246', 'mdiesel', 'dt_246', 'dt_mdiesel'),
     ('159', 'ldual', 'nan', 'nan')
 ]).
-
+%% ID_LOCOMOTIVE , CLASS of LOCOMOTIVE
 locomotives([
     ('159-001', 159, 'hgrd', 37740),
     ('159-002', 159, 'bwur', 68400),
@@ -24,6 +45,7 @@ locomotives([
     ('203-144', 203, 'bwur', 299400),
     ('203-616', 203, 'bwur', 88800)
  ]).
+
 services([
     (a001,hgrd,37740,hesh,62700,ldual),
     (a002,hesh,128400,hcn,154800,ldual),

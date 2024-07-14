@@ -1,0 +1,15 @@
+service_class_equivalence([
+    ('sdiesel', 'mdiesel', 20),
+    ('sdiesel', 'ldiesel', 30),
+    ('sdiesel', 'ldual', 30),
+    ('mdiesel', 'dt_sdiesel', 10),
+    ('mdiesel', 'ldiesel', 10),
+    ('mdiesel', 'ldual', 20),
+    ('ldiesel', 'dt_mdiesel', 30),
+    ('ldiesel', 'ldual', 20),
+    ('ldual', 'dt_mdiesel', 30),
+    ('ldual', 'ldiesel', 30),
+    ('meloco', 'mdiesel', 20),
+    ('meloco', 'ldiesel', 20),
+    ('meloco', 'ldual', 20)
+]).

@@ -1,0 +1,13 @@
+
+ Initial STATES 
+
+ Num of services: 173
+
+ Num of locomotives: 16
+
+ Num of Classes: 4
+
+ Num of Service_Class_Equivalence: 13
+
+ Readings OK -- Starting the planner ... 
+ ===> The locomotive for this class was not found!!!
