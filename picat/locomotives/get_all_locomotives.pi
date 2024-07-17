@@ -1,0 +1,70 @@
+
+import input_test.
+
+main ?=>
+    
+    locomotives(Locomotives),
+    %locomotive_classes(Locomotive_Classes),
+    L_Class_of_Locomotive = [246, 295,159] ,
+    %S = (o008,hcn,399600,hcg,399900,mdiesel),
+    S = (n001,lbkn,187800,hbddv,198600,mdiesel),
+   
+    %S = (q002,lmof,93300,bwur,95100,sdiesel),
+    %S= (a001,hgrd,37740,hesh,62700,ldual),
+    find_all_loc(S, Locomotives, L_Class_of_Locomotive, Lout ),
+    writeln(l1 = Lout),
+    %S2 =  (a001,bwur,377400,hesh,627000,ldual),
+    %S2 = (q003,bwur,126600,lmof,128400,sdiesel),
+    S2 = (n002,hbddv,201000,lbkn,211800,mdiesel),
+    %S2 = (o008,hcn,99399600,hcg,99399900,mdiesel),
+    find_all_loc(S2, Locomotives, L_Class_of_Locomotive, Lout2 ),
+    write(l2 = Lout2). 
+
+
+%%%OK ...
+find_all_loc(S, _,  [], R  ) ?=> R = [].
+find_all_loc(S, Locomotives,  L_Class_of_Locomotive, L  ) ?=>
+    L_Class_of_Locomotive =  [A_Class | Rest_Of_Class] ,
+    
+    find_locomotives(S, Locomotives, A_Class, Candidate),
+    L = Candidate ++ Lout,
+    find_all_loc(S, Locomotives, Rest_Of_Class, Lout).
+
+
+find_locomotives(_, [], _, R ) ?=>  R = []. 
+find_locomotives(S, Loc, Class_of_Locomotive, Lout ) ?=>
+    %printf("\n S: %w \t %w ", S , Linp),	
+    %% Locomotives
+    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  
+    %%% available locomotives
+    % EXAMPLE: ('159-001', 159, 'hgrd', 37740),
+
+    (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) = S,
+    %(Id_Loc, Position, Time) = A,
+    (   Position == Start_P,        
+        Time =< Start_T,
+        to_string(Loc_Class) == to_string(Class_of_Locomotive)
+    ),
+
+    %B = (Id_Loc, End_P, End_T),
+    Lout = [ B | Rest ],
+    B = (Loc_ID, Position, Time), %%% selected
+    find_locomotives(S, L1,  Class_of_Locomotive, Rest ).
+
+%%% proceed in recursion
+find_locomotives(S, Loc, Class_of_Locomotive, Lout ) =>
+   
+    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  %%% available locomotives
+    
+    S = (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) ,
+    %A = (Id_Loc, Position, Time),
+    (   Position != Start_P ;
+        Time > Start_T;
+        to_string(Loc_Class) != to_string(Class_of_Locomotive) 
+    ), 
+    %%% if the locomotive class is not of the class that accepts the service
+    %% the service has a class ... this class is attended by a class of locomotives
+    %% and the candidate locomotive must be in this class!
+
+    find_locomotives(S, L1, Class_of_Locomotive, Lout ).   
+
