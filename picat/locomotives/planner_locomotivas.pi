@@ -2,9 +2,9 @@
 /* input data  */
 %import data_26_services. -- OK
 
-%import input_100. -- 100%
+import input_100. 
 
-import input_173.
+%import input_173.    %%% OK
 import util.
 import datetime.
 import planner.
@@ -46,7 +46,7 @@ main ?=>
     print_list(Sol_Acoes),
     printf("\n Writing in Jason, file: output_planner_jason.txt"),
     write_to_file("output_planner_jason.txt", Sol_Acoes), 
-    % print_services(Sol_Acoes),
+    print_services(Sol_Acoes),
     printf("\n Done: Total of Services: %w\n", Total).
 
  
