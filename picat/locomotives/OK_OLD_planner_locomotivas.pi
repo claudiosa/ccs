@@ -1,8 +1,7 @@
 %%picat
 /* input data  */
-%import data_26_services. -- OK
 %import input_173.
-%import input_100. -- 100%
+%import input_100. %-- 100%
 import input_test.
 import util.
 import datetime.
