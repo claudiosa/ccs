@@ -85,7 +85,20 @@ get_equivalent_service(L, Serv_Class) = R =>
     % sort([(B, C) : (A, B, C) in L, A == Serv_Class]). 
     R = [(B, C) : (A, B, C) in L, A == Serv_Class].
 % Example: sdiesel
-% R= 
+% INPUT [(250,ldiesel,30),(263_264,ldiesel,30)],
+get_codes_loc_exist(Lista, Locomotives) = Codes_Loc_Exist =>
+    Codes_Loc_Exist= 
+        [X : 
+        Item_1 =  (X, _, _),
+        Item_1 in Lista,
+        Item_2 =  (Id_Loc, Cod_Class, Location, Location_Time),
+        Item_2 in Locomotives,
+        to_string(X) == to_string(Cod_Class)
+    ].
+
+    
+
+%% OUTPUT [250,263264] 
 /*
 %%% in predicates...
 get_classes_locomotives(Serv_Class, Loc_Classes, Code_Class) ?=>
@@ -173,7 +186,8 @@ find_locomotives(S, Loc, A_Class, Lout ) =>
     %% and the candidate locomotive must be in this class!
 
     find_locomotives(S, L1, A_Class, Lout ).   
-        
+
+
 %%%%%%update_position((A_Candidate, E_Next, T2_Next), Loc_Place_Time),
 update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
 %%% found the locomotive then update       
@@ -186,6 +200,8 @@ update_position((A_Loc, E_Next, T_Next), [(Loc_ID,  Class, Where_is, When) |Rest
     
     New_Loc_Place = [(Loc_ID,  Class, Where_is, When)  | update_position((A_Loc, E_Next, T_Next), Rest) ].
     %%% proceed in the list    
+
+
 
 /*
 x => L=  [('159-008',ahroo,0),('159-002',bwur,0),('159-219',bwur,0),('159-010',bwur,0),('159-004',lqb,0)],
@@ -241,41 +257,53 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
         %%%% RETORNO [(250,ldiesel,30),(263_264,ldiesel,30)]
         %%% [(NUM_CLASSE, SERV_EQUIVALENTE_NOVO, PENALIDADE)]
         % Got a alternative CODE Class in New Serv Class for  S
-        printf("\n Options services and penalty: %w ", L_Equiv_Serv),
-        Aux_Penality := 0,
+        %printf("\n Options services and penalty: %w ", L_Equiv_Serv),
+        Aux_Penality := 999,
+        N_Class_Eqv := len(L_Equiv_Serv),
+
+
         
+        do    
+            N_Class_Eqv := N_Class_Eqv - 1,
             %printf("\n S:  %w", S),
             % if none locomotive was found for that Serv_Class in S
-        for Item in L_Equiv_Serv
+            %for Item in L_Equiv_Serv
+            %for 
+            %member(Item, L_Equiv_Serv),
+            %select(Item,L_Equiv_Serv, ResList),
             %%%%[(250,ldiesel,30),(263_264,ldiesel,30)] 	 Item: 250,ldiesel,30 	 Item: 263_264,ldiesel,30 
-            (Cod_Class, Serv_Class_Equiv, Penality) = Item,
-            printf("\t Item: %w ", Item ),
+            %%% table locomotives
+            %(Cod_Class_Equiv, Serv_Class_Equiv, Penality) = Item,
+            % printf("\t Item: %w ", Item ),
             %%% pegar as locomotivas com este Cod_Class ... e testar.
             
             %Aux_Penality := Aux_Penality + Penality,
             
             %printf("\n Serv Class: %w <=> New SER Class: %w", Serv_Class, New_Serv_Class),
+                    
            
-         
-            %printf("\n %w After Delete %w",New_Serv_Class, L_aux),
             %% in the table Loc_Class
             %% nao deve precisar.... já tem em Cod_Class 
-            %L_Classes_of_Locomotive = get_classes_locomotives( Serv_Class_Equiv, Loc_Classes ), 
+            %L_Classes_Eqv = get_classes_locomotives( Serv_Class_Equiv, Loc_Classes ), 
             %printf("\t %w", Code_of_Class_Loc),    
             %% 
             S = (Id_Serv, Start_P, Start_T, End_P, End_T, _),
             %%%%PEGAR UMA DESSAS CATEGORIAS DE LOCOMOTIVAS: [(250,ldiesel,30),(263_264,ldiesel,30)]
-            find_all_loc_2(S, Locomotives, L_Classes_of_Locomotive, Loc_Candidates ),
+            Cod_Class_Equiv = get_codes( L_Equiv_Serv),
+            %write(Cod_Class_Equiv), nl,
+            %% ['250','263_264']
+
+            find_all_loc(S, Locomotives, Cod_Class_Equiv, Loc_Candidates ),
             %find_locomotives( S, Locomotives, Code_of_Class_Loc, Loc_Candidates ),
-            printf("Serv_Class_Equiv: %w | Candidates: %w ", Serv_Class_Equiv, Loc_Candidates)
+            printf(" Candidates: %w ",  Loc_Candidates)
         
-        end, 
-        %%while ( (len(Loc_Candidates) != 0) || L_aux != [] ) 
+        
+        while ( (len(Loc_Candidates) != 0) || N_Class_Eqv <= 0 ) 
 
         end,
      
     
-    %printf("\n Candidates: %w for S: %w \t %w", Loc_Candidates, S, Code_of_Class_Loc ),
+    printf("\n Candidates: %w ", Loc_Candidates),
     % example: ('159-001', 159, 'hgrd', 37740),
    % (len(Loc_Candidates) >= 1
    % ),  %% conditions
