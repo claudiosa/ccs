@@ -1,2 +1,26 @@
-{"service_id": "B5001", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
-{"service_id": "B0001", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B5001", "locomotiveId": ["250-1"]}
+{"service_id": "B0001", "locomotiveId": ["250-1"]}
+{"service_id": "B5002", "locomotiveId": ["250-1"]}
+{"service_id": "B0013", "locomotiveId": ["203-1"]}
+{"service_id": "B0014", "locomotiveId": ["203-1"]}
+{"service_id": "B0002", "locomotiveId": ["250-1"]}
+{"service_id": "B5003", "locomotiveId": ["250-1"]}
+{"service_id": "B0007", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0003", "locomotiveId": ["250-1"]}
+{"service_id": "B5004", "locomotiveId": ["250-1"]}
+{"service_id": "B0015", "locomotiveId": ["203-1"]}
+{"service_id": "B0016", "locomotiveId": ["203-1"]}
+{"service_id": "B0004", "locomotiveId": ["250-1"]}
+{"service_id": "B0008", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0019", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B5005", "locomotiveId": ["250-1"]}
+{"service_id": "B5006", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0009", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0005", "locomotiveId": ["250-1"]}
+{"service_id": "B0017", "locomotiveId": ["203-1"]}
+{"service_id": "B0020", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0018", "locomotiveId": ["203-1"]}
+{"service_id": "B0006", "locomotiveId": ["250-1"]}
+{"service_id": "B0010", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0011", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
+{"service_id": "B0012", "locomotiveId": ["NO LOCOMOTIVES AVAILABLE"]}
