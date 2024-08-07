@@ -46,7 +46,7 @@ main ?=>
     print_list(Sol_Acoes),
     printf("\n Writing in Jason, file: output_planner_jason.txt"),
     write_to_file("output_planner_jason.txt", Sol_Acoes), 
-    print_services(Sol_Acoes),
+    %print_services(Sol_Acoes),
     printf("\n Done: Total of Services: %w\n", Total).
 
  
@@ -81,24 +81,28 @@ get_classes_locomotives(Serv_Class, L) = R =>
 %L = Service_Class_Equivalence, Penality),
 %% for a specific service class, which services of locomotives
 %% are equivalent a has a penality
-get_equivalent_service(L, Serv_Class) = R =>
-    % sort([(B, C) : (A, B, C) in L, A == Serv_Class]). 
-    R = [(B, C) : (A, B, C) in L, A == Serv_Class].
+get_equivalent_service(L, Serv_Class) =
+    %% sort([(B, C) : (A, B, C) in L, A == Serv_Class]). 
+    [(B, C) :
+         (A, B, C) in L, 
+        to_string(A) == to_string(Serv_Class)
+    ].
 % Example: sdiesel
 % INPUT [(250,ldiesel,30),(263_264,ldiesel,30)],
 % From this list, get codes from a class that exist availble
 
-get_codes_loc_exist(Lista, Locomotives) = Codes_Loc_Exist =>
-    Codes_Loc_Exist = remove_dups(
+get_codes_loc_exist(Lista, Locomotives) = 
+    remove_dups(
         [ Cod : 
-        Item_1 in Lista,
-        Item_1 =  (Cod, _, _),
+            Item_1 in Lista,
+            Item_1 =  (Cod, _, _),
+            
+            Item_2 in Locomotives,
+            Item_2 =  (Id_Loc, Cod_Class, Location, Location_Time),
         
-        Item_2 in Locomotives,
-        Item_2 =  (Id_Loc, Cod_Class, Location, Location_Time),
-       
-        to_string(Cod) == to_string(Cod_Class)
-     ]).
+            to_string(Cod) == to_string(Cod_Class)
+        ]
+    ).
 
   
 
@@ -133,8 +137,16 @@ filter_from_options_existence(Cod_Class_Loc, L_Opt_Pen) = Filtered =>
 
         Item_2 in L_Opt_Pen,
         (Desc, Penalty) =  Item_2,
+
+        % Item_3 in Locomotives,
+        % (_, Loc_Class, _, _ ) = Item_3,
+
         to_string(Class) == to_string(Desc)
+        % to_string(Class) == to_string(Loc_Class)
     ].
+
+%    ('159-001', 159, 'hgrd', 37740),
+
 %%%% RETORNO [(250,ldiesel,30),(263_264,ldiesel,30)]
 %%% [(NUM_CLASSE, SERV_EQUIVALENTE_NOVO, PENALIDADE)]
 
@@ -156,7 +168,7 @@ find_all_loc(S, Locomotives,  L_Class_of_Locomotive, L  ) =>
 find_locomotives(_, [], _, R ) ?=>  R = [].
 %% Loc: Table of Locomotives in Loc ... dynamic     
 find_locomotives(S, Loc, A_Class, Lout ) ?=>
-    %printf("\n S: %w \t %w ", S , Linp),	
+  
     %% Locomotives
 
     Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  
@@ -237,15 +249,29 @@ find_loc_equivalent(S, Loc, A_Class, Lout ) =>
 
     find_loc_equivalent(S, L1, A_Class, Lout ).   
 */
-find_loc_equivalent(S, Loc, A_Class) = 
-	 [ (Loc_ID, Position, Time) 
-             :
-             (Loc_ID, Loc_Class, Position, Time) in Loc,
-             (Id_Serv, Start_P, Start_T, _, _, _) = S,
-             to_string(Position) == to_string(Start_P),
-             Time =< Start_T,
-             to_string(Loc_Class) == to_string(A_Class)
-           ].
+% EXAMPLE
+%%%L_Equiva: [(246_285,mdiesel,20),(250,ldiesel,20),(263_264,ldiesel,20),(159,ldual,20)]
+%%% Locomotives :[(250-1,250,dro,478800),(250-2,250,dro,0),(246-1,246_285,wme,417600),(246-2,246_285,dnm,50400),(203-1,203,bwur,450000),(203-2,203,bwur,50400),(203-3,203,bwur,50400),(203-4,203,bwur,50400)]
+existence_real_of_equivalent(L_Equiv_Serv, Locomotives) =
+    remove_dups([  (Cod_Item_Equiv, Serv_Item_Equiv, Penality) : 
+   
+        (Cod_Item_Equiv, Serv_Item_Equiv, Penality) in L_Equiv_Serv,
+        (Loc_ID, Loc_Class, Position, Time ) in Locomotives,
+        to_string(Cod_Item_Equiv) == to_string( Loc_Class)
+   ]).
+
+
+find_loc_equivalent(S, Locomotives, A_Class) = 
+	[ (Loc_ID, Position, Time) 
+        :
+        (Loc_ID, Loc_Class, Position, Time) in Locomotives,
+        ( _ID_Serv, Start_P, Start_T, _, _, _) = S,
+        to_string(Position) == to_string(Start_P),
+        Time =< Start_T,
+        to_string(Loc_Class) == to_string(A_Class)
+    ].
+
+
 
 % find_all_loc(S, Current_Table_of_Locomotives,  L_Class_of_Locomotive, Output  )
 find_all_equivalent(S, _,  [], R  ) ?=> R = [].  %% no more loc in this class
@@ -254,6 +280,7 @@ find_all_equivalent(S, Locomotives,  L_Equiv_Serv, Lout  ) =>
     L_Equiv_Serv = [(Cod_Item_Equiv, Serv_Item_Equiv, Penality)| L1],
     
     Candidate = find_loc_equivalent(S, Locomotives, Cod_Item_Equiv), 
+
     Lout = Candidate ++ L2,
     find_all_equivalent(S, Locomotives, L1, L2).
 
@@ -261,16 +288,15 @@ find_all_equivalent(S, Locomotives,  L_Equiv_Serv, Lout  ) =>
 update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
 %%% found the locomotive then update       
 update_position((A_Loc, E_Next, T_Next), [(Loc_ID, Class, Where_is, When) | Rest]) = New_Loc_Place
-        , to_string(A_Loc) == to_string(Loc_ID) =>
+        , (to_string(A_Loc) == to_string(Loc_ID)) 
+        =>
         New_Loc_Place = [(Loc_ID, Class,  E_Next, T_Next) | Rest].
 %% take the next from the list of Locomotives
 update_position((A_Loc, E_Next, T_Next), [(Loc_ID,  Class, Where_is, When) |Rest]) = New_Loc_Place
-    , to_string(A_Loc) != to_string(Loc_ID) => 
-    
+    , (to_string(A_Loc) != to_string(Loc_ID))
+     => 
     New_Loc_Place = [(Loc_ID,  Class, Where_is, When)  | update_position((A_Loc, E_Next, T_Next), Rest) ].
     %%% proceed in the list    
-
-
 
 % Recursive - predicative
 
@@ -289,12 +315,12 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
     %printf("\n S:  %w", S),
     %% find a list of  locomotives that has this service class... otherwise it will fall into equivalences
     %% A list here 
-    Codes_Class_Locomotive = get_classes_locomotives(Serv_Class , Loc_Classes ), 
+    Cod_Class_Locomotive = get_classes_locomotives(Serv_Class , Loc_Classes ), 
     %[295,246] -- Number or Family code, once 1 service class can be done by many
     %% classes of locomotives
 
-    %printf("\n  L_Classes_of_Locomotive %w", Codes_Class_Locomotive ),  
-    find_all_loc(S, Locomotives, Codes_Class_Locomotive, Loc_Candidates ),
+    %printf("\n  L_Classes_of_Locomotive %w", Cod_Class_Locomotive ),  
+    find_all_loc(S, Locomotives, Cod_Class_Locomotive, Loc_Candidates ),
     %find_locomotives( S, Locomotives, Code_of_Class_Loc,  Loc_Candidates),
     %printf("\n S:  %w", S),
     % printf("\t How Many:%w  Which: %w", len(Loc_Candidates) , Loc_Candidates),
@@ -305,17 +331,16 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
     %% several candidates come, take only one, for example
     % example: ('159-001', 159, 'hgrd', 37740),
     % A first candidate and ONE
-    [ (A_Candidate, _, _  ) | _ ] =  Loc_Candidates ,
-    
-    %printf("\n One Candidate: %w " , A_Candidate),
-  
+    %[ (A_Candidate, _, _  ) | _ ] =  Loc_Candidates ,
+    member((A_Candidate, _, _  ), Loc_Candidates),
+   
     %%%% UPDATE the chosen one in the list of locomotives
     %%% new positions of the locomotive, and time it is available there
     %%% update the 2 items that change position and time
 
     Loc_New = update_position((A_Candidate, End_P, End_T), Locomotives),
-    %printf("Loc NEw %w", Loc_New),
-    printf("\n S -> OK 1:  %w", S),
+    
+    printf("\n 1. S :  %w -> Locom_Select: %w", S, A_Candidate),
     %exit(),
     %printf("\n :%w  %w", Id_Serv, A_Candidate),
     %%% OK here
@@ -339,17 +364,21 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence }, S1, Act
  %   printf("\n 10 Candidates: %w \t IN S: %w", Loc_Candidates, S ),
     
     (len(Loc_Candidates) >= 2 ),  %% condição de escolher duas e ter duas
-
-    [(Locomotive_01, Station_01, T_01), (Locomotive_02, Station_02, T_02) | _ ] =  Loc_Candidates,
+  
+    member(Item_1, Loc_Candidates),
+    member(Item_2, Loc_Candidates),
+    Item_1 !== Item_2,
+    Item_1 = (Locomotive_01, Station_01, T_01),
+    Item_2 = (Locomotive_02, Station_02, T_02),
     % printf("\n Candidates: %w and %w", Locomotive_01, Locomotive_02 ),
     Loc_New_01 = update_position((Locomotive_01, End_P, End_T), Locomotives),
     Loc_New_02 = update_position((Locomotive_02, End_P, End_T), Loc_New_01),
-    printf("\n S -> OK 2:  %w", S),
+    printf("\n 2. S :  %w -> Locos Select: %w || %w", S, Locomotive_01, Locomotive_02),
     %printf("\n ACTION: %w", Action ),
 	 %%% OK here
      Action_Cost = 10,   
      Action = {(Id_Serv, Locomotive_01), (Id_Serv, Locomotive_02), Action_Cost} , %%a description
-     S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
+     S1 = { Services_To_Do, Loc_New_02, Loc_Classes, Service_Class_Equivalence }.
 
 /* LOCOMOTIVE EQUIVALENT */
 action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) ?=>
@@ -359,37 +388,42 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
     S = (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class),
     %printf("\n S:  %w", S),
     %% find a list of  locomotives that has this service class... otherwise it will fall into equivalences
-    %
     %% A list here 
-    Codes_Class_Locomotive = get_classes_locomotives(Serv_Class , Loc_Classes ), 
-    printf("\n For this SERVICE %w these Loc Class are acceptable:  %w", Serv_Class, Codes_Class_Locomotive),
-    %[295,246] -- Number or Family code, once 1 service class can be done by many
+    Cod_Class_Locomotive = get_classes_locomotives(Serv_Class , Loc_Classes ), 
+    printf("\n For this SERVICE: %w the correct Loc Class is (only one):  %w", Serv_Class, Cod_Class_Locomotive),
+    %[295,246] -- Number or Family code, once 1 LOC class can be done by many
     %% classes of locomotives
     L_Options_Penalty = get_equivalent_service(Service_Class_Equivalence, Serv_Class),
-        %printf("\n L_O_Penalty: %w ", L_Options_Penalty),
+    printf("\n L_Options_Penalty of ALL: %w ", L_Options_Penalty),
         % : [(dt_sdiesel,10),(ldiesel,10),(ldual,20)]
         %% to check if these Service Class has locomotives with these class
         %printf("\n Loc_Class table: %w ", Loc_Classes),
-    %% Get as existentes        
+    %% Take only the  existents Classes 
     L_Equiv_Serv = filter_from_options_existence(Loc_Classes , L_Options_Penalty),
         %%%% RETORNO [(250,ldiesel,30),(263_264,ldiesel,30)]
         %%% [(NUM_CLASSE, SERV_EQUIVALENTE_NOVO, PENALIDADE)]
         % Got a alternative CODE Class in New Serv Class for  S
-      %  printf("\n Options services and penalty: %w ", L_Equiv_Serv),
-     [(_Num_Class, _New_Equiv_Serv, Aux_Penality) | _ ] = L_Equiv_Serv,
+     printf("\n EXISTENT options for this service: %w and L Equiv Serv : %w ", Serv_Class, L_Equiv_Serv),
+    
+     L_Equiv_Real = existence_real_of_equivalent(L_Equiv_Serv, Locomotives),
+     printf("\n Real or Valid: %w ",  L_Equiv_Real),
+
+     %member() 
+     [(_Num_Class, _New_Equiv_Serv, Aux_Penality) | _ ] = L_Equiv_Real,
       %  N_Class_Eqv := len(L_Equiv_Serv),
     
      %%%%PEGAR UMA DESSAS CATEGORIAS DE LOCOMOTIVAS: [(250,ldiesel,30),(263_264,ldiesel,30)]
-    Cod_Class_Equiv = get_codes_loc_exist( L_Equiv_Serv, Locomotives),
-	printf("\n L_Equiv_Serv: %w", L_Equiv_Serv),
-	printf("\n Cod_Class_Equiv: %w", Cod_Class_Equiv),
+    % Cod_Class_Equiv = get_codes_loc_exist( L_Equiv_Serv, Locomotives),
+	%printf("\n L_Equiv_Serv: %w", L_Equiv_Serv),
+	%printf("\n Cod_Class_Equiv: %w", Cod_Class_Equiv),
 
     %% ['250','263_264']
                
     % (Cod_Item_Equiv, Serv_Item_Equiv, Penality) = Item,
-    find_all_equivalent(S, Locomotives,  L_Equiv_Serv, Loc_Candidates_T),
-    %find_all_equivalent(S, Locomotives,  Cod_Class_Equiv, Loc_Candidates_T),
-        %printf("\n== Cod_Item_Equiv, Serv_Item_Equiv, Penality ==> %w ", Item), 
+    find_all_equivalent(S, Locomotives,  L_Equiv_Real, Loc_Candidates),
+    member((A_Candidate, _, _  ), Loc_Candidates), 
+   
+    %printf("\n== Cod_Item_Equiv, Serv_Item_Equiv, Penality ==> %w ", Item), 
             
         %    Aux_Penality := Aux_Penality + Penality,
             
@@ -416,22 +450,22 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
                 exit()
             end,
          */       
-    Loc_Candidates = Loc_Candidates_T,      
+    
     %printf("\n Candidates: %w ", Loc_Candidates_T),
     %% several candidates come, take only one, for example
     % example: ('159-001', 159, 'hgrd', 37740),
     % A first candidate and ONE
-    [ (A_Candidate, _, _  ) | _ ] =  Loc_Candidates ,
-    printf("\n EQUIVALENTE Candidate: %w " , A_Candidate),
-    printf("\n for this Service:  %w", S),
+    %[ (A_Candidate, _, _  ) | _ ] =  Loc_Candidates ,
   
+    %printf("\n 2. S :  %w -> Locos Select: %w || %w", S, Locomotive_01, Locomotive_02),
+    printf("\n 3. S: %w -> EQUIVALENTE Candidate: %w " , S, A_Candidate),
+      
     %%%% UPDATE the chosen one in the list of locomotives
     %%% new positions of the locomotive, and time it is available there
     %%% update the 2 items that change position and time
 
     Loc_New = update_position( (A_Candidate, End_P, End_T), Locomotives),
-    printf("\n Loc NEw: %w", Loc_New),
-
+    %printf("\n Loc NEw: %w", Loc_New),
     %exit(),
     %printf("\n :%w  %w", Id_Serv, A_Candidate),
     %%% OK here
@@ -452,7 +486,7 @@ action({Services, Locomotives,  Loc_Classes, Service_Class_Equivalence}, S1, Act
 
     %printf("\n %w", L_Classes_of_Locomotive ),  
     find_all_loc(S, Locomotives, L_Classes_of_Locomotive, Loc_Candidates ),
-    %printf("\n 100 Candidates: %w \t IN S: %w", Loc_Candidates, S ),
+    printf("\n 4. S %w Vazio Candidates: %w ", S, Loc_Candidates ),
     ( len(Loc_Candidates) == 0
     ),  %% conditions
     

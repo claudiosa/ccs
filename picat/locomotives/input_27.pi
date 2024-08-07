@@ -1,15 +1,16 @@
-
+%% VAR
 locomotives([
-    ('250-1', 250, 'dro', 0),
-    ('250-2', 250, 'dro', 0),
-    ('246-1', 246_285, 'dnm', 50400),
-    ('246-2', 246_285, 'dnm', 50400),
-    ('203-1', 203, 'bwur', 50400),
-    ('203-2', 203, 'bwur', 50400),
-    ('203-3', 203, 'bwur', 50400),
-    ('203-4', 203, 'bwur', 50400)
+    ('250-1', '250', 'dro', 0),
+    ('250-2', '250', 'dro', 0),
+    ('246-1', '246_285', 'dnm', 50400),
+    ('246-2', '246_285', 'dnm', 50400),
+    ('203-1', '203', 'bwur', 50400),
+    ('203-2', '203', 'bwur', 50400),
+    ('203-3', '203', 'bwur', 50400),
+    ('203-4', '203', 'bwur', 50400)
  ]).
 
+% FIXA
 locomotive_classes([
     ('203', 'sdiesel', 'dt_203', 'dt_sdiesel'),
     ('246_285', 'mdiesel', 'dt_246_285', 'dt_mdiesel'),
@@ -18,6 +19,7 @@ locomotive_classes([
     ('159', 'ldual', 'nan', 'nan'),
     ('185', 'meloco', 'dt_185', 'dt_meloco')
 ]).
+% FIXA
 service_class_equivalence([
     ('sdiesel', 'mdiesel', 20),
     ('sdiesel', 'ldiesel', 30),
@@ -33,7 +35,7 @@ service_class_equivalence([
     ('meloco', 'ldiesel', 20),
     ('meloco', 'ldual', 20)
 ]).
-
+%VAR
 services([
     (b5001,dro,0,dro,28800,ldual),
     (b0001,dro,54000,bno,68400,ldual),
@@ -49,13 +51,13 @@ services([
     (b0016,lmof,273600,bwur,277200,sdiesel),
     (b0004,bno,280860,dro,306000,ldual),
     (b0008,wme,291600,dnm,331200,mdiesel),
-    (b0019,bwur,345600,egbk,381600,meloco),
+    %(b0019,bwur,345600,egbk,381600,meloco), 
     (b5005,dro,345600,dro,363600,ldual),
-    (b5006,bno,363601,bno,374400,ldual),
+    (b5006,bno,363601,bno,374400,ldual), 
     (b0009,dnm,378000,wme,417600,mdiesel),
     (b0005,dro,399600,bno,414000,ldual),
     (b0017,bwur,421200,lmof,424800,sdiesel),
-    (b0020,egbk,439200,bwur,475200,meloco),
+    %(b0020,egbk,439200,bwur,475200,meloco), 
     (b0018,lmof,446400,bwur,450000,sdiesel),
     (b0006,bno,453600,dro,478800,ldual),
     (b0010,wme,464400,dnm,504000,mdiesel),
@@ -64,3 +66,40 @@ services([
     ]).
 
 
+/*
+%(b0019,bwur,345600,egbk,381600,meloco), 
+   {
+            "id": "B0019",
+            "startLocation": "BWUR",
+            "startDatetime": "2023-01-04T10:00:00+0000",
+            "endLocation": "EGBK",
+            "endDatetime": "2023-01-04T20:00:00+0000",
+            "serviceClass": "MELOCO",
+            "locomotiveId": NaN,
+            "serviceDate": "2023-01-04"
+        },
+        {
+            "id": "B0020",
+            "startLocation": "EGBK",
+            "startDatetime": "2023-01-05T12:00:00+0000",
+            "endLocation": "BWUR",
+            "endDatetime": "2023-01-05T22:00:00+0000",
+            "serviceClass": "MELOCO",
+            "locomotiveId": NaN,
+            "serviceDate": "2023-01-05"
+        },
+
+
+     {
+            "id": "B5006",
+            "startLocation": "BNO",
+            "startDatetime": "2023-01-04T15:00:01+0000",
+            "endLocation": "BNO",
+            "endDatetime": "2023-01-04T18:00:00+0000",
+            "serviceClass": "LDUAL",
+            "locomotiveId": NaN,
+            "serviceDate": "2023-01-04"
+        },
+
+
+*/
