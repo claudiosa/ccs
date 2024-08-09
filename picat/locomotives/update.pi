@@ -1,0 +1,31 @@
+
+update_position((A_Loc, E_Next, T_Next), [] ) = R => R = [].
+%%% achou a locomotiva então atualize       
+update_position((A_Loc, E_Next, T_Next), [(Loc_ID, Class, Where_is, When) | Rest]) = New_Loc_Place
+        , (to_string(A_Loc) == to_string(Loc_ID)) =>
+        New_Loc_Place = [(Loc_ID, Class,  E_Next, T_Next) | Rest].
+%% pega a proxima da lista de Locomotives
+update_position((A_Loc, E_Next, T_Next), [(Loc_ID,  Class, Where_is, When) |Rest]) = New_Loc_Place
+    , to_string(A_Loc) != to_string(Loc_ID) => 
+    New_Loc_Place = [(Loc_ID,  Class, Where_is, When)  | update_position((A_Loc, E_Next, T_Next), Rest) ].
+    %%% avança na lista    
+
+
+main ?=>
+    /* LER AS PLANILHAS */
+   % services(Services), %% from Excell
+    Locomotives = [('250-1',250,dro,306000),('250-2',250,dro,0),
+    ('246-1','246_285',dnm,331200),
+    ('246-2','246_285',dnm,50400),
+    ('203-1',203,bwur,277200),
+    ('203-2',203,bwur,277200),
+    ('203-3',203,lmof,252000),
+    ('203-4',203,bwur,50400)] ,
+    
+    
+    %S= (a001,hgrd,37740,hesh,62700,ldual),
+    S = (b0019,bwur,345600,egbk,381600,meloco),
+    Item = ('203-1',egbk,381600),
+    
+    M = update_position(Item, Locomotives),
+    writeln(m=M).
