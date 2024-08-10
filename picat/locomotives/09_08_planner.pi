@@ -68,6 +68,8 @@ get_classes_locomotives(Serv_Class, L) = R =>
     R = [ A : (A, B, _, _) in L,
     to_string(B) == to_string(Serv_Class)].
 %% R =  CODE or FAMILIY NUMBER of LOCOMOTIVES
+
+
 %L = Service_Class_Equivalence, Penality),
 %% for a specific service class, which services of locomotives
 %% are equivalent a has a penality
@@ -80,6 +82,7 @@ get_equivalent_service(L, Serv_Class) =
      (A, B, C) in L, 
      to_string(A) == to_string(Serv_Class)
     ].
+%%%???
 
 get_codes_loc_exist(Lista, Locomotives) = 
     remove_dups(
@@ -124,7 +127,7 @@ filter_from_options_existence(Cod_Class_Loc, L_Opt_Pen) = Filtered =>
 
 %% MANY LOCOMOTIVES CLASSES  for one Sevice class
 % find_all_loc(S, Current_Table_of_Locomotives,  L_Class_of_Locomotive, Output  )
-%% Find_all_Loc COMPATIBLE -- Directly
+
 find_all_loc(S, Locomotives,  Locomotive_Classes ) =
     [(Loc_ID, Position, Time) :
 
@@ -138,6 +141,58 @@ find_all_loc(S, Locomotives,  Locomotive_Classes ) =
         to_string(Serv_Class_Loc) == to_string(Serv_Class)
     )
     ].
+
+
+
+find_all_loc(S, _,  [], R  ) ?=> R = [].  %% no more class
+%find_all_loc(S, [],  _ , R  ) ?=> R = []. %% or no more locomotives
+find_all_loc(S, Locomotives,  L_Class_of_Locomotive, L  ) =>
+    
+    L_Class_of_Locomotive = [ A_Class | Rest_Of_Classes],
+    
+    find_locomotives(S, Locomotives, A_Class, Candidate),
+    L = Candidate ++ Lout,
+    find_all_loc(S, Locomotives, Rest_Of_Classes, Lout).
+
+%%% HERE IF EXIST ONLY ONE LOCOMOTIVE CLASS FOR ONLY A CLASS SERVICE 
+find_locomotives(_, [], _, R ) ?=>  R = [].
+%% Loc: Table of Locomotives in Loc ... dynamic     
+find_locomotives(S, Loc, A_Class, Lout ) ?=>
+  
+    %% Locomotives
+
+    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  
+    %%% available locomotives
+    % EXAMPLE: ('159-001', 159, 'hgrd', 37740),
+ 
+    %(Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class ) = S,
+    (Id_Serv, Start_P, Start_T, End_P, End_T, _ ) = S,
+    %(Id_Loc, Position, Time) = A,
+    (   to_string(Position) == to_string(Start_P),        
+        Time =< Start_T,
+        to_string(Loc_Class) == to_string(A_Class)
+    ),
+
+    %B = (Id_Loc, End_P, End_T),
+    Lout = [ B | Rest ],
+    B = (Loc_ID, Position, Time), %%% selected
+    find_locomotives(S, L1,  A_Class, Rest ).
+
+%%% proceed in recursion
+find_locomotives(S, Loc, A_Class, Lout ) =>
+   
+    Loc =  [ (Loc_ID, Loc_Class, Position, Time ) | L1],  %%% available locomotives
+    
+    (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class ) = S,
+    (   Position != Start_P ;
+        Time > Start_T;
+        to_string(Loc_Class) != to_string(A_Class) 
+    ), 
+    %%% if the locomotive class is not of the class that accepts the service
+    %% the service has a class ... this class is attended by a class of locomotives
+    %% and the candidate locomotive must be in this class!
+
+    find_locomotives(S, L1, A_Class, Lout ).   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -427,7 +482,7 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
          if ( len(Loc_Candidates) == 0 ) then     
                printf("\n 5. Candidate unsolved: %w ", S ),
                printf("\n Status Locomotives Current: %w ", Locomotives ),
-               %exit()
+    %         %   exit()
          end,
     
          printf("\n\n => 5. S: %w || \n Status Locomotives NEW: %w ", S, Locomotives ),
@@ -437,6 +492,10 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
          Action = {(Id_Serv, "NO LOCOMOTIVES AVAILABLE"), Action_Cost} ,
     %     Action = {(Id_Serv, Loc_ID), Action_Cost} , %%a description
          S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
+    
+
+
+
 /* END PLANNER */
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -468,7 +527,7 @@ print_json(FileName,[{(A,B), _}| Rest ] ) =>
     %% OR
     ServiceID =  to_atom(to_uppercase(to_string(A))),
     LocomotiveID = to_atom(to_uppercase(to_string(B))),
-    printf(FileName,"{'service_id': '%w', 'locomotiveId': [\'%w\']}\n", ServiceID, LocomotiveID),
+    printf(FileName,"{\"service_id\": \"%w\", \"locomotiveId\": [\"%w\"]}\n", ServiceID, LocomotiveID),
     print_json(FileName, Rest).
 
 new_uppercase(Atom) = UpperAtom =>
