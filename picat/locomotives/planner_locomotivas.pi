@@ -255,7 +255,7 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
 	S1 = {Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 
 
-/* TWO LOCOMOTIVES */
+/* TWO LOCOMOTIVES 
 action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence }, S1, Action, Action_Cost ) ?=>
        
     [ S | Services_To_Do ] = Services, % S is a tuple: (a001,hgrd,37740,hesh,62700,ldual),
@@ -296,7 +296,7 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence }, S1, Act
      Action_Cost = 40,   
      Action = {(Id_Serv, Locomotive_01, Locomotive_02), Action_Cost} , %%a description
      S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
-
+*/
 
 
 /* EQUIVALENT LOCOMOTIVE == a class substituion */
@@ -371,7 +371,6 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
             end,
          */       
     
-    
     %% several candidates come, take only one, for example
     % example: ('159-001', 159, 'hgrd', 37740),
     % A first candidate and ONE
@@ -390,6 +389,7 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
 	Action = {(Id_Serv, A_Candidate), Action_Cost} , %%a description
 	S1 = {Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 
+%% a substituition by place and time ... nothing is considered about services
 action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) =>
     
     [ S | Services_To_Do ] = Services, % S is a tuple: (a001,hgrd,37740,hesh,62700,ldual),
@@ -411,9 +411,8 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
     % Item = (A_Candidate, _Station, _Time),
     Size = len(Loc_Candidates),
     ( Size > 0 ),
-    nth(random(1, Size),Loc_Candidates, A_Candidate),
-    
-    
+    nth(random(1, Size), Loc_Candidates, A_Candidate),
+        
     %member(A_Candidate, Loc_Candidates),
     %select(A_Candidate, Loc_Candidates, R),
     %%% TAKE CARE HERE
@@ -430,11 +429,11 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
     S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 
 %%% qualquer coisa mas avança
-     action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) =>
+action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) =>
     
-         [ S | Services_To_Do ] = Services, % S is a tuple: (a001,hgrd,37740,hesh,62700,ldual),
-         (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class) = S,
-       
+        [ S | Services_To_Do ] = Services, % S is a tuple: (a001,hgrd,37740,hesh,62700,ldual),
+        (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class) = S,
+
     % %     %% find a locomotive that has this service class... otherwise it will fall into equivalences
     % %       %% A list here 
     
@@ -457,11 +456,11 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
          Action_Cost = 9999999,   
          Action = {(Id_Serv, "NO LOCOMOTIVES AVAILABLE"), Action_Cost} ,
     %     Action = {(Id_Serv, Loc_ID), Action_Cost} , %%a description
-         S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
+        S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 /* END PLANNER */
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%% OUTPUTs
 %%% writing to a file ETC
 write_to_file(FileName, List) =>
     File = open(FileName, write),
