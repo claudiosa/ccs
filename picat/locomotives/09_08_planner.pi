@@ -1,8 +1,8 @@
 %%picat
 /* input data  */
 %import data_26_services. -- OK  --- VELHO
-import input_26.
-%import input_100. 
+%import input_26.
+import input_100. 
 
 %import input_173.    %%% OK
 import util.

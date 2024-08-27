@@ -41,7 +41,7 @@ grafo() = G =>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 main ?=>
     
-    Graph = grafo(),
+    Graph = grafo(), %% função data
     Init_Node = 2, %%%% ficou mais interessante 
     %% End_Node =  vira do foreach,
     Nodes = all_nodes(Graph), %%%%

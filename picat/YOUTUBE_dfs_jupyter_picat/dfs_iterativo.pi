@@ -62,7 +62,7 @@ main ?=>
     Grafo = grafo(),
     Init_Node = 2, %%%% ficou mais interessante 
     %% End_Node =  vira do foreach,
-    Nodes = all_nodes(Grafo), %%%%
+    Nodes = all_nodes(Grafo), %%%% TODOS os nós do GRAFO
     
     foreach(End_Node in Nodes)
         printf("\n\n Start Node: %w\t  End Node: %w",Init_Node, End_Node),
@@ -93,7 +93,7 @@ dfs_iterative(Grafo, Init_Node, End_Node) = Sol =>
         if (Topo == End_Node) then
             printf("\n Pilha FINAL: %w ", Pilha),
             Visitados := diff_A_B( Visitados, Pilha ),
-            Pilha := []   %% A parada mesmo
+            Pilha := []   %% Forçar a parada mesmo
         else 
             next_nodes(Grafo, Topo, Vizinhos),
         
@@ -123,7 +123,7 @@ dfs_iterative(Grafo, Init_Node, End_Node) = Sol =>
     Sol = reverse(Visitados)
     %%%%%% Here
     % printf("\n Visitados: %w", Sol)
-    ;  %% caso de falha acima
+    ;  %% UM OU AQUI  em caso de falha acima
     printf("\n Entrada errada do Grafo:  %w", Visitados ).   
   
 /* =============================== */
@@ -154,9 +154,10 @@ next_nodes([ _ | Grafo], Node, Neighbours) =>
         next_nodes(Grafo, Node, Neighbours).
 
 
-%%% MELHORAR ISTO ......
+%%% MELHORAR ISTO ...... grosseiramente: eliminar nós que não pertençam ao caminho para END_NODE
 achou_fim_com_nos_a_visitar(Visitados, End_Node) = R =>
     nth(Index,Visitados,End_Node), 
     R = slice(Visitados,Index,Visitados.length).
+    %% Visitados.length ..equivale.. len(Visitados)
     
 /*****************************************************************************/

@@ -60,9 +60,9 @@ main ?=>
     end,
 
     /**** Caminho com mais opcoes ****/
-    Todas_SOL = findall(Um_Cam, (dfs_classico(Graph, 2, 6, [2], Sol), Um_Cam = Sol[1] )),
+    Todas_SOL = findall(Um_Cam, (dfs_classico(2, 6, [2], [], Sol), Um_Cam = Sol[1] )),
     printf("\n\n Caminhos de 2 a 6 (findall): %w", Todas_SOL ),
-    
+        
     printf("\n FIM do main: OK\n"). 
 
 main => printf("\n Fim do main com falha em alguma busca ... NO SOLUTION").   
