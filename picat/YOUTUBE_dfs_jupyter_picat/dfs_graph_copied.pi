@@ -41,16 +41,17 @@ grafo() = G =>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 main ?=>
     
-    Graph = grafo(), %% função data
-    Init_Node = 2, %%%% ficou mais interessante 
+    Graph = grafo(), %% função  "leitura" do Grafo
+    Init_Node = 2,   %% Nó 2 : ficou mais interessante 
     %% End_Node =  vira do foreach,
-    Nodes = all_nodes(Graph), %%%%
+    Nodes = all_nodes(Graph), %% Uma lista  com todos nós do grafo
     %Init_Node= min(Nodes),
    
     printf("\n All Nodes: %w", Nodes),
     
     %printf("\n Start: %w\t  End: %w\n All_Nodes: %w",Init_Node, End_Node, L_Nodes),
  
+    % Varios End_Node 
     foreach(End_Node in Nodes)
         printf("\n Início: %w\t  Fim: %w", Init_Node, End_Node),
         if ( dfs_copied(Graph, Init_Node, End_Node, [Init_Node], Sol) ) then
@@ -69,7 +70,7 @@ main ?=>
 
 main => printf("\n End of main with fail ... NO SOLUTION").   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-/*** UMA lista com todos os nós */
+/*** UMA lista com todos os nós ***/
 all_nodes( Grafo ) = Nodes =>
         %Nodes = sort( [N : Termo in Grafo, {N, _} = Termo ]) . 
         Nodes = [N : Termo in Grafo, {N, _} = Termo ] .   
@@ -88,6 +89,8 @@ dfs_connected(Graph, Node, End_Node, L_Nodes_Visited, L_Edges, Sol) ?=>
 
 dfs_copied(Graph, Node, End_Node, Partial_Path,  Sol) =>
         next_node(Graph, Node, Next, End_Node), % hakank
+        %% neste next_node é uma outra busca -- equivalente ao modo clássico
+        %% a idéia é a mesma: buscar um próximo nó e testar
         not membchk(Next, Partial_Path), 
         append([Next], Partial_Path, L_Visited),
         
@@ -101,18 +104,21 @@ dfs_connected(_, _, _, _, Sol) =>
 %%next_node(Graph, Node, Next, Edge) =>
 % hakank: Added End_Node to next_node.
 %
-/* ==> MEIO QUE EH O SEGREDO DE TUDO  ... ASSIM COMO O DFS */
-/** CASO DO GRAFO NÃO TER ENCONTRADO UM NO EM NEXT */  
-  
+/* ==> MEIO QUE EH O NUCLEO DE TUDO  ... ASSIM COMO O DFS */
+
+/** CASO DO GRAFO NÃO TER ENCONTRADO UM NO EM NEXT **/  
 next_node([], Node, Next, End_Node) ?=>
     nonvar(Next), % hakank: A fix for 02 -> 222
     printf("\n None sucessor in this graph for the node: %w", [Node]).
 
+/** Caso de encontrar um possível nó candidato **/
 next_node([ {Node, Neighbours} | _ ], Current, Next, End_Node) ?=> 
         Current == Node, 
         member(Next, Neighbours). 
-        %%% se next falhar em dfs, então ele pega o proximo POR MEMBER COM BACKTRACKING
-       
+        %% se next falhar em dfs, então 
+        %% ele toma o proximo nó POR MEMBER COM BACKTRACKING
+
+/** se o nó candidato falhar, avança-se um próximo nó **/       
 next_node([ _ | Grafo], Current, Next, End_Node) => 
         next_node(Grafo, Current, Next, End_Node).  
 

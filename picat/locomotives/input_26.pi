@@ -54,7 +54,7 @@ services([
     (b0008,wme,291600,dnm,331200,mdiesel),
     (b0019,bwur,345600,egbk,381600,meloco), 
     (b5005,dro,345600,dro,363600,ldual),
-   % (b5006,bno,363601,bno,374400,ldual), 
+    (b5006,bno,363601,bno,374400,ldual), 
     (b0009,dnm,378000,wme,417600,mdiesel),
     (b0005,dro,399600,bno,414000,ldual),
     (b0017,bwur,421200,lmof,424800,sdiesel),

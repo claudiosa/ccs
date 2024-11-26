@@ -44,7 +44,6 @@ main ?=>
    %best_plan_unbounded(S0 , Estimated_Limit, Sol_Acoes, Cost), 
    %  println(sol_ACTIONS=Sol_Acoes),
     Total = len(Sol_Acoes),
-   %% printf("\n Services Assigned X Locomotives: \n"),
     
     %% Step 5: The outputs from planner
     print_list(Sol_Acoes),
@@ -299,14 +298,14 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence }, S1, Act
     %printf("\n ACTION: %w", Action ),
 	 %%% OK here
         
-     Action = {(Id_Serv, Locomotive_01, Locomotive_02), Action_Cost} , %%a description
+    Action = {(Id_Serv, Locomotive_01, Locomotive_02), Action_Cost} , %%a description
      S1 = { Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 
 /* EQUIVALENT LOCOMOTIVE == a class substituion -- if a equivalence for this service */
 action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) ?=>
     
     Action_Cost = 30,
-        [ S | Services_To_Do ] = Services,
+    [ S | Services_To_Do ] = Services,
      % S is a tuple: (a001,hgrd,37740,hesh,62700,ldual),
     S = (Id_Serv, Start_P, Start_T, End_P, End_T, Serv_Class),
     %printf("\n S:  %w", S),
@@ -394,7 +393,6 @@ action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Acti
 	S1 = {Services_To_Do, Loc_New, Loc_Classes, Service_Class_Equivalence }.
 
 %% a substituition by place and time ... nothing is considered about services or equivalences
-
 % %% ACTION 4
 action({Services, Locomotives, Loc_Classes, Service_Class_Equivalence}, S1, Action, Action_Cost ) =>
    
