@@ -1,0 +1,27 @@
+% https://adventofcode.com/2024/day/1, part1
+import util.
+
+%% from NENG-FA 
+main([File]) =>
+    Pairs = [{to_int(T1), to_int(T2)} : Line in read_file_lines(File), [T1,T2] = split(Line)],
+%% until here
+    L1 = [ T1 : {T1,_} in Pairs ],
+    L2 = [ T2 : {_,T2} in Pairs ],
+    %the smallest number in the right list, then the second-smallest left number with the second-smallest right number, and so on.
+    %print(L1), print(L2)
+    %% Sorting these sequences
+    
+    Freq = [ S : {E1,_} in Pairs, 
+             N = count_X_in_L(E1, L2),
+             S = E1*N ],
+    %printf("\n Freq: %w ", Freq),
+    print(sum(Freq)).
+
+%% Frequency of X in L == Function    
+count_X_in_L( _ , [] )  = 0.
+count_X_in_L( X , [X|L] ) = count_X_in_L( X , L ) + 1 .
+count_X_in_L( X , [H|L] ) = Res => X !== H,
+                 Res = count_X_in_L( X , L ) .
+  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+

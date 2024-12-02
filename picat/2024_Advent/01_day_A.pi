@@ -1,0 +1,23 @@
+% https://adventofcode.com/2024/day/1, part1
+import util.
+
+%% from NENG-FA 
+main([File]) =>
+    Ps = [{to_int(T1), to_int(T2)} : Line in read_file_lines(File), [T1,T2] = split(Line)],
+%% until here
+    %print(Ps),
+    %Pair up the smallest number in the left list
+    L1 = [ T1 : {T1,_} in Ps ],
+    L2 = [ T2 : {_,T2} in Ps ],
+    %the smallest number in the right list, then the second-smallest left number with the second-smallest right number, and so on.
+    %print(L1), print(L2)
+    %% Sorting these sequences
+    L1_S = sort(L1),
+    L2_S = sort(L2),
+    %print(L1_S), print(L2_S),
+    In_Pairs = zip (L1_S,L2_S),
+    %print(In_Pairs),
+    Diff = [ abs(E1-E2) : {E1,E2} in In_Pairs],
+    %printf("\n final sum Diff: %w", sum(Diff))
+    print(sum(Diff))
+    .

@@ -1,6 +1,0 @@
-% https://adventofcode.com/2024/day/1, part1
-import util.
-
-main([File]) =>
-    Ps = [{to_int(T1), to_int(T2)} : Line in read_file_lines(File), [T1,T2] = split(Line)],
-    print(Ps).
