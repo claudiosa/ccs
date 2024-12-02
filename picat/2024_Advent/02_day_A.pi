@@ -1,0 +1,84 @@
+% https://adventofcode.com/2024/day/2, part1
+import util.
+import cp.
+
+%% from NENG-FA 
+main([File]) =>
+    Tuples = [{to_int(T1), to_int(T2), to_int(T3), to_int(T4), to_int(T5)} : Line in read_file_lines(File), [T1,T2,T3,T4,T5] = split(Line)],
+%% until here
+    print(Tuples),
+    N_Lines = Tuples.length,
+    N_Rows = Tuples[1].length,nl,
+    print(N_Lines),
+    Temp = new_array(N_Lines, N_Rows),
+    Temp :: -99..99,
+    
+    Sol = new_array(N_Lines),  
+    %Sol  :: 0..1,
+    Diff = new_array(N_Lines, N_Rows-1),
+    
+
+    foreach (I in 1..N_Lines)
+        foreach(J in 1..N_Rows)
+            Temp[I,J] #= Tuples[I,J]
+        end,
+        if (increasing(Temp[I]) || decreasing(Temp[I])) then  
+            Sol [I] := 1
+            %Sol [I] #= 1
+        else
+            %Sol [I] #= 0
+            Sol [I] := 0
+        end,
+        
+    end,
+    printf("\n How many inc or decr: %w", Sol),
+    printf("...OK..."),   
+    
+    foreach (I in 1..N_Lines)
+        foreach(J in 1..(N_Rows-1))
+         Diff[I,J] = abs((Tuples[I,J+1] - Tuples[I,J]))
+        end,
+        Bigger := max(Diff[I]),
+        Lowest := max(Diff[I]),
+        IS MISSING TEST FOR ZERO ...
+        if (Lowest > 1 && Bigger =< 3) then
+                Sol [I] := 1
+            else
+                Sol [I] := 0
+            end, 
+        printf("\n Line: %w Diff: %w", I,  Diff[I]),
+        print(Bigger),
+    end,
+
+     
+    printf("\n Safe: %w", Sol)
+   
+    .
+/*
+
+cat> X = new_array(2,2), X :: 0..19, X[1,1] #=2, X[1,2] #= 11,X[2,1] #=2, X[2,2] #= 11, increasing(X[1]),  print(X).
+{{2,11},{2,11}}X = {{2,11},{2,11}}
+yes
+
+Picat> X = new_array(2,2), X :: 0..19, X[1,1] #=12, X[1,2] #= 11,X[2,1] #=2, X[2,2] #= 11, increasing(X[1]),  print(X).
+
+
+ Picat> X = new_array(2), X :: 0..9, X[1] #=2, X[2] #= 1, decreasing(X),  print(X).
+{2,1}X = {2,1}
+yes
+
+    %Pair up the smallest number in the left list
+    L1 = [ T1 : {T1,_} in Ps ],
+    L2 = [ T2 : {_,T2} in Ps ],
+    %the smallest number in the right list, then the second-smallest left number with the second-smallest right number, and so on.
+    %print(L1), print(L2)
+    %% Sorting these sequences
+    L1_S = sort(L1),
+    L2_S = sort(L2),
+    %print(L1_S), print(L2_S),
+    In_Pairs = zip (L1_S,L2_S),
+    %print(In_Pairs),
+    Diff = [ abs(E1-E2) : {E1,E2} in In_Pairs],
+    %printf("\n final sum Diff: %w", sum(Diff))
+    print(sum(Diff))
+*/
