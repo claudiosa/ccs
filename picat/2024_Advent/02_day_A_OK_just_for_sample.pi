@@ -1,0 +1,76 @@
+% https://adventofcode.com/2024/day/2, part1
+import util.
+import cp.    %% CP VERSION
+
+%% IDEA from NENG-FA 
+main([File]) =>
+    
+    Tuples = [{to_int(T1), to_int(T2), to_int(T3), to_int(T4), to_int(T5)} : Line in read_file_lines(File), [T1,T2,T3,T4,T5] = split(Line)],
+%% until here
+    print(Tuples),
+    N_Lines = Tuples.length,
+    N_Rows = Tuples[1].length,nl,
+    print(N_Lines),
+    Temp = new_array(N_Lines, N_Rows),
+    Temp :: -99..99,
+    
+    Sol_1 = new_array(N_Lines),  
+    Sol_1  :: 0..1,
+    Sol_2 = new_array(N_Lines),  
+    Sol_2  :: 0..1,
+    Diff = new_array(N_Lines, N_Rows-1),
+    Safe :: 0..N_Lines,
+
+   %%% Which the sequences are increasing(Temp[I]) || decreasing(Temp[I]
+    foreach (I in 1..N_Lines)
+        foreach(J in 1..N_Rows)
+            Temp[I,J] #= Tuples[I,J]
+        end,
+        if (increasing(Temp[I]) || decreasing(Temp[I])) then  
+            Sol_1 [I] #= 1
+        else
+            Sol_1 [I] #= 0
+        end,
+        
+    end,
+    printf("\n How many inc or decr: %w", Sol_1),
+    printf("...OK..."),   
+
+%%% Which sequence are not respect the criteria of adjacencies    
+    foreach (I in 1..N_Lines)
+        foreach(J in 1..(N_Rows-1))
+         Diff[I,J] = abs((Tuples[I,J+1] - Tuples[I,J]))
+        end,
+        Bigger := max(Diff[I]),
+        Lowest := min(Diff[I]),
+        %IS MISSING TEST FOR ZERO ...
+        if (Lowest >= 1 && Bigger =< 3 && not membchk(0, Diff[I])) then
+                Sol_2 [I] #= 1
+            else
+                Sol_2 [I] #= 0
+            end, 
+        printf("\n Line: %w Diff: %w", I,  Diff[I]),
+        printf("\t less %w \t hight %w", Lowest, Bigger),
+    end,
+    printf("\n How many OUT of these criteria: %w", Sol_2),
+    printf("...OK..."),   
+  
+    %%% COMBINING BOTH REQUIREMENTS 
+    Safe #= sum([(Sol_1[J] #/\ Sol_2[J] #<=> 1) : J in 1..N_Lines]) ,  
+    solve(Safe),
+    printf("\n Safe: %w" , Safe)
+    .
+
+
+/*
+cat> X = new_array(2,2), X :: 0..19, X[1,1] #=2, X[1,2] #= 11,X[2,1] #=2, X[2,2] #= 11, increasing(X[1]),  print(X).
+{{2,11},{2,11}}X = {{2,11},{2,11}}
+yes
+
+Picat> X = new_array(2,2), X :: 0..19, X[1,1] #=12, X[1,2] #= 11,X[2,1] #=2, X[2,2] #= 11, increasing(X[1]),  print(X).
+
+ Picat> X = new_array(2), X :: 0..9, X[1] #=2, X[2] #= 1, decreasing(X),  print(X).
+{2,1}X = {2,1}
+yes
+
+*/
