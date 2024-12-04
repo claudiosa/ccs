@@ -1,0 +1,47 @@
+import util.
+
+
+main([File]) =>
+    % Lê as linhas do arquivo
+    InputLines = read_file_lines(File),
+    % Divide cada linha em caracteres individuais, criando uma matriz de listas
+    println("Input Lines:"),
+    println(InputLines),
+
+    NumRows = length(InputLines),
+    NumCols = length(first(InputLines)),
+    Matrix2D = new_array(NumRows, NumCols),
+    CurrentRow := 1,  % Variável para rastrear a linha atual
+
+    % Preenche a matriz bidimensional
+    foreach(Line in InputLines)
+        LowercaseLine = Line.map(to_lowercase),
+        LineArray = to_array(LowercaseLine),
+        printf("\nOriginal: %w -> Array: %w", LowercaseLine, LineArray),
+        Matrix2D[CurrentRow] = LineArray,
+        CurrentRow := CurrentRow + 1
+    end,
+
+    println("\nMatrix2D Filled:"),
+    println(Matrix2D),
+
+    % Exibe linha por linha
+    println("\nIterating through rows:"),
+    foreach(RowIndex in 1..NumRows)
+        printf("\nRow %d: %w  List:%w", RowIndex, Matrix2D[RowIndex], rows(Matrix2D[RowIndex]))
+    end,
+
+    % Itera por todos os elementos
+    println("\nIterating through all elements:"),
+    
+    foreach(RowIndex in 1..NumRows)
+        Vet_Current := Matrix2D[RowIndex],
+        nl,
+        foreach(ColIndex in 1..NumCols)
+            printf("\tElement [%d,%d]: %w", RowIndex, ColIndex, Vet_Current[ColIndex])
+        end
+    end,
+
+    % Exibe dimensões da matriz
+    printf("\nMatrix Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols).
+

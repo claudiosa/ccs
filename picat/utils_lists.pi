@@ -147,8 +147,6 @@ example_partitions(X) =>
         [1,2,4], [1,2], [1,4,5], [1,2,5], [1,4], [1,2]].
 
 
-
-
 %disjunctive logic predicate
 are_disjunct([],_) ?=> true, !. 
         are_disjunct([A | L1], L2) =>
@@ -211,57 +209,26 @@ find_a_locomotive(Start, [ (Loc,Where_is) |Rest] )  |  Where_is \= Start
  = find_a_locomotive(Start, Rest).
 */
 
-find_a_locomotive(Start, [], Answer) => Answer = 'NOT FOUND LOCOMOTIVE'.
-find_a_locomotive(Start, [(Loc,Where_is)|Rest], Answer)  =>   Where_is == Start, Answer = Loc .
-find_a_locomotive(Start, [(_,Where_is) |Rest], Answer)   ?=>   Where_is \= Start , find_a_locomotive(Start, Rest, Answer).
-              
 
-% Função que encontra uma locomotiva
-find_a_L(_ , []) = 'NOT FOUND LOCOMOTIVE'.
-find_a_L(Start, [(Loc, Where_is) | Rest])= Train , (Where_is == Start) => Train = Loc.
-find_a_L(Start, [(_, Where_is) | Rest]) = 
-       Train,
-       (Where_is \= Start) => Train = find_a_L(Start, Rest).
+%%%% FUNCTIONAL VERSION .....
+ascendent_order(L) = R =>
+        L1 = sort(L),
+        if L == L1 then 
+                R = true 
+        else
+                R = false
+        end.
 
-%%%Picat> locomotives(X), init_location(Y), T= build_tuple(X,Y), find_a_L(ahroo, T)= Z.
-update_position(Locomotive , Final, [] ) = [].
-update_position(Locomotive , Final, [(Loc_CURR, Where_is) | Rest]) =  New_Loc_Place
-              , (Locomotive == Loc_CURR) =>
-               New_Loc_Place = [(Locomotive, Final) | Rest].
-
-update_position(Locomotive , Final, [(Loc_CURR, Where_is) | Rest]) = New_Loc_Place
-        , (Locomotive \= Loc_CURR) => 
-        New_Loc_Place = [(Loc_CURR, Where_is) | update_position( Locomotive, Final, Rest )].
-
-
-%update_position('159-008', jlle, [('159-008',ahroo),('159-002',bwur),('159-219',bwur),('159-010',bwur)], X).
-%            cl('my_lists.pi').          
-
-% L = [(5,dro), (11,dro), (51,dro), (488,dro)],
-% X = (50,dro),
-
-find_N(_, L, R ) ?=>  len(L)==0 , R = [].
-find_N( S, Linp, Lout ) ?=>
-    Linp =  [ A | L1],
-    Lout = [ B | L2 ],
-    (Num, Name) = S,
-    (Num_A, Name_A) = A,
-     B = (Num_A, Name_A),
-    printf("\n A:%w  S:%w", A, S), 
-    Num <= Num_A,
-    Name == Name_A,
-    find_N(S, L1, L2 ).
-
-find_N( S, Linp, Lout ) =>
-    Linp =  [ A | L1],
-    Lout =  L2 ,
-    (Num, Name) = S,
-    (Num_A, Name_A) = A,
-     (Num > Num_A ;
-      Name != Name_A),
-     find_N(S, L1, L2 ).
-
-
+descendent_order(L) = R =>
+                L1 = sort(L),
+                L2 = reverse(L1),
+               % ((L == L2), R = true ; R= false).    %%%% admit backtracking
+                if (L == L2) then 
+                        R = true 
+                else
+                        R = false
+                end.
+        
 /* versao declarativa */
 diff_A_B(A,[], R) ?=> R = A.
 diff_A_B(A,[H|B], Temp_2) ?=>

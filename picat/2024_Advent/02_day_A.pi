@@ -1,7 +1,26 @@
 % https://adventofcode.com/2024/day/2, part1
 import util.
-import cp.
+%import cp.
 
+ascendent(L) =>
+    L1 = sort(L),
+    if (L == L1) then 
+        true 
+    else
+        false
+    end.
+
+descendent(L) =>
+            L1 = sort(L),
+            L2 = reverse(L1),
+            ((L == L2),true ; false).    %%%% admit backtracking ????
+ /* OR
+            if (L == L2) then 
+                true 
+            else
+                false
+            end.
+*/
 
 main([File]) =>
     %%% adatpted from HAKAN
@@ -18,7 +37,8 @@ safe(Line) = R =>
     Sol := 0,
  
    %%% Which the sequences are increasing(Temp[I]) || decreasing(Temp[I]
-   if (increasing(Line) || decreasing(Line)) then  %%% _strict ... 
+  % if (increasing(Line) || decreasing(Line)) then  %%% _strict ... 
+  if ( ascendent(Line) || descendent(Line) ) then  %%% _strict ... 
    %if not (increasing_strict(Line) || decreasing_strict(Line)) then  %%% _strict ... 
           Sol := 1 + Sol
    end,
