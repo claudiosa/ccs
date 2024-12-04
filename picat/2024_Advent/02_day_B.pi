@@ -2,31 +2,34 @@
 import util.
 import cp.
 
-
 main([File]) =>
     %%% adatpted from HAKAN
     Lines = [Line.map(to_int): Line in read_file_lines(File).map(split)],
     Safe := 0,
     foreach(Line in Lines)
-      Safe := safe(Line)  + Safe
-    end,
+        if safe(Line)==1 then
+            Safe := Safe + 1
+            %%% FROM HAKAN....
+            elseif (select(_A,Line,Line2) && safe(Line2)==1) then
+            Safe := Safe + 1
+          end,
+        end,
+
+    %println(Safe),
+ 
     printf("\n Day 2 Part B Safe: %w" , Safe).
 
 safe(Line) = R =>  
     
     N_Rows = Line.length,
- 
+    Sol := 0,
    %%% Which the sequences are increasing(Temp[I]) || decreasing(Temp[I]
-   if not (increasing(Line) || decreasing(Line)) then  %%% _strict ... 
+   if (increasing(Line) || decreasing(Line)) then  %%% _strict ... 
    %if not (increasing_strict(Line) || decreasing_strict(Line)) then  %%% _strict ... 
-          Sol := 0
-        else
-          Sol := 1
-    end,
-            
-    printf("\n\n Line: %w \t Inc or decr: %w", Line,  Sol),
-    %printf("...OK..."),   
-
+          Sol := 1 + Sol
+   end,
+    %printf("\n\n Line: %w \t Inc or decr: %w", Line,  Sol),
+ 
 %%% Which sequence are not respect the criteria of adjacencies    
     Diff = new_array( N_Rows-1),
     foreach(J in 1..(N_Rows-1))
@@ -34,30 +37,24 @@ safe(Line) = R =>
         end,
         Bigger := max(Diff),
         Lowest := min(Diff),
-        printf("\n Diff: %w \t B: %w \t L: %w", Diff, Bigger, Lowest  ),
+        %printf("\n Diff: %w \t B: %w \t L: %w", Diff, Bigger, Lowest  ),
         %IS MISSING TEST FOR ZERO ...
-        if  (membchk(0, Diff)) then   %%% has zero
+        
+        if  not (membchk(0, Diff)) then   %%% has zero
             Sol := Sol + 1
         end,
-
-        if not ((Lowest >= 1) ) then %%% out of limit
+         
+        if ( (Lowest >= 1) &&  (Bigger <= 3)  ) then %%% out of limit 
             Sol := Sol + 1
         end ,
-    
-        if not ( (Bigger <= 3) ) then %%% out of limit 
-            Sol := Sol + 1
-        end ,
-
 
     %%% Evaluating Sol     
-    if (Sol >= 1 && Sol < 2) then %% SAFE ... just increase_strict and decrease_strict perfect
-        R = 1  
-    elseif (Sol == 0) then %% ONE POSSIBILITY to change to safe
+    if (Sol >= 3 ) then %% SAFE ... just increase_strict and decrease_strict perfect
         R = 1
     else  
-         R = 0
+        R = 0
     end
-    ,    printf("\n Sol: %w  => 1: Accept 0: NO  %w", Sol, R)     
+    %,printf("\n Sol: %w  => R : %w", Sol, R)     
     .
 
 

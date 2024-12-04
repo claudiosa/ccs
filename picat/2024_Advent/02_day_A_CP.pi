@@ -1,29 +1,35 @@
 % https://adventofcode.com/2024/day/2, part1
 import util.
-import cp.
+import cp.    %% CP VERSION
 
 
 main([File]) =>
-    %%% adatpted from HAKAN
+    %%% from HAKAN
     Lines = [Line.map(to_int): Line in read_file_lines(File).map(split)],
     Safe := 0,
     foreach(Line in Lines)
       Safe := safe(Line)  + Safe
     end,
-    printf("\n Day 2 Part B Safe: %w" , Safe).
+    printf("\n All Safes: %w" , Safe).
 
 safe(Line) = R =>  
     
     N_Rows = Line.length,
-    Sol := 0,
- 
+   % Upper = max(Line),
+   % Lower = min(Line),
+   
+    Sol_1  :: 0..1,
+    Sol_2  :: 0..1,
+    Safe   :: 0..1,
+
    %%% Which the sequences are increasing(Temp[I]) || decreasing(Temp[I]
-   if (increasing(Line) || decreasing(Line)) then  %%% _strict ... 
-   %if not (increasing_strict(Line) || decreasing_strict(Line)) then  %%% _strict ... 
-          Sol := 1 + Sol
-   end,
+    if (increasing(Line) || decreasing(Line)) then  
+          Sol_1 #= 1
+        else
+          Sol_1 #= 0
+    end,
             
-    printf("\n\n Line: %w \t Inc or decr: %w", Line,  Sol),
+    %printf("\n Inc or decr: %w", Sol_1),
     %printf("...OK..."),   
 
 %%% Which sequence are not respect the criteria of adjacencies    
@@ -33,25 +39,23 @@ safe(Line) = R =>
         end,
         Bigger := max(Diff),
         Lowest := min(Diff),
-        printf("\n Diff: %w \t B: %w \t L: %w", Diff, Bigger, Lowest  ),
         %IS MISSING TEST FOR ZERO ...
-        
-        if  not (membchk(0, Diff)) then   %%% has zero
-            Sol := Sol + 1
-        end,
-         
-        if ( (Lowest >= 1) &&  (Bigger <= 3)  ) then %%% out of limit 
-            Sol := Sol + 1
-        end ,
-
-
-    %%% Evaluating Sol     
-    if (Sol >= 3 ) then %% SAFE ... just increase_strict and decrease_strict perfect
-        R = 1
-    else  
-        R = 0
-    end,
-    printf("\n Sol: %w  => R : %w", Sol, R)     
+        if (Lowest >= 1 && Bigger =< 3 && not membchk(0, Diff)) then
+                Sol_2 #= 1
+            else
+                Sol_2 #= 0
+            end, 
+     %   printf("\n  Diff: %w",  Diff),
+     %   printf("\t less %w \t hight %w" , Lowest, Bigger ),
+ 
+    %printf("\n How many OUT of these criteria: %w", Sol_2),
+    %printf("...OK..."),   
+  
+    %%% COMBINING BOTH REQUIREMENTS 
+    Safe #= ((Sol_1 #/\ Sol_2) #<=> 1) ,  
+    solve(Safe),
+    printf("\n Result of this line : %w" , Safe),
+    R = Safe
     .
 
 
