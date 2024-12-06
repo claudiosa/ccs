@@ -1,47 +1,76 @@
+% DAY 04 - A
 import util.
 
-
 main([File]) =>
-    % Lê as linhas do arquivo
+    % Reading from file
     InputLines = read_file_lines(File),
-    % Divide cada linha em caracteres individuais, criando uma matriz de listas
-    println("Input Lines:"),
-    println(InputLines),
-
+    
     NumRows = length(InputLines),
     NumCols = length(first(InputLines)),
+    %printf("\n Formato de INPUTLINES: %w \n", InputLines),
+    % Exibe dimensões da matriz
+    printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
+
+    Inp_lower = InputLines.map(to_lowercase),
+    %printf("\n Inp_lower\n %w", Inp_lower),
+
+    Inp_lower_transp = Inp_lower.transpose(),
+    %printf("\n Input_transpose\n %w", Inp_lower_transp),
+    %%%print(Inp_lower[2,2]),nl, usefull later
+
     Matrix2D = new_array(NumRows, NumCols),
     CurrentRow := 1,  % Variável para rastrear a linha atual
 
     % Preenche a matriz bidimensional
-    foreach(Line in InputLines)
-        LowercaseLine = Line.map(to_lowercase),
-        LineArray = to_array(LowercaseLine),
-        printf("\nOriginal: %w -> Array: %w", LowercaseLine, LineArray),
-        Matrix2D[CurrentRow] = LineArray,
+    XMAS := 0,
+    foreach(Line in Inp_lower)
+        %printf("\n%w: => %w", Line, qt01( to_string(Line)  ,"xmas") + qt02( to_string(Line)  ,"xmas") ),
+        %printf(" OR => %w", qt01( to_string(Line),"XMAS")),
+        XMAS := XMAS + qt01( Line, "xmas") + qt02( Line, "xmas") ,
+        Matrix2D[CurrentRow] = to_array(Line),
         CurrentRow := CurrentRow + 1
     end,
+    printf("\n 1. XMAS %w\n", XMAS),
 
-    println("\nMatrix2D Filled:"),
-    println(Matrix2D),
-
-    % Exibe linha por linha
-    println("\nIterating through rows:"),
-    foreach(RowIndex in 1..NumRows)
-        printf("\nRow %d: %w  List:%w", RowIndex, Matrix2D[RowIndex], rows(Matrix2D[RowIndex]))
+    foreach(Line in Inp_lower_transp)  %%% Line from transpose ... vertical
+        %printf(" OR => %w", qt01( to_string(Line),"XMAS")),
+        %XMAS := XMAS + qt01(to_string(Line), "xmas") + qt02( to_string(Line), "xmas") ,
+        XMAS := XMAS + qt01( Line, "xmas") + qt02( Line, "xmas") ,
     end,
+    printf("\n 2. XMAS %w\n", XMAS),
 
-    % Itera por todos os elementos
-    println("\nIterating through all elements:"),
+    foreach(I in 1..NumRows, J in 1..NumCols)  %%%% DIAGONAL RIGHT => LEFT-
+        if( I>=1 && J>=1 && (I+3 =< NumRows) && (J+3 =< NumCols)) then 
+           Diag := [Inp_lower[I,J], Inp_lower[I+1,J+1], Inp_lower[I+2,J+2] , Inp_lower[I+3,J+3]],
+           XMAS := XMAS + qt01(Diag,"xmas") + qt02( Diag,"xmas") ,
+        end,   
+    end, 
+    printf("\n 3. XMAS %w\n", XMAS),
+  
+    foreach(I in 1..NumRows, J in 1..NumCols) %%%% DIAGONAL  LEFT -> RIGHT  
+        if( I=< NumRows && J>=1 && (I-3 >= 1) && (J+3 =< NumCols)) then 
+            Diag := [Inp_lower[I,J], Inp_lower[I-1,J+1], Inp_lower[I-2,J+2] , Inp_lower[I-3,J+3]],
+            %XMAS := XMAS + qt01(to_string(Diag),"xmas") + qt02(to_string(Diag),"xmas") ,
+            XMAS := XMAS + qt01(Diag,"xmas") + qt02(Diag,"xmas") ,
+        end,   
+    end, 
+
+    printf("\n Final XMAS %w\n", XMAS).
+%    print(Matrix2D).
+
+%%% NORMAL normal quantity
+    qt01(S,Sub_String) = R =>
+        %to_string(Term) = String
+        string(S),
+        string(Sub_String),
+        R = count_all(find(S, Sub_String,_,_));
+        printf("\n S or Sub_String are not strings\n").
     
-    foreach(RowIndex in 1..NumRows)
-        Vet_Current := Matrix2D[RowIndex],
-        nl,
-        foreach(ColIndex in 1..NumCols)
-            printf("\tElement [%d,%d]: %w", RowIndex, ColIndex, Vet_Current[ColIndex])
-        end
-    end,
-
-    % Exibe dimensões da matriz
-    printf("\nMatrix Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols).
-
+%%% REVERSE    quantity
+    qt02(S,Sub_String) = R =>
+            %to_string(Term) = String
+            string(S),
+            string(Sub_String),
+            R = count_all(find(reverse(S), Sub_String,_,_));
+            printf("\n S or Sub_String are not strings\n").
+/************************************************************************/
