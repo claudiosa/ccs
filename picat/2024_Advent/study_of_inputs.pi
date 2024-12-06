@@ -1,0 +1,82 @@
+import util.
+
+
+main([File]) =>
+    % Lê as linhas do arquivo
+    InputLines = read_file_lines(File),
+   
+    println("Input Lines:"),
+    println(InputLines),
+    NumRows = length(InputLines),
+    NumCols = length(first(InputLines)),
+    printf("\n Formato de INPUTLINES: %w \n", InputLines),
+    % Exibe dimensões da matriz
+    printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
+
+
+    Input_lower = InputLines.map(to_lowercase),
+    print(Input),
+
+    
+    %Matrix2D = new_array(NumRows, NumCols),
+    CurrentRow := 1,  % Variável para rastrear a linha atual
+
+    % Preenche a matriz bidimensional
+    foreach(Line in Input_lower)
+     
+        printf("=> %w", qt01( to_string(Line)  ,"xmas") + qt02( to_string(Line)  ,"xmas")),
+        %printf(" OR => %w", qt01( to_string(Line),"XMAS")),
+        Matrix2D[CurrentRow] = to_array(LowercaseLine),
+        CurrentRow := CurrentRow + 1
+    end,
+    print(Matrix2D)
+
+.
+
+
+
+
+qt01(S,Sub_String) = R =>
+    %to_string(Term) = String
+    string(S),
+    string(Sub_String),
+    R = count_all(find(S, Sub_String,_,_));
+    printf("\n S or Sub_String are not strings\n").
+
+
+qt02(S,Sub_String) = R =>
+        %to_string(Term) = String
+        string(S),
+        string(Sub_String),
+        R = count_all(find(reverse(S), Sub_String,_,_));
+        printf("\n S or Sub_String are not strings\n").
+    
+
+/* NOTAS
+
+
+X='MMMSXXMASM', to_string(X)==['M','M','M','S','X','X','M','A','S','M'].
+X = 'MMMSXXMASM'
+
+icat> X = axa, Y=to_string(X), find_ignore_case(Y, "A", _,_).
+X = axa
+Y = [a,x,a] ?;
+X = axa
+Y = [a,x,a] ?;
+
+no
+Picat> X = ax, Y=to_string(X), find(Y, "b", _,_).
+
+no
+
+Picat> X = {m,x,m,x,a,x,m,a,s,x}, Y=to_string(X), find(Y, "a", _,_).
+X = {m,x,m,x,a,x,m,a,s,x}
+Y = ['{',m,',',x,',',m,',',x,',',a,',',x,',',m,',',a,',',s,',',x,'}'] ?;
+X = {m,x,m,x,a,x,m,a,s,x}
+Y = ['{',m,',',x,',',m,',',x,',',a,',',x,',',m,',',a,',',s,',',x,'}'] ?;
+
+no
+
+47 3307 6140
+
+*/
