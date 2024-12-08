@@ -14,83 +14,48 @@ main([File]) =>
     Inp_X = InputLines.map(to_lowercase),
     %printf("\n Inp_X\n %w", Inp_X),
 
-    Inp_X_transp = Inp_X.transpose(),
+    %Inp_X_transp = Inp_X.transpose(),
     %printf("\n Input_transpose\n %w", Inp_X_transp),
     %%%print(Inp_X[2,2]),nl, usefull later
+    %Matrix2D = new_array(NumRows, NumCols),
 
-    Matrix2D = new_array(NumRows, NumCols),
     CurrentRow := 1,  % Variável para rastrear a linha atual
 
     % Preenche a matriz bidimensional
     XMAS := 0,
  
     foreach(I in 1..NumRows, J in 1..NumCols)  %%%% DIAGONAL RIGHT => LEFT-
-       if( I>=2 && J>=2 && (I+1 =< NumRows) && (J+1=< NumCols) && Inp_X[I,J] == 'a') then
-   % if( I>=1 && J>=1 && (I =< NumRows) && (J =< NumCols) && Inp_X[I,J] == 'a') then
-   %%    printf("\n Line: %w Inp_X %w",  I, Inp_X[I]),
-   %    if(Inp_X[I,J] == 'a') then
-           A :=  Inp_X[I-1, J-1],   
-           B :=  Inp_X[I+1, J+1],
-           C :=  Inp_X[I+1, J-1],
-           D :=  Inp_X[I+1, J+1],
+    % OR  if( I>=2 && J>=2 && (I+1 =< NumRows) && (J+1=< NumCols) && Inp_X[I,J] == 'a') then
+    if ( I>1 && J>1 && (I < NumRows) && (J < NumCols) && Inp_X[I,J] == 'a') then
+  
+           A = Inp_X[I-1, J-1],   
+           B = Inp_X[I+1, J+1],
+           C = Inp_X[I+1, J-1],
+           D = Inp_X[I-1, J+1],
 
-         %  printf("\n %w %w ", A,B ),
-
-           if (test_XaY(A,B)==true) && (test_XaY(C,D)==true) then 
-                Pattern := [[Inp_X[I-1,J-1],          Inp_X[I-1,J+1]],
+           if ( better(A,B) && better(C,D) ) then 
+        % OR if (test_XaY(A,B)==true) && (test_XaY(C,D)==true) then 
+            /*
+                Pattern = [[Inp_X[I-1,J-1],          Inp_X[I-1,J+1]],
                                             Inp_X[I,J],     
                             [Inp_X[I+1,J-1],           Inp_X[I+1,J+1]]
                            ],
-                printf("\n %w %w %w %w Pattern:%w", A,B, C,D, Pattern),
+            */               
+                Pattern = [[A,          D ],
+                              Inp_X[I,J],     
+                          [C,           B]],               
+                %printf("\n %w %w %w %w Pattern:%w", A,B, C,D, Pattern),
                 XMAS:= XMAS + 1    
             end,
         end,
     end, 
-
-/*
-    printf("\n XMAS: %w\n", XMAS),    
-
-    foreach(I in 1..NumRows, J in 1..NumCols)  %%%% DIAGONAL RIGHT => LEFT-
-       if( I>=2 && J>=2 && (I+1 =< NumRows) && (J+1=< NumCols) && Inp_X_transp[I,J] == 'a') then
-   % if( I>=1 && J>=1 && (I =< NumRows) && (J =< NumCols) && Inp_X[I,J] == 'a') then
-   %%    printf("\n Line: %w Inp_X %w",  I, Inp_X[I]),
-   %    if(Inp_X[I,J] == 'a') then
-           A :=  Inp_X_transp[I-1, J-1],   
-           B :=  Inp_X_transp[I+1, J+1],
-           C :=  Inp_X_transp[I+1, J-1],
-           D :=  Inp_X_transp[I+1, J+1],
-
-         %  printf("\n %w %w ", A,B ),
-
-           if (test_XaY(A,B)==true) && (test_XaY(C,D)==true) then 
-                Pattern := [[Inp_X_transp[I-1,J-1],          Inp_X_transp[I-1,J+1]],
-                                                Inp_X_transp[I,J],     
-                            [Inp_X_transp[I+1,J-1],           Inp_X_transp[I+1,J+1]]
-                           ],
-                printf("\n %w %w %w %w Pattern:%w", A,B, C,D, Pattern),
-                XMAS:= XMAS + 1    
-            end,
-        end,
-    end, 
-*/
 
     printf("\n Final XMAS: %w\n", XMAS).    
 
-  /*
-    foreach(I in 1..NumRows, J in 1..NumCols) %%%% DIAGONAL  LEFT -> RIGHT  
-        if( I=< NumRows && J>=1 && (I-3 >= 1) && (J+3 =< NumCols)) then 
-            Diag := [Inp_X[I,J], Inp_X[I-1,J+1], Inp_X[I-2,J+2] , Inp_X[I-3,J+3]],
-            %XMAS := XMAS + qt01(to_string(Diag),"xmas") + qt02(to_string(Diag),"xmas") ,
-            XMAS := XMAS + qt01(Diag,"xmas") + qt02(Diag,"xmas") ,
-        end,   
-    end, 
-*/
-
-%    print(Matrix2D).
-
 /*
-test_XaY(A,B) =>
+test_XaY(A,B) =
     (((A=='m', B=='s') || (A=='s', B=='m')), true ; false).
+???
 */
 
 test_XaY(A,B) = R =>
@@ -99,21 +64,8 @@ test_XaY(A,B) = R =>
         else 
         R = false
         end.
-        
 
-%%% NORMAL normal quantity
-    qt01(S,Sub_String) = R =>
-        %to_string(Term) = String
-        string(S),
-        string(Sub_String),
-        R = count_all(find(S, Sub_String,_,_));
-        printf("\n S or Sub_String are not strings\n").
-    
-%%% REVERSE    quantity
-    qt02(S,Sub_String) = R =>
-            %to_string(Term) = String
-            string(S),
-            string(Sub_String),
-            R = count_all(find(reverse(S), Sub_String,_,_));
-            printf("\n S or Sub_String are not strings\n").
+better('m','s') ?=> true.
+better('s','m') => true.    
+
 /************************************************************************/

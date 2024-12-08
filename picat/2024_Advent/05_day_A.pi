@@ -1,0 +1,9 @@
+% https://adventofcode.com/2024/day/5, part1
+import util, cp.
+
+main([File]) =>
+	Chars = read_file_chars(File),
+	Lines = break_in2(Chars),               % Split on "\n\n"
+  
+  	Prec = [A.split("|").map(to_int) : A in Lines.first.split("\n")],
+	PageOrders = [A.split(",").map(to_int) : A in Lines.second.split("\n")],
