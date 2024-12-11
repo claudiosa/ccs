@@ -1,0 +1,47 @@
+% https://adventofcode.com/2024/day/6, part1
+
+import util.
+
+main([File]) =>
+    % Reading from file
+    InputLines = read_file_lines(File),
+    println("Raw File:"),
+    println(InputLines),
+    NumRows = length(InputLines),
+    NumCols = length(first(InputLines)),
+    %printf("\n Formato de INPUTLINES: %w \n", InputLines),
+    % Exibe dimensões da matriz
+    printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
+        
+    Array2D = new_array(NumRows, NumCols),
+    CurrentRow = 1,  % Variável para rastrear a linha atual
+    List_ALL := [],
+    % Preenche a matriz bidimensional
+    foreach(Line in InputLines)
+        Array2D[CurrentRow] = to_array(Line),
+        % append(List_ALL, [Line], List_ALL),
+        List_ALL := List_ALL ++ [Line], 
+        println(Line),
+        CurrentRow := CurrentRow + 1
+    end,
+
+    printf("\n List_ALL: %w", List_ALL[2]), %%% Imprime a linha 2 inteira
+    printf("\n List_ALL: %w", List_ALL[2,10]),  %%% Imprime a linha 2 coluna 10
+    printf("\n List_ALL: %w\n Lenght: %w\n", List_ALL , length(List_ALL)),
+
+    printf("\n Array2D: %w\n", Array2D),
+    array_matrix_to_list(Array2D) = List_UNIQUE,
+    println("Lista UNICA:"),
+    println(List_UNIQUE).
+
+%list_matrix_to_array_matrix(LMatrix) = AMatrix
+% Função auxiliar para converter uma string em uma lista de caracteres
+string_to_list(String) =  [C : C in String].
+% Função auxiliar para converter uma string em uma lista de caracteres
+%string_to_list(String) = R => R = [C : C in String].
+/*
+% Função para converter as linhas em um array 2D
+lines_to_array2d(Lines) = Array2D =>
+    Array2D = new_array(length(Lines), length(Lines[1])),
+    foreach (I in 1..length(Lines), J in 1..length(Lines[I]))
+ */

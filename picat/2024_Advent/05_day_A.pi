@@ -1,9 +1,64 @@
 % https://adventofcode.com/2024/day/5, part1
-import util, cp.
+import util.
 
 main([File]) =>
 	Chars = read_file_chars(File),
-	Lines = break_in2(Chars),               % Split on "\n\n"
+	%print(Chars),
+	Chars = read_file_chars(File),
   
-  	Prec = [A.split("|").map(to_int) : A in Lines.first.split("\n")],
-	PageOrders = [A.split(",").map(to_int) : A in Lines.second.split("\n")],
+	[Part1, Part2] = split3(Chars, "\n\n"),              % Split on "\n\n"
+    % Processa a primeira parte
+    Prec = [Line.split("|").map(to_int) : Line in Part1.split("\n")],
+    
+    % Processa a segunda parte
+    PageOrders = [Line.split(",").map(to_int) : Line in Part2.split("\n")],
+
+    % Imprime os resultados
+    printf("Precedence: %w\n", Prec),
+    printf("Page Orders: %w\n", PageOrders).
+	/********************** TO DO ************************/
+
+
+
+
+%%%% VERSAO GPT
+	split3(Str, Sep) = Tokens =>
+		split3_aux(Str, Sep, [], Tokens).
+	
+	% Caso base: string vazia retorna tokens acumulados
+	split3_aux([], _, Acc, Result) => Result = reverse(Acc).
+	
+	% Caso: separador encontrado
+	split3_aux(S, Sep, Acc, Result), append(Token, Sep, Rest, S) =>
+		split3_aux(Rest, Sep, [Token | Acc], Result).
+	
+	% Caso final: string sem separador
+	split3_aux(S, _, Acc, Result) =>
+		Result = reverse([S | Acc]).
+
+
+/*
+NENG FA
+	split3(Str,Sep) = Lines =>
+		split3(Sep,Str,Lines).
+		
+	  split3(Sep,[],Tokens) => Tokens = [].
+	  split3(Sep,S,Tokens), append(Token,Sep,Rest,S) =>
+		  Tokens = [Token|TokensR],
+		  split3(Sep,Rest,TokensR).
+	  split3(Sep,S,Tokens) =>
+		  Tokens = [S].
+*/
+
+/*
+
+		Split the string String with Sep as separator, 
+	and returns the splitted strings/lists.
+
+	Picat> split3("a\n\nb c d\n\ne f\n\ng h","\n\n")=X       
+	X = [[a],[b,' ',c,' ',d],[e,' ',f],[g,' ',h]]
+  
+	Picat> "a\n\nb c d\n\ne f\n\ng h".split3("\n\n")=X                 
+	X = [[a],[b,' ',c,' ',d],[e,' ',f],[g,' ',h]]
+  
+  */

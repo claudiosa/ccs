@@ -12,11 +12,7 @@ main([File]) =>
     printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
 
     Inp_lower = InputLines.map(to_lowercase),
-<<<<<<< HEAD
     %printf("\n Inp_lower\n %w", Inp_lower),
-=======
-    printf("\n Inp_lower\n %w", Inp_lower),
->>>>>>> 1698430f2b34d1427212dbce10130e839193a2dd
 
     Inp_lower_transp = Inp_lower.transpose(),
     %printf("\n Input_transpose\n %w", Inp_lower_transp),
@@ -30,11 +26,7 @@ main([File]) =>
     foreach(Line in Inp_lower)
         %printf("\n%w: => %w", Line, qt01( to_string(Line)  ,"xmas") + qt02( to_string(Line)  ,"xmas") ),
         %printf(" OR => %w", qt01( to_string(Line),"XMAS")),
-<<<<<<< HEAD
         XMAS := XMAS + qt01( Line, "xmas") + qt02( Line, "xmas") ,
-=======
-        XMAS := XMAS + qt01( to_string(Line),"xmas") + qt02( to_string(Line),"xmas") ,
->>>>>>> 1698430f2b34d1427212dbce10130e839193a2dd
         Matrix2D[CurrentRow] = to_array(Line),
         CurrentRow := CurrentRow + 1
     end,
@@ -42,16 +34,11 @@ main([File]) =>
 
     foreach(Line in Inp_lower_transp)  %%% Line from transpose ... vertical
         %printf(" OR => %w", qt01( to_string(Line),"XMAS")),
-<<<<<<< HEAD
         %XMAS := XMAS + qt01(to_string(Line), "xmas") + qt02( to_string(Line), "xmas") ,
         XMAS := XMAS + qt01( Line, "xmas") + qt02( Line, "xmas") ,
-=======
-        XMAS := XMAS + qt01(to_string(Line), "xmas") + qt02( to_string(Line), "xmas") ,
->>>>>>> 1698430f2b34d1427212dbce10130e839193a2dd
     end,
     printf("\n 2. XMAS %w\n", XMAS),
 
-<<<<<<< HEAD
     foreach(I in 1..NumRows, J in 1..NumCols)  %%%% DIAGONAL RIGHT => LEFT-
         if( I>=1 && J>=1 && (I+3 =< NumRows) && (J+3 =< NumCols)) then 
            Diag := [Inp_lower[I,J], Inp_lower[I+1,J+1], Inp_lower[I+2,J+2] , Inp_lower[I+3,J+3]],
@@ -67,25 +54,6 @@ main([File]) =>
             XMAS := XMAS + qt01(Diag,"xmas") + qt02(Diag,"xmas") ,
         end,   
     end, 
-
-=======
-    printf("\n 2. XMAS %w\n", XMAS),
-
-    foreach(I in 1..NumRows, J in 1..NumCols)  %%%% DIAGONAL LEFT-> RIGHT
-        if( I>=1 && J>=1 && (I+3 =< NumRows) && (J+3 =< NumCols)) then 
-           Diag := [Inp_lower[I,J], Inp_lower[I+1,J+1], Inp_lower[I+2,J+2] , Inp_lower[I+3,J+3]],
-           XMAS := XMAS + qt01( to_string(Diag),"xmas") + qt02( to_string(Diag),"xmas") ,
-        end,   
-    end, 
-
-    printf("\n 3. XMAS %w\n", XMAS),
-    foreach(I in 1..NumRows, J in 1..NumCols) %%%% DIAGONAL LEFT-> RIGHT of TRANSPOSE ....
-        if( I>=1 && J>=1 && (I+3 =< NumRows) && (J+3 =< NumCols)) then 
-        Diag2 := [Inp_lower_transp[I,J], Inp_lower_transp[I+1,J+1],Inp_lower_transp[I+2,J+2],Inp_lower_transp[I+3,J+3]],
-        XMAS := XMAS + qt01(to_string(Diag2),"xmas") + qt02(to_string(Diag2),"xmas") ,
-        end,   
-    end, 
->>>>>>> 1698430f2b34d1427212dbce10130e839193a2dd
     printf("\n Final XMAS %w\n", XMAS).
 %    print(Matrix2D).
 
