@@ -10,12 +10,6 @@ main([File]) =>
     NumRows = length(InputLines),
     NumCols = length(first(InputLines)),
 
-/*
-    M = InputLines,
-    [I,J] = find_robot(M),
-    path((I,J), M, 0, {Steps, Grid}),
-    printf("Steps %w\n\n %w", Steps, Grid ),
-*/
     %printf("\n Formato de INPUTLINES: %w \n", InputLines),
     % Exibe dimensões da matriz
     printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
@@ -37,6 +31,13 @@ main([File]) =>
     printf("\n List_ALL: %w\n Lenght: %w\n", List_ALL , length(List_ALL)),
 
     printf("\n Array2D: %w\n", Array2D),
+    [I,J] = find_robot(Array2D),
+    %print( find_robot(List_ALL)),
+    printf("\n Init Robot: [%w %w]", I,J),
+  
+    path( (I,J), Array2D, 0, {Steps, Grid} ),
+    printf("Steps %w\n\n %w", Steps, Grid ),
+
     array_matrix_to_list(Array2D) = List_UNIQUE,
     println("Lista UNICA:"),
     println(List_UNIQUE).
@@ -51,128 +52,135 @@ string_to_list(String) =  [C : C in String].
 lines_to_array2d(Lines) = Array2D =>
     Array2D = new_array(length(Lines), length(Lines[1])),
     foreach (I in 1..length(Lines), J in 1..length(Lines[I]))
-
-
-    v ^ < >     
+ 
  */
 
  find_robot(M) = R =>
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
+    %% OR 
+    %N_Rows = M.length,
+    %N_Cols = M[1].length ,
+    X:=0, Y:=0,   %%%% FUNCTION and VALUE
+    printf("\n Dim: %w X %w", N_Rows, N_Cols),
+    foreach(I in 1..N_Rows , J in 1..N_Cols)
+        Cel = M[I,J], 
+        %print(Cel),
+        %if ((Cel == '>') ||(Cel == '<') ||(Cel == '^') ||(Cel == '^') ) then              
+        if ((Cel == >) ||(Cel == <) ||(Cel == ^) ||(Cel == ^) ) then              
+          X := I,
+          Y := J
+        end   %% END  IF INNER
+    end, %% END  FOREACH,
+      
     
-    foreach(I in 1..L , J in 1..C)
-        if ((Map[I,J] == '>') ||(Map[I,J] == '<') ||(Map[I,J] == '^') || (Map[I,J] == '^') ) then  
-          X = I,
-          Y = J
-         end   %% END  IF INNER
-    end %% END  FOREACH
-  ,
- 
-  if( var(X) || var(Y) ) then
-    printf("The robot was not found: %d")
-  end,	%% END  IF
-  R = [X,Y]  . 
+    if( var(X) || var(Y) ) then
+        printf("The robot was not found .... ")
+    end,	%% END  IF
+    
+    R = [X,Y]  . 
 
 
 path((I,J), M, Steps, R) ?=>
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
     (
-        (I+1 > N_Rows && M(I,J) == 'v');
-        (I-1 < 1 && M(I,J) == '^') ;
-        (J+1 > N_Cols && M(I,J) == '>');
-        (J-1 < 1 && M(I,J) == '<') 
-    )
-     M(I,J) = 'x,
+        (I+1 > N_Rows && M[I,J] == v);
+        (I-1 < 1 && M[I,J] == ^) ;
+        (J+1 > N_Cols && M[I,J] == >);
+        (J-1 < 1 && M[I,J] == <) 
+    ),
+    M[I,J] = *,
     D = Steps + 1,
     printf("\n Total of Steps: %w", D),
     R={D,M} . 
 
 path((I,J), M, Step, R) =>
-    next_move( (I,J), M , R) = {(Inew,Jnew), M2, D},
+    next_move( (I,J), M , Next),
+    Next = {(I_new,J_new), M2, D},
     if (D == 1) then
-        Step2 = Step + D /*** 0 or 1 */
+        Step2 = Step + D  /*** 0 or 1 */
     end,
 
-    path((Inew,Jnew), M2, Steps2, R).
+    path((I_new,J_new), M2, Step2, R).
 
 /**** next movement ************/
+%Picat> X = {(a,b,c), {1,2}, {3,4,5}}, print(X[3,2]), Y = X[1].length.
+%4X = {(a,b,c),{1,2},{3,4,5}}
+%Y = 2
+%yes
+%Picat> X = {(a,b,c), {1,2}, {3,4,5}}, print(X[3,2]).
+%4X = {(a,b,c),{1,2},{3,4,5}}
+
 
 next_move( (I,J), M , R) ?=>
     /*** move RIGHT ****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M(I,J)== '>') && M(I,J+1) != '#' && (J+1) < N_Cols),
-        M(I,J) = 'x',
-        M(I,J+1) = '>',
+    ( (M[I,J]== >) && M[I,J+1] != # && (J+1) < N_Cols),
+        M[I,J] = x,
+        M[I,J+1] = >,
     R = {(I,J+1), M, 1}.    
 
 
  next_move( (I,J), M , R) ?=>
         /*** move LEFT ****/
         [N_Rows, N_Cols] = [M.length , M[1].length ],    
-        ( (M(I,J)== '<') && M(I,J-1) != '#' && (J-1) > 1),
-            M(I,J) = 'x',
-            M(I,J-1) = '<',
+        ( (M[I,J]== <) && M[I,J-1] != # && (J-1) > 1),
+            M[I,J] = x,
+            M[I,J-1] = <,
         R = {(I,J-1), M, 1}.    
     
 
 next_move( (I,J), M , R) ?=>
             /*** move DOWN ****/
             [N_Rows, N_Cols] = [M.length , M[1].length ],    
-            ( (M(I,J)== 'v') && M(I,J+1) != '#' && (I+1) < N_Rows),
-                M(I,J) = 'x',
-                M(I+1,J) = 'v',
+            ( (M[I,J]== v) && M[I+1,J] != # && (I+1) < N_Rows),
+                M[I,J] = x,
+                M[I+1,J] = v,
             R = {(I+1, J), M, 1}.    
 
 next_move( (I,J), M , R) ?=>
     /*** move UP ****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M(I,J)== '^') && M(I+1,J) != '#' && (I-1) > 1),
-        M(I,J) = 'x',
-        M(I-1,J) = '^',
+    ( (M[I,J]== ^) && M[I-1,J] != # && (I-1) > 1),
+        M[I,J] = x,
+        M[I-1,J] = ^,
         R = {(I-1, J), M, 1}.        
 
 /**** Only rotation -- NO MOVES*****/
 next_move( (I,J), M , R) ?=>
     /***  RIGHT ROTATION 1****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M(I,J)== '>') && M(I,J+1) == '#'),
-        M(I,J) = 'v',
+    ( (M[I,J]== >) && M[I,J+1] == #),
+        M[I,J] = v,
         R = {(I,J), M, 0}.    
 
 next_move( (I,J), M , R) ?=>
     /***  RIGHT ROTATION 1****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M(I,J)== 'v') && M(I,J+1) == '#'),
-        M(I,J) = '<',
+    ( (M[I,J]== v) && M[I+1,J] == #),
+        M[I,J] = <,
         R = {(I,J), M, 0}.    
 
 next_move( (I,J), M , R) ?=>
     /***  RIGHT ROTATION 1****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M(I,J)== '<') && M(I,J-1) == '#'),
-        M(I,J) = '^',
+    ( (M[I,J]== <) && M[I,J-1] == #),
+        M[I,J] = ^,
         R = {(I,J), M, 0}.    
 
 
 next_move( (I,J), M , R) =>
-    printf("\n  No movement either ...."),
+    printf("\n  No movement neither ...."),
+    %exit(1),
     R = {(I,J), M, 0}.
     /***  RIGHT ROTATION 1****/
 
-
-%left_move,left_move,right_move,right_move,down_move,right_move,right_move,right_move,up_move,up_move]
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%position_c_XY( _ , _) => printf("\n Problem in XY position function \n").
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-/*
 %%% UPDATING THE GRID=MAP
 update_MAP(N,[X,Y], Map ) = Res =>  
     Map[X,Y] := N,
     Res := Map.
-*/
+
         
 %% printing the GRID ....
 
@@ -183,8 +191,8 @@ print_map( M ) =>
       foreach(I in 1  .. L)
         foreach(J in 1  ..  C)
          printf("%w " , M[I,J] )
-        end
-        nl
+        end,
+        nl,
     end.   
    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
