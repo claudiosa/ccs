@@ -1,171 +1,133 @@
-% https://adventofcode.com/2024/day/6, part1
 
 import util.
 
 main([File]) =>
-    % Reading from file
     InputLines = read_file_lines(File),
-    println("Raw File:"),
-    println(InputLines),
     NumRows = length(InputLines),
     NumCols = length(first(InputLines)),
-
-    %printf("\n Formato de INPUTLINES: %w \n", InputLines),
-    % Exibe dimensões da matriz
-    printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
-        
     Array2D = new_array(NumRows, NumCols),
-    CurrentRow = 1,  % 
+    CurrentRow = 1,
     List_ALL := [],
-    % Preenche a matriz bidimensional
     foreach(Line in InputLines)
         Array2D[CurrentRow] = to_array(Line),
-        % append(List_ALL, [Line], List_ALL),
-        List_ALL := List_ALL ++ [Line], 
-        println(Line),
+        List_ALL := List_ALL ++ [Line],
         CurrentRow := CurrentRow + 1
     end,
-
-    printf("\n List_ALL: %w", List_ALL[2]), %%% Imprime a linha 2 inteira
-    printf("\n List_ALL: %w", List_ALL[2,10]),  %%% Imprime a linha 2 coluna 10
-    printf("\n List_ALL: %w\n Lenght: %w\n", List_ALL , length(List_ALL)),
-
-    printf("\n Array2D: %w\n", Array2D),
+    print_map( Array2D),
+    % printf("\n MAP, GRID = Array2D: %w\n", Array2D),
     [I,J] = find_robot(Array2D),
-    %print( find_robot(List_ALL)),
-    printf("\n Init Robot: [%w %w]", I,J),
-  
-    path( (I,J), Array2D, 0, {Steps, Grid} ),
-    printf("Steps: %w\n\n Grid %w", Steps, Grid ),
+    printf("\n Initial Position Robot: [%w %w]", I,J),
+    path((I,J), Array2D, 0, {Steps, Grid}),
+    print_map(Grid),
+    printf("\n All Steps: %w\t Number cells with 'x': %w\n", Steps, count_char(Grid,'x')),
     printf("\n THE END").
 
-    %array_matrix_to_list(Array2D) = List_UNIQUE,
-    %println("Lista UNICA:"),
-    %println(List_UNIQUE).
-
-%list_matrix_to_array_matrix(LMatrix) = AMatrix
-% Função auxiliar para converter uma string em uma lista de caracteres
-string_to_list(String) =  [C : C in String].
-% Função auxiliar para converter uma string em uma lista de caracteres
-%string_to_list(String) = R => R = [C : C in String].
-/*
-% Função para converter as linhas em um array 2D
-lines_to_array2d(Lines) = Array2D =>
-    Array2D = new_array(length(Lines), length(Lines[1])),
-    foreach (I in 1..length(Lines), J in 1..length(Lines[I]))
- 
- */
-
- find_robot(M) = R =>
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    %% OR 
-    %N_Rows = M.length,
-    %N_Cols = M[1].length ,
-    X:=0, Y:=0,   %%%% FUNCTION and VALUE
-    printf("\n Dim: %w X %w", N_Rows, N_Cols),
-    foreach(I in 1..N_Rows , J in 1..N_Cols)
-        Cel = M[I,J], 
-        %print(Cel),
-        %if ((Cel == '>') ||(Cel == '<') ||(Cel == '^') ||(Cel == '^') ) then              
-        if ((Cel == >) ||(Cel == <) ||(Cel == ^) ||(Cel == ^) ) then              
-          X := I,
-          Y := J
-        end   %% END  IF INNER
-    end, %% END  FOREACH,
-      
-    
-    if( var(X) || var(Y) ) then
+find_robot(M) = R =>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    X := 0, Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        Cel = M[I,J],
+        if ((Cel == '>') || (Cel == '<') || (Cel == '^') || (Cel == 'v')) then
+            X := I,
+            Y := J
+        end
+    end,
+    if (var(X) || var(Y)) then
         printf("The robot was not found .... ")
-    end,	%% END  IF
-    
-    R = [X,Y]  . 
-
+    end,
+    R = [X,Y].
 
 path((I,J), M, Steps, R) ?=>
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
+    %println($path1=I=J),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
     (
-        (I+1 > N_Rows && M[I,J] == v);
-        (I-1 < 1 && M[I,J] == ^) ;
-        (J+1 > N_Cols && M[I,J] == >);
-        (J-1 < 1 && M[I,J] == <) 
+        (I+1 > N_Rows &&   M[I,J] == 'v');
+        (I-1 < 1      &&   M[I,J] == '^');
+        (J+1 > N_Cols &&   M[I,J] == '>');
+        (J-1 < 1      &&   M[I,J] == '<')
     ),
-    M[I,J] = *,
-    D = Steps + 1,
-    printf("\n Total of Steps: %w", D),
-    R={D,M} . 
-
-path((I,J), M, Step, R) =>
-    next_move( (I,J), M , Next),
-    Next = {(I_new,J_new), M2, D},
-    if (D == 1) then
-        Step2 = Step + D  /*** 0 or 1 */
-    end,
-
-    path((I_new,J_new), M2, Step2, R).
-
-/**** next movement ************/
-%Picat> X = {(a,b,c), {1,2}, {3,4,5}}, print(X[3,2]), Y = X[1].length.
-%4X = {(a,b,c),{1,2},{3,4,5}}
-%Y = 2
-%yes
-%Picat> X = {(a,b,c), {1,2}, {3,4,5}}, print(X[3,2]).
-%4X = {(a,b,c),{1,2},{3,4,5}}
-
-
-next_move( (I,J), M , R) ?=>
-    /*** move RIGHT ****/
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J] == >) && M[I,J+1] != # && (J+1) < N_Cols ),
-
-        M[I,J] = x,
-        M[I,J+1] = >,
-    R = {(I,J+1), M, 1}.    
-
-
- next_move( (I,J), M , R) ?=>
-        /*** move LEFT ****/
-        [N_Rows, N_Cols] = [M.length , M[1].length ],    
-        ( (M[I,J]== <) && M[I,J-1] != # && (J-1) > 1),
-            M[I,J] = x,
-            M[I,J-1] = <,
-        R = {(I,J-1), M, 1}.    
     
+    % M[I,J] := '*', /**** EXIT *****/
+    M[I,J] := 'x', /**** EXITING CELL *****/ % hakank
+    D := Steps + 1,
+    %printf("\n Total of Steps: %w", D),
+    %printf("\n I: %w \t J: %w", I,J),
+    R = {D, M}.
 
-next_move( (I,J), M , R) ?=>
-            /*** move DOWN ****/
-            [N_Rows, N_Cols] = [M.length , M[1].length ],    
-            ( (M[I,J]== v) && M[I+1,J] != # && (I+1) < N_Rows),
-                M[I,J] = x,
-                M[I+1,J] = v,
-            R = {(I+1, J), M, 1}.    
+path((I,J), M, Step_1, R) ?=>
+    % println($path2=I=J),
+    % print_map(M),
+    next_move((I,J), M, Next),
+    % println(next=Next),
+    Next = {(I_new, J_new), M2, D},
+    Step = Step_1 + D,
+    path((I_new, J_new), M2, Step, R).
 
-next_move( (I,J), M , R) ?=>
-    /*** move UP ****/
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J] == ^) && M[I-1,J] != # && (I-1) > 1),
-        M[I,J] = x,
-        M[I-1,J] = ^,
-        R = {(I-1, J), M, 1}.        
+next_move((I,J), M, R) ?=>
+    %println("testing >"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '>' && M[I,J+1] != '#' && (J+1) =< N_Cols),
+    M[I,J] := 'x',
+    M[I,J+1] := '>',
+    R = {(I, J+1), M, 1}.
+
+next_move((I,J), M, R) ?=>
+    %println("testing <"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '<' && M[I,J-1] != '#' && (J-1) >= 1),
+    M[I,J] := 'x',
+    M[I,J-1] := '<',
+    R = {(I, J-1), M, 1}.
+
+next_move((I,J), M, R) ?=>
+    %println("testing v"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == 'v' && M[I+1,J] != '#' && (I+1) =< N_Rows),
+    M[I,J] := 'x',
+    M[I+1,J] := 'v',
+    R = {(I+1, J), M, 1}.
+
+next_move((I,J), M, R) ?=>
+    %println("testing ^"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '^' && M[I-1,J] != '#' && (I-1) >= 1),
+    M[I,J] := 'x',
+    M[I-1,J] := '^',
+    R = {(I-1, J), M, 1}.
+
+next_move((I,J), M, R) ?=>
+    %println("testing ^ 2"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '>' && M[I,J+1] == '#'),
+    M[I,J] := 'v',
+    R = {(I,J), M, 0}.
+
+next_move((I,J), M, R) ?=>
+    %println("testing v 2"),
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == 'v' && M[I+1,J] == '#'),
+    M[I,J] := '<',
+    R = {(I,J), M, 0}.
+
+next_move((I,J), M, R) ?=>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '<' && M[I,J-1] == '#'),
+    M[I,J] := '^',
+    R = {(I,J), M, 0}.
+
+% hakank: added this
+next_move((I,J), M, R) ?=>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    (M[I,J] == '^' && M[I-1,J] == '#'),
+    M[I,J] := '>',
+    R = {(I,J), M, 0}.
+
+next_move((I,J), M, R) =>
+    printf("\n Robot was in: [%w %w] Direction: %w", I, J, M[I,J]),
+    printf("\n No movement neither .... ERROR"),
+    R = {(I,J), M, 0}.
 
 
-
-
-
-next_move( (I,J), M , R) =>
-    
-    printf("\n Robot was in: [%w %w] Direction: %w", I,J, M[I,J]),
-    printf("\n  No movement neither ...."),
-    %exit(1),
-    R = {(I,J), M, 0},
-    println(R) .   
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% UPDATING THE GRID=MAP
-update_MAP(N,[X,Y], Map ) = Res =>  
-    Map[X,Y] := N,
-    Res := Map.
-        
 %% printing the GRID ....
 
 print_map( M ) =>
@@ -179,4 +141,25 @@ print_map( M ) =>
         nl,
     end.   
    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    count_char(M, C) = Count =>
+        Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
+
+
+
+print_map_color(M) =>
+        L = M.length,
+        C = M[1].length,
+        nl,
+        foreach(I in 1..L)
+            foreach(J in 1..C)
+                Symbol = M[I,J],
+                if Symbol == '#' then
+                    printf("\u001b[31m#\u001b[0m ") % Vermelho para obstáculos
+                elseif Symbol == 'x' then
+                    printf("\u001b[32mx\u001b[0m ") % Verde para passos
+                else
+                    printf("%w ", Symbol)
+                end
+            end,
+            nl
+        end.

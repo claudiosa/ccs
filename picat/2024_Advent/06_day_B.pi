@@ -1,0 +1,87 @@
+import util.
+
+main([File]) =>
+    InputLines = read_file_lines(File),
+    NumRows = length(InputLines),
+    NumCols = length(first(InputLines)),
+    Array2D = new_array(NumRows, NumCols),
+    CurrentRow = 1,
+    foreach(Line in InputLines)
+        Array2D[CurrentRow] = to_array(Line),
+        CurrentRow := CurrentRow + 1
+    end,
+    [I,J] = find_robot(Array2D),
+    PossiblePositions = find_obstruction_positions((I,J), Array2D),
+    printf("\nNumber of valid positions: %w\n", length(PossiblePositions)),
+    printf("Valid positions: %w\n", PossiblePositions).
+
+find_robot(M) = [X,Y] =>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    X := 0, Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        if member(M[I,J], ['>', '<', '^', 'v']) then
+            X := I,
+            Y := J
+        end
+    end,
+    if (var(X) || var(Y)) then
+        printf("The robot was not found .... ")
+    end,
+    R = [X,Y].
+
+
+find_obstruction_positions(Start, Grid) = ValidPositions =>
+    [N_Rows, N_Cols] = [Grid.length, Grid[1].length],
+    ValidPositions = [],
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        if Grid[I,J] == '.' && (I,J) != Start then
+            TempGrid := copy_term(Grid),
+            TempGrid[I,J] := 'O',
+            if is_loop(Start, TempGrid) == true then
+                ValidPositions := ValidPositions ++ [(I,J)]
+            end
+        end
+    end.
+
+is_loop((I,J), M) = R =>
+    Visited := [],
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    Key := 1,
+    while (Key == 1)
+            if member((I,J,M[I,J]), Visited) then
+                Key := 1
+                %R = true  % Detected a loop
+            end,
+            Visited := Visited ++ [(I,J,M[I,J])],
+            Move := get_next_move((I,J), M),
+            %(X,Y) := copy_term(Move),
+            (X,Y) = Move,
+            if (X == 0 && Y==0) then
+                %R = false,  % No loop, guard exits the area
+                Key := 0
+            else
+                (I, J) = Move
+            end
+        end,
+        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+
+/*
+        Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
+    Key = 1
+    R = true
+    yes
+ */    
+
+get_next_move((I,J), M) = R =>
+    Dir = M[I,J],
+    if Dir == '>' && J+1 =< M[1].length && M[I,J+1] != '#' && M[I,J+1] != 'O' then
+        R =  (I, J+1)
+    elseif Dir == '<' && J-1 >= 1 && M[I,J-1] != '#' && M[I,J-1] != 'O' then
+        R =  (I, J-1)
+    elseif Dir == 'v' && I+1 =< M.length && M[I+1,J] != '#' && M[I+1,J] != 'O' then
+        R =   (I+1, J)
+    elseif Dir == '^' && I-1 >= 1 && M[I-1,J] != '#' && M[I-1,J] != 'O' then
+        R =   (I-1, J)
+    else
+        R =  (0,0)
+    end.
