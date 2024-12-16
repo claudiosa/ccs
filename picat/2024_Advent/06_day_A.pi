@@ -15,7 +15,7 @@ main([File]) =>
     printf("\n Dimensions: Rows = %d, Columns = %d\n", NumRows, NumCols),
         
     Array2D = new_array(NumRows, NumCols),
-    CurrentRow = 1,  % Variável para rastrear a linha atual
+    CurrentRow = 1,  % 
     List_ALL := [],
     % Preenche a matriz bidimensional
     foreach(Line in InputLines)
@@ -36,11 +36,12 @@ main([File]) =>
     printf("\n Init Robot: [%w %w]", I,J),
   
     path( (I,J), Array2D, 0, {Steps, Grid} ),
-    printf("Steps %w\n\n %w", Steps, Grid ),
+    printf("Steps: %w\n\n Grid %w", Steps, Grid ),
+    printf("\n THE END").
 
-    array_matrix_to_list(Array2D) = List_UNIQUE,
-    println("Lista UNICA:"),
-    println(List_UNIQUE).
+    %array_matrix_to_list(Array2D) = List_UNIQUE,
+    %println("Lista UNICA:"),
+    %println(List_UNIQUE).
 
 %list_matrix_to_array_matrix(LMatrix) = AMatrix
 % Função auxiliar para converter uma string em uma lista de caracteres
@@ -114,7 +115,8 @@ path((I,J), M, Step, R) =>
 next_move( (I,J), M , R) ?=>
     /*** move RIGHT ****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J]== >) && M[I,J+1] != # && (J+1) < N_Cols),
+    ( (M[I,J] == >) && M[I,J+1] != # && (J+1) < N_Cols ),
+
         M[I,J] = x,
         M[I,J+1] = >,
     R = {(I,J+1), M, 1}.    
@@ -140,39 +142,22 @@ next_move( (I,J), M , R) ?=>
 next_move( (I,J), M , R) ?=>
     /*** move UP ****/
     [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J]== ^) && M[I-1,J] != # && (I-1) > 1),
+    ( (M[I,J] == ^) && M[I-1,J] != # && (I-1) > 1),
         M[I,J] = x,
         M[I-1,J] = ^,
         R = {(I-1, J), M, 1}.        
 
-/**** Only rotation -- NO MOVES*****/
-next_move( (I,J), M , R) ?=>
-    /***  RIGHT ROTATION 1****/
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J]== >) && M[I,J+1] == #),
-        M[I,J] = v,
-        R = {(I,J), M, 0}.    
 
-next_move( (I,J), M , R) ?=>
-    /***  RIGHT ROTATION 1****/
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J]== v) && M[I+1,J] == #),
-        M[I,J] = <,
-        R = {(I,J), M, 0}.    
 
-next_move( (I,J), M , R) ?=>
-    /***  RIGHT ROTATION 1****/
-    [N_Rows, N_Cols] = [M.length , M[1].length ],    
-    ( (M[I,J]== <) && M[I,J-1] == #),
-        M[I,J] = ^,
-        R = {(I,J), M, 0}.    
 
 
 next_move( (I,J), M , R) =>
+    
+    printf("\n Robot was in: [%w %w] Direction: %w", I,J, M[I,J]),
     printf("\n  No movement neither ...."),
     %exit(1),
-    R = {(I,J), M, 0}.
-    /***  RIGHT ROTATION 1****/
+    R = {(I,J), M, 0},
+    println(R) .   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -180,7 +165,6 @@ next_move( (I,J), M , R) =>
 update_MAP(N,[X,Y], Map ) = Res =>  
     Map[X,Y] := N,
     Res := Map.
-
         
 %% printing the GRID ....
 
