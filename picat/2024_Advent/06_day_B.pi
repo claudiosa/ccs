@@ -1,3 +1,5 @@
+%%% IT IS NOT WORKING ....
+
 import util.
 
 main([File]) =>
@@ -11,6 +13,7 @@ main([File]) =>
         CurrentRow := CurrentRow + 1
     end,
     [I,J] = find_robot(Array2D),
+    println([I,J]),
     PossiblePositions = find_obstruction_positions((I,J), Array2D),
     printf("\nNumber of valid positions: %w\n", length(PossiblePositions)),
     printf("Valid positions: %w\n", PossiblePositions).
@@ -24,7 +27,7 @@ find_robot(M) = [X,Y] =>
             Y := J
         end
     end,
-    if (var(X) || var(Y)) then
+    if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
         printf("The robot was not found .... ")
     end,
     R = [X,Y].
@@ -43,29 +46,31 @@ find_obstruction_positions(Start, Grid) = ValidPositions =>
         end
     end.
 
-is_loop((I,J), M) = R =>
+is_loop((I, J), M) = R =>
     Visited := [],
-    [N_Rows, N_Cols] = [M.length, M[1].length],
-    Key := 1,
-    while (Key == 1)
-            if member((I,J,M[I,J]), Visited) then
-                Key := 1
-                %R = true  % Detected a loop
-            end,
-            Visited := Visited ++ [(I,J,M[I,J])],
-            Move := get_next_move((I,J), M),
-            %(X,Y) := copy_term(Move),
-            (X,Y) = Move,
-            if (X == 0 && Y==0) then
-                %R = false,  % No loop, guard exits the area
-                Key := 0
+    LoopDetected := false, % Inicialmente, não há loop detectado
+    Stop := false,         % Controle para sair do loop while
+    while (not Stop) 
+        Dir = M[I,J],
+        if member((I, J, Dir), Visited) then
+            LoopDetected := true,
+            Stop := true
+        else
+            Visited := Visited ++ [(I, J, Dir)],
+            (X, Y) = get_next_move((I, J), M),
+            if (X == 0 && Y == 0) then
+                Stop := true % Sem mais movimentos possíveis, termina
             else
-                (I, J) = Move
+                (I, J) = (X, Y)
             end
-        end,
-        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+        end
+    end,
+    R = LoopDetected.
+
+
 
 /*
+        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
         Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
     Key = 1
     R = true

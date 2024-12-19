@@ -1,0 +1,221 @@
+%import os.
+import util.
+%import math.
+import datetime.
+import planner.
+
+%%  to stop the planner
+final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid, Cumulative_Cost}) =>
+    D := abs(X-X_e)+abs(Y-Y_e),
+    (D <= 1),
+    printf("Cumulative Cost: %w\n", Cumulative_Cost),  %% Imprime o custo acumulado
+    print_map(Final_Grid). 
+
+final(_) => printf("\n There are some @ in the map!\n").
+
+%%%%%%%%%%%%%%%%%% ACOES
+
+% Ação para mover para cima
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (X > 1 , Grid[X-1,Y] == '.' ), %% Verifica se há espaço livre acima
+    Grid_TEMP = copy_term(Grid),
+    
+    Action_Cost = 1,              %% Define o custo da ação
+    Action = '^',                 %% Direção para cima
+    Grid_TEMP[X-1,Y] := '*',      %% Atualiza a nova posição do robô (acima)
+    Grid_TEMP[X,Y] := '^',        %% Marca a posição antiga com a direção que segue
+    
+    X_new := X-1,
+    Y_new := Y,
+    
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+    
+    %% Atualiza o novo estado
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ação para mover para a direita
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    [N_Rows, N_Cols] = [Grid.length , Grid[1].length],
+    (Y < N_Cols , Grid[X,Y+1] == '.' ), %% Verifica se há espaço livre à direita
+    Grid_TEMP = copy_term(Grid),
+    
+    Action_Cost = 1,              %% Define o custo da ação
+    Action = '>',                 %% Direção para a direita
+    Grid_TEMP[X,Y+1] := '*',      %% Atualiza a nova posição do robô (à direita)
+    Grid_TEMP[X,Y] := '>',        %% Marca a posição antiga com a direção que segue
+    
+    X_new := X,
+    Y_new := Y+1,
+    
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+    
+    %% Atualiza o novo estado
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ação para mover para a esquerda
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (Y > 1 , Grid[X,Y-1] == '.' ), %% Verifica se há espaço livre à esquerda
+    Grid_TEMP = copy_term(Grid),
+    
+    Action_Cost = 1,              %% Define o custo da ação
+    Action = '<',                 %% Direção para a esquerda
+    Grid_TEMP[X,Y-1] := '*',      %% Atualiza a nova posição do robô (à esquerda)
+    Grid_TEMP[X,Y] := '<',        %% Marca a posição antiga com a direção que segue
+    
+    X_new := X,
+    Y_new := Y-1,
+    
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+    
+    %% Atualiza o novo estado
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ação para mover para baixo
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    [N_Rows, _] = [Grid.length , Grid[1].length],
+    (X < N_Rows , Grid[X+1,Y] == '.' ), %% Verifica se há espaço livre abaixo
+    Grid_TEMP = copy_term(Grid),
+    
+    Action_Cost = 1,              %% Define o custo da ação
+    Action = 'v',                 %% Direção para baixo
+    Grid_TEMP[X+1,Y] := '*',      %% Atualiza a nova posição do robô (abaixo)
+    Grid_TEMP[X,Y] := 'v',        %% Marca a posição antiga com a direção que segue
+    
+    X_new := X+1,
+    Y_new := Y,
+    
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+    
+    %% Atualiza o novo estado
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ao mover para baixo, encontra um obstáculo, rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (X < N_Rows , Grid[X+1,Y] == '#',  Grid[X+1,Y-1] == '.' ),
+    Grid_TEMP = copy_term(Grid),
+    
+    Action_Cost = 1000,         %% Define o custo da ação
+    Action = '<',               %% Rotação como a direita de +90 (baixo)
+    Grid_TEMP[X+1,Y-1] := '*',    %% Atualiza a nova posição do robô
+    Grid_TEMP[X,Y] := '<',      %% Marca a posição antiga com a direção que segue
+    
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+    
+    New_State = {[X+1,Y-1],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ao mover para cima e encontrar um obstáculo, rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (X > 1 , Grid[X-1,Y] == '#', Y < N_Cols, Grid[X,Y+1] == '.' ),
+    Grid_TEMP = copy_term(Grid),
+
+    Action_Cost = 1000,         %% Define o custo da ação
+    Action = '>',               %% Rotação como sentido horário de cima
+    Grid_TEMP[X,Y+1] := '*',    %% Atualiza a nova posição do robô
+    Grid_TEMP[X,Y] := '>',      %% Marca a posição antiga com a direção que segue
+
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+
+    New_State = {[X,Y+1],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ao mover para a direita e encontrar um obstáculo, rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (Y < N_Cols , Grid[X,Y+1] == '#', X < N_Rows, Grid[X+1,Y] == '.' ),
+    Grid_TEMP = copy_term(Grid),
+
+    Action_Cost = 1000,         %% Define o custo da ação
+    Action = 'v',               %% Rotação como sentido horário de direita
+    Grid_TEMP[X+1,Y] := '*',    %% Atualiza a nova posição do robô
+    Grid_TEMP[X,Y] := 'v',      %% Marca a posição antiga com a direção que segue
+
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+
+    New_State = {[X+1,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+% Ao mover para a esquerda e encontrar um obstáculo, rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
+    (Y > 1 , Grid[X,Y-1] == '#', X > 1, Grid[X-1,Y] == '.' ),
+    Grid_TEMP = copy_term(Grid),
+
+    Action_Cost = 1000,         %% Define o custo da ação
+    Action = '^',               %% Rotação como sentido horário de esquerda
+    Grid_TEMP[X-1,Y] := '*',    %% Atualiza a nova posição do robô
+    Grid_TEMP[X,Y] := '^',      %% Marca a posição antiga com a direção que segue
+
+    %% Atribuição correta para custo acumulado
+    New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
+
+    New_State = {[X-1,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+
+
+
+import util.
+
+main([File]) =>
+    InputLines = read_file_lines(File),
+    NumRows = length(InputLines),
+    NumCols = length(first(InputLines)),
+
+    /* to do not forget it */
+    Array2D = new_array(NumRows, NumCols),
+    CurrentRow := 1,
+    foreach(Line in InputLines)
+        Array2D[CurrentRow] = to_array(Line),
+        CurrentRow := CurrentRow + 1
+    end,
+    
+    [X_s,Y_s] = find_symbol(Array2D,'*'), %%% Initial position
+    [X_e,Y_e] = find_symbol(Array2D,'E'), %%% Initial position
+    
+    % OK ALSO print_map(InputLines),
+    print_map(Array2D),
+    Initial = {[X_s,Y_s],[X_e,Y_e], Array2D },
+    println(Initial).
+
+
+
+
+print_map( M ) =>
+    L = M.length,
+    C = M[1].length,
+     nl,
+      foreach(I in 1  .. L)
+        foreach(J in 1  ..  C)
+         printf("%w " , M[I,J] )
+        end,
+        nl,
+    end.   
+
+count_char(M, C) = Count =>
+    Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
+
+
+find_symbol(M, Symbol) = [X,Y] =>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    X := 0, 
+    Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        if member(M[I,J], [Symbol]) then
+            X := I,
+            Y := J
+        end
+    end,
+    if (X == 0 && Y == 0 ) then
+        printf("The symbol  %w  was not found .... ", [C])
+    end,
+    R = [X,Y].
+
+
