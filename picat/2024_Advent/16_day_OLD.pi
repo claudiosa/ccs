@@ -8,7 +8,8 @@ import planner.
 final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
     D := abs(X-X_e) + abs(Y-Y_e),
     (D <= 1),
-   
+    %(X == X_e),
+    %(Y == Y_e),
     printf("\nSolution Found!\n"),
     print_map(Final_Grid).
 
@@ -16,191 +17,195 @@ final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
 
 %%%%%%%%%%%%%%%%%% ACOES
 
-%%% actions NON ROTATING -- up movement
-% Move to UP
+%%% actions NON ROTATING -- forward movement
+% Ação para mover para cima
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (X > 1, 
-        Grid[X,Y] = '^', Grid[X-1,Y] != '#'), %% Verifica se há espaço livre acima
-        % Grid[X-1,Y] == '.'
+   
+    (X > 2, 
+        Grid[X-1,Y] == '.', Grid[X-2,Y] != '#'), %% Verifica se há espaço livre acima
+   
     Grid_TEMP = copy_term(Grid),
+    
     Action_Cost = 1,              %% Define o custo da ação
     Action = '^',                 %% Direção para cima
+    Grid_TEMP[X,Y] := '^',        %% Marca a posição antiga com a direção que segue
     
     X_new := X-1,
     Y_new := Y,
-    Grid_TEMP[X_new,Y_new] := '^',   %% Atualiza a nova posição do robô
-  
-    printf("===^==="),
-    print_map(Grid_TEMP),
-  
+    Grid_TEMP[X_new,Y_new] := '*',   %% Atualiza a nova posição do robô
     %% Atualiza o novo estado
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
-% Ação para mover para a direita -- move to right
-% 
+% Ação para mover para a direita
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-   
-    (Y < N_Cols, 
-     Grid[X,Y] = '>', Grid[X,Y+1] != '#'),
-    %%== '.'), %% Verifica se há espaço livre à direita
+    [N_Rows, N_Cols] = [Grid.length , Grid[1].length],
+
+    (Y+2 =< N_Cols, 
+        Grid[X,Y+1] == '.', Grid[X,Y+2] != '#'), %% Verifica se há espaço livre à direita
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
     Action = '>',                 %% Direção para a direita
+    Grid_TEMP[X,Y] := '>',        %% Marca a posição antiga com a direção que segue
     
     X_new := X,
     Y_new := Y+1,
-    Grid_TEMP[X_new,Y_new] := '>',   %% Atualiza a nova posição do robô
+    Grid_TEMP[X_new,Y_new] := '*',   %% Atualiza a nova posição do robô
     %% Atualiza o novo estado
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
-% Ação para mover para a esquerda -- move to left
+% Ação para mover para a esquerda
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (Y > 1 , 
-    Grid[X,Y] = '<', Grid[X,Y-1] != '#'),
-    % oR == '.'), %% Verifica se há espaço livre à esquerda
+    (Y > 2 , 
+        Grid[X,Y-1] == '.',  Grid[X,Y-2] != '#'), %% Verifica se há espaço livre à esquerda
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
     Action = '<',                 %% Direção para a esquerda - left
     
+    Grid_TEMP[X,Y] := '<',        %% Marca a posição antiga com a direção que segue
+    
     X_new := X,
     Y_new := Y-1,
-    Grid_TEMP[X_new,Y_new] := '<',   %% Atualiza a nova posição do robô
+    Grid_TEMP[X_new,Y_new] := '*',   %% Atualiza a nova posição do robô
     %% Atualiza o novo estado
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
 % Ação para mover para baixo
-%% move to down
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-   
-    (X < N_Rows, 
-        Grid[X,Y] = 'v', Grid[X+1,Y]  != '#'),
-    % OR == '.' ), %% Verifica se há espaço livre abaixo
+    [N_Rows, _] = [Grid.length , Grid[1].length],
+    (X < N_Rows-2, 
+        Grid[X+1,Y] == '.' , Grid[X+2,Y] != '#'), %% Verifica se há espaço livre abaixo
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
     Action = 'v',                 %% Direção para baixo
+    Grid_TEMP[X,Y] := 'v',        %% Marca a posição antiga com a direção que segue
+    
     X_new := X+1,
     Y_new := Y,
     
-    Grid_TEMP[X_new,Y_new] := 'v',   %% Atualiza a nova posição do robô
+    Grid_TEMP[X_new,Y_new] := '*',   %% Atualiza a nova posição do robô
     %% Atualiza o novo estado
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
+
 %%% actions WITH ROTATING
-%% moving to down ... SO ROTATING
+% Ao mover para baixo, encontra um obstáculo, 
+% PREPARAR para rotacionar 90 graus no sentido horário
+
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
- 
-    ( X < N_Rows, Y < N_Cols, Y > 1,
-      Grid[X,Y] == 'v', Grid[X+1,Y] == '#'),
-      % Grid[X+1,Y] != '.'),
-   
+    ( X+2 =< N_Rows, Y >= 2,
+      Grid[X+1,Y] == '.', Grid[X+2,Y] == '#', Grid_TEMP[X+1,Y-1] == '.'),
     Grid_TEMP = copy_term(Grid),
     
-    if ( Grid[X,Y+1] == '.' ) then %% free to right
-        Grid_TEMP[X,Y] := '>'
-    elseif ( Grid[X,Y-1] == '.' ) then %% free to left
-        Grid_TEMP[X,Y] := '<'
-    end,
-    Action_Cost = 1000,         %% Define o custo da ação
-    Action = '@1',               %% Rotação como a direita de +90 (baixo)
-    
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
-
-% Ao mover para cima e encontrar um obstáculo, rotaciona 90 graus
-%% to up and rotate to left or right
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    Action_Cost = 1002,         %% Define o custo da ação
+    Action = 'v_1',               %% Rotação como a direita de +90 (baixo)
+    Grid_TEMP[X,Y] := 'v',      %% Marca a posição antiga com a direção que segue
+    Grid_TEMP[X+1,Y] := '<',    %%   %% turn left
   
-    (X > 1 , Y > 1, Y < N_Cols, 
-         Grid[X,Y] == '^', Grid[X-1,Y] == '#'),
-        %Grid[X-1,Y] != '.'),
-        %
-    Grid_TEMP = copy_term(Grid),
-     
-    if ( Grid[X,Y+1] == '.' ) then %% free to right
-        Grid_TEMP[X,Y] := '>'
-    elseif ( Grid[X,Y-1] == '.' ) then %% free to left
-        Grid_TEMP[X,Y] := '<'
-    end,
-    Action_Cost = 1000,         %% Define o custo da ação
-    Action = '@2',               %% Rotação como sentido horário de cima
- 
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+    X_new := X+1,
+    Y_new := Y-1,
+    Grid_TEMP[X_new,Y_new] := '*',
+  
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
+% Ao mover para cima e encontrar um obstáculo, rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    (X > 2 , Y+1 < N_Cols,
+         Grid[X-1,Y] == '.',  Grid[X-2,Y] == '#', Grid_TEMP[X-1,Y+1] == '.'),
+    Grid_TEMP = copy_term(Grid),
+
+    Action_Cost = 1002,         %% Define o custo da ação
+    Action = '^_2',               %% Rotação como sentido horário de cima
+    Grid_TEMP[X,Y] := '^',      %% Marca a posição antiga com a direção que segue
+    Grid_TEMP[X-1,Y] := '>',     %% turn right
+    
+    X_new = X-1,
+    Y_new = Y+1,
+ 
+    Grid_TEMP[X_new,Y_new] := '*',   %% Atualiza a nova posição do robô
+    
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
 % Ao mover para a direita e encontrar um obstáculo, 
-%% to right and rotate to up or down
+%rotaciona 90 graus no sentido horário
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (Y < N_Cols,  X < N_Rows,  X > 1,
-        Grid[X,Y] == '>' , Grid[X,Y+1] == '#' ),
+    (Y+2 =< N_Cols,  X+1 =< N_Rows,  
+        Grid[X,Y+1] == '.' , Grid[X,Y+2] == '#', Grid_TEMP[X+1,Y+1] == '.' ),
     Grid_TEMP = copy_term(Grid),
-   
-    if ( Grid[X-1,Y] == '.' ) then %% free to up
-        Grid_TEMP[X,Y] := '^'
-    elseif ( Grid[X+1,Y] == '.' ) then  %%%free to down
-        Grid_TEMP[X,Y] := 'v'
-    end,
-    Action_Cost = 1000,         %% Define o custo da ação
-    Action = '@3',               %% Rotação como sentido horário de cima
- 
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+    
+    Action_Cost = 1002,         %% Define o custo da ação
+    %Action = '@',               %% Rotação como sentido horário de direita
+    Action = 'v_3', 
+    Grid_TEMP[X,Y] := '>',
+    Grid_TEMP[X,Y+1] := 'v',    %% turn down
+    
+    %% Marca a posição antiga com a direção que segue
+    X_new = X+1,
+    Y_new = Y+1,
+    Grid_TEMP[X_new,Y_new] := '*',
+
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
 % Ao mover para a esquerda e encontrar um obstáculo, 
-%% to left and rotate to up or down
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
-    (Y < N_Cols,  X < N_Rows,  Y > 1,
-        Grid[X,Y] == '<' , Grid[X,Y-1] == '#' ),
+%% DEPOIS rotaciona 90 graus no sentido horário
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    (X >= 2, Y > 2, 
+        Grid[X,Y-1] == '.', Grid[X,Y-2] == '#', Grid_TEMP[X-1,Y-1] == '.'),
+   
     Grid_TEMP = copy_term(Grid),
+
+    Action_Cost = 1002,         %% Define o custo da ação
+    Action = '<_4',             %% Rotação como sentido horário de esquerda
+    %Action = '@',
+    Grid_TEMP[X,Y] := '<',      %% Marca a posição antiga com a direção que segue
+    Grid_TEMP[X,Y-1] := '^',    %% turn up
     
-    if ( Grid[X-1,Y] == '.' ) then %% free to up
-        Grid_TEMP[X,Y] := '^'
-    elseif ( Grid[X+1,Y] == '.' ) then  %%%free to down
-        Grid_TEMP[X,Y] := 'v'
-    end,
-    Action_Cost = 1000,         %% Define o custo da ação
-    Action = '@4',               %% Rotação como sentido horário de cima
-    
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
-        
-%% just inverting the direction
-    /*
+    X_new = X-1,
+    Y_new = Y-1,
+    Grid_TEMP[X_new,Y_new] := '*',
+
+    New_State = {[X_new,Y_new], [X_e,Y_e], [N_Rows,N_Cols], Grid_TEMP}.
+
+%% just avance for a rotate
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
-    
 
-    (Y < N_Cols,  X < N_Rows,  Y > 1, X > 1),
-    
     Grid_TEMP = copy_term(Grid),
+    (X>=2, Y>=2, X =< N_Rows-2 , Y =< N_Cols-2),
+    /* Down */
+    if ( Grid[X+1,Y] == '.', Grid[X+2,Y] == '#') then
+        X_new = X+1,
+        Y_new = Y
+    end,
+
+    /* UP */
+    if ( Grid[X-1,Y] == '.', Grid[X-2,Y] == '#') then
+        X_new = X-1,
+        Y_new = Y
+    end,
+   
+    /* LEFT */
+    if ( Grid[X,Y+1] == '.', Grid[X,Y+2] == '#') then
+        X_new = X,
+        Y_new = Y+1
+    end,
+
+    %% RIGHT
+    if ( Grid[X,Y-1] == '.', Grid[X,Y-2] == '#') then
+        X_new = X,
+        Y_new = Y-1
+    end,    
     
-    if (Grid[X,Y] == '^', Grid[X,Y-1] == '#', Grid[X,Y+1] == '#' ) then
-        %Grid_TEMP[X,Y] := '#',
-        Grid_TEMP[X,Y] := 'v'  
-    end,
-
-    if (Grid[X,Y] == 'v', Grid[X,Y-1] == '#', Grid[X,Y+1] == '#') then
-        %Grid_TEMP[X,Y] := '#',
-        Grid_TEMP[X,Y] := '^'  
-    end,
-
-    if (Grid[X,Y] == '>', Grid[X-1,Y] == '#', Grid[X+1,Y] == '#') then
-        Grid_TEMP[X,Y] := '<' 
-    end,
-
-    if (Grid[X,Y] == '<', Grid[X-1,Y] == '#', Grid[X+1,Y] == '#') then
-        Grid_TEMP[X,Y] := '>' 
-    end,
-
     Action_Cost = 1000,         %% Define o custo da ação
-    Action = '@5',               %% Rotação como sentido horário de cima
- 
-    print_map(Grid_TEMP),
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
-    %printf("ERROR\n").
-*/
+    Action = '@',
+     
+    Grid_TEMP[X_new,Y_new] := '*',
+       
+    New_State = {[X_new,Y_new], [X_e,Y_e], [N_Rows,N_Cols], Grid_TEMP}.
+
 %%%%%%%%%%%%%%%%%%
-%main([File]) =>
-main ?=>    
-    File = "16_A_sample.txt",
+main([File]) =>
     InputLines = read_file_lines(File),
     N_Rows = length(InputLines),
     N_Cols = length(first(InputLines)),
@@ -214,7 +219,7 @@ main ?=>
     end,
     [X_s,Y_s] = find_symbol(Grid_2D,'S'), %%% Initial position
     [X_e,Y_e] = find_symbol(Grid_2D,'E'), %%% Initial position
-    Grid_2D[X_s,Y_s] := '^',     /* just to modified the robot symbol */
+    Grid_2D[X_s,Y_s] := '*',     /* just to modified the robot symbol */
    % Grid_2D[X_e,Y_e] := '.',
   
     % OK ALSO print_map(InputLines),
@@ -224,9 +229,9 @@ main ?=>
 
    % Initial ....
     T1 = current_time(),
-    time(best_plan( Initial , Plan, Cost)), %%% CPU TIME ===> FIRST ANSWER
+   %time(best_plan( Initial , Plan, Cost)), %%% CPU TIME ===> FIRST ANSWER
     %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
-    %plan_unbounded(Initial, Plan, Cost),
+    plan_unbounded(Initial, Plan, Cost),
     %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
     T2 = current_time(), 
    
@@ -235,7 +240,6 @@ main ?=>
     printf(" \n =========================================\n "),
     print("THE END").
 
-main => println("NO").
 %% printing the GRID ....
 
 print_map( M ) =>
@@ -246,13 +250,13 @@ print_map( M ) =>
         foreach(J in 1  ..  C)
          printf("%w " , M[I,J] )
         end,
-        nl
+        nl,
     end.   
 
 count_char(M, C) = Count =>
     Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
 
-find_symbol(M, Symbol) = R =>
+find_symbol(M, Symbol) = [X,Y] =>
     [N_Rows, N_Cols] = [M.length, M[1].length],
     X := 0, 
     Y := 0,
@@ -263,7 +267,7 @@ find_symbol(M, Symbol) = R =>
         end
     end,
     if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
-        printf("The symbol  %w  was not found .... ", [Symbol])
+        printf("The symbol  %w  was not found .... ", [C])
     end,
     R = [X,Y].
 
@@ -288,4 +292,3 @@ get_next_move((I,J), M) = R =>
     else
         R =  (0,0)
     end.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

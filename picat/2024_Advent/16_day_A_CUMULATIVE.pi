@@ -1,17 +1,22 @@
+
 %import os.
 import util.
 %import math.
 import datetime.
 import planner.
 
+
+
 %%  to stop the planner
 final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid, Cumulative_Cost}) =>
     D := abs(X-X_e)+abs(Y-Y_e),
     (D <= 1),
-    printf("Cumulative Cost: %w\n", Cumulative_Cost),  %% Imprime o custo acumulado
+    Cumulative_Cost < 8000,
+    printf("\nCumulative Cost for this Solution: %w", Cumulative_Cost),  %% Imprime o custo acumulado
+    
     print_map(Final_Grid). 
 
-final(_) => printf("\n There are some @ in the map!\n").
+final(_) => printf("\n ................ fail in final").
 
 %%%%%%%%%%%%%%%%%% ACOES
 
@@ -21,7 +26,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
-    Action = '^',                 %% Direção para cima
+    Action = '^_u',                 %% Direção para cima
     Grid_TEMP[X-1,Y] := '*',      %% Atualiza a nova posição do robô (acima)
     Grid_TEMP[X,Y] := '^',        %% Marca a posição antiga com a direção que segue
     
@@ -42,7 +47,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
-    Action = '>',                 %% Direção para a direita
+    Action = '>_r',                 %% Direção para a direita
     Grid_TEMP[X,Y+1] := '*',      %% Atualiza a nova posição do robô (à direita)
     Grid_TEMP[X,Y] := '>',        %% Marca a posição antiga com a direção que segue
     
@@ -62,7 +67,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
-    Action = '<',                 %% Direção para a esquerda
+    Action = '<_l',                 %% Direção para a esquerda - left
     Grid_TEMP[X,Y-1] := '*',      %% Atualiza a nova posição do robô (à esquerda)
     Grid_TEMP[X,Y] := '<',        %% Marca a posição antiga com a direção que segue
     
@@ -83,7 +88,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1,              %% Define o custo da ação
-    Action = 'v',                 %% Direção para baixo
+    Action = 'v_d',                 %% Direção para baixo
     Grid_TEMP[X+1,Y] := '*',      %% Atualiza a nova posição do robô (abaixo)
     Grid_TEMP[X,Y] := 'v',        %% Marca a posição antiga com a direção que segue
     
@@ -99,18 +104,18 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
 
 % Ao mover para baixo, encontra um obstáculo, rotaciona 90 graus no sentido horário
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Action, Action_Cost) ?=>
-    (X < N_Rows , Grid[X+1,Y] == '#',  Grid[X+1,Y-1] == '.' ),
+    (X < N_Rows , Grid[X+1,Y] == '#',  Grid[X,Y-1] == '.' ),
     Grid_TEMP = copy_term(Grid),
     
     Action_Cost = 1000,         %% Define o custo da ação
-    Action = '<',               %% Rotação como a direita de +90 (baixo)
-    Grid_TEMP[X+1,Y-1] := '*',    %% Atualiza a nova posição do robô
+    Action = '<1',               %% Rotação como a direita de +90 (baixo)
+    Grid_TEMP[X,Y-1] := '*',    %% Atualiza a nova posição do robô
     Grid_TEMP[X,Y] := '<',      %% Marca a posição antiga com a direção que segue
     
     %% Atribuição correta para custo acumulado
     New_Cumulative_Cost := Cumulative_Cost + Action_Cost,  %% Cálculo do custo acumulado
     
-    New_State = {[X+1,Y-1],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
+    New_State = {[X,Y-1],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
 
 
 % Ao mover para cima e encontrar um obstáculo, rotaciona 90 graus no sentido horário
@@ -119,7 +124,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
 
     Action_Cost = 1000,         %% Define o custo da ação
-    Action = '>',               %% Rotação como sentido horário de cima
+    Action = '>2',               %% Rotação como sentido horário de cima
     Grid_TEMP[X,Y+1] := '*',    %% Atualiza a nova posição do robô
     Grid_TEMP[X,Y] := '>',      %% Marca a posição antiga com a direção que segue
 
@@ -135,7 +140,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
 
     Action_Cost = 1000,         %% Define o custo da ação
-    Action = 'v',               %% Rotação como sentido horário de direita
+    Action = 'v3',               %% Rotação como sentido horário de direita
     Grid_TEMP[X+1,Y] := '*',    %% Atualiza a nova posição do robô
     Grid_TEMP[X,Y] := 'v',      %% Marca a posição antiga com a direção que segue
 
@@ -151,7 +156,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
     Grid_TEMP = copy_term(Grid),
 
     Action_Cost = 1000,         %% Define o custo da ação
-    Action = '^',               %% Rotação como sentido horário de esquerda
+    Action = '^4',               %% Rotação como sentido horário de esquerda
     Grid_TEMP[X-1,Y] := '*',    %% Atualiza a nova posição do robô
     Grid_TEMP[X,Y] := '^',      %% Marca a posição antiga com a direção que segue
 
@@ -160,31 +165,42 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid, Cumulative_Cost}, New_State, Act
 
     New_State = {[X-1,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP, New_Cumulative_Cost}.
 
-
-
-import util.
-
+%%%%%%%%%%%%%%%%%%
 main([File]) =>
     InputLines = read_file_lines(File),
-    NumRows = length(InputLines),
-    NumCols = length(first(InputLines)),
+    N_Rows = length(InputLines),
+    N_Cols = length(first(InputLines)),
 
     /* to do not forget it */
-    Array2D = new_array(NumRows, NumCols),
+    Grid_2D = new_array(N_Rows, N_Cols),
     CurrentRow := 1,
     foreach(Line in InputLines)
-        Array2D[CurrentRow] = to_array(Line),
+        Grid_2D[CurrentRow] = to_array(Line),
         CurrentRow := CurrentRow + 1
     end,
-    
-    [X_s,Y_s] = find_symbol(Array2D,'*'), %%% Initial position
-    [X_e,Y_e] = find_symbol(Array2D,'E'), %%% Initial position
-    
+    [X_s,Y_s] = find_symbol(Grid_2D,'S'), %%% Initial position
+    [X_e,Y_e] = find_symbol(Grid_2D,'E'), %%% Initial position
+    Grid_2D[X_s,Y_s] := '*',
+  
     % OK ALSO print_map(InputLines),
-    print_map(Array2D),
-    Initial = {[X_s,Y_s],[X_e,Y_e], Array2D },
-    println(Initial).
+    print_map(Grid_2D),
+    Initial = {[X_s,Y_s], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D, 0 },
+    println(Initial),
 
+   % Initial ....
+    T1 = current_time(),
+    time(best_plan( Initial , Plan, Cost)), %%% CPU TIME ===> FIRST ANSWER
+    %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
+    %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
+    T2 = current_time(), 
+   
+    printf("\n Plan:%w\t Cost: %w\n", Plan, Cost),
+    printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
+    
+    printf(" \n =========================================\n "),
+    print("THE END").
+
+%% printing the GRID ....
 
 
 
@@ -213,9 +229,33 @@ find_symbol(M, Symbol) = [X,Y] =>
             Y := J
         end
     end,
-    if (X == 0 && Y == 0 ) then
+    if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
         printf("The symbol  %w  was not found .... ", [C])
     end,
     R = [X,Y].
 
 
+
+
+
+/*
+        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+        Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
+    Key = 1
+    R = true
+    yes
+ */    
+
+get_next_move((I,J), M) = R =>
+    Dir = M[I,J],
+    if Dir == '>' && J+1 =< M[1].length && M[I,J+1] != '#' && M[I,J+1] != 'O' then
+        R =  (I, J+1)
+    elseif Dir == '<' && J-1 >= 1 && M[I,J-1] != '#' && M[I,J-1] != 'O' then
+        R =  (I, J-1)
+    elseif Dir == 'v' && I+1 =< M.length && M[I+1,J] != '#' && M[I+1,J] != 'O' then
+        R =   (I+1, J)
+    elseif Dir == '^' && I-1 >= 1 && M[I-1,J] != '#' && M[I-1,J] != 'O' then
+        R =   (I-1, J)
+    else
+        R =  (0,0)
+    end.
