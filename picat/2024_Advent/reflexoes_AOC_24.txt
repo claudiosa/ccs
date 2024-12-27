@@ -1,0 +1,44 @@
+Após alguns dias envolvido com https://adventofcode.com/2024,
+em algumas poucas horas,
+acompanhando a discussão dos outros 4 ou 5 "ninjas" que estavam
+fazendo o AOC em PICAT. 3 deles sei que fizeram os 50 problemas
+Foram 25 dias e por dia cada problema se desdobrava em 2, que 
+nem sempre se relacionavam. Apenas na entrada de dados.
+Fiquei aqui juntando os meus botões numa reflexão.
+
+Eu fiz 7 problemas. Eles fizeram 50!  Onde está o "gap"?
+
+
+Embora com uma razoável formação matemática, não fui forjado na área
+de computação, aprendi na década de 80 em mainframes Assembly, PL/I da IBM,
+Fortran e C. Mas foi com Prolog que logo me identifiquei e programas
+"mais sérios" sairam. Professor Araújo do Ceará... saudades.
+Nesta linhagem, veio o PICAT ... que amenizou as diversas coisas
+ruins do Prolog, trazendo virtudes do Haskell e Python.
+
+Enfim, aos longos dos anos a formação em algoritmos foi lentamente
+e "aos trancos e barrancos" foi se forjando. Mas quanto ao "gap" entre 
+eu os feras acima? Onde estão os "bugs" desta discrepância?
+
+Estaria ...
+1. ... na diferença dos backgrounds de cada um de nós?
+2. ... no tempo de cada um se dedicou?
+3. ... na estação do ano? Eu no hemisfério sul, no verão, os demais estão ai no inverno,
+       com temperaturas convidativas aos exercício mental. 
+4. ... me cobrando demais para um aposentado?
+5. ... velho? Não, Hakan e Neng-Fa estão com idades próximas a minha
+6. ... destreinado? Sim ... não está sendo o meu cotidiano neste segundo 
+7. ... ainda sofrendo um complexo de "tupiniquim"? 
+       (aquela inferioridade que brazukas sentem?)
+8. ... com tarefas outras que eles não tem? Cuido do jardim, da comida, faço a feira,
+       natação, musculação, lendo livros, lavo louça (muita), limpo a casa,
+       manutenção doméstica, assistência a família, cuido do "caixa", 
+       tempo dedicado ao café com os amigos, café matinal com a Lu em nossa oração 
+       diária, o Evangelho no Lar semanalmente, ...        
+
+Claro, se considerarmos a população do planeta, da área, do hemisfério sul,
+da população  de aposentados, destes no Brasil, etc.
+acho que estaria talvez acima da média.
+
+Enfim, poderiam me dar alguma devolutiva?
+Estaria eu na crise dos 65 anos? Em depressão?
