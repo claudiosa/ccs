@@ -7,8 +7,9 @@ import planner.
 %% to stop the planner
 final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
     D := abs(X-X_e) + abs(Y-Y_e),
-    (D <= 1),
+    (D == 0),
    
+
     printf("\nSolution Found!\n"),
     print_map(Final_Grid).
 
@@ -93,7 +94,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
  
     ( X < N_Rows, Y < N_Cols, Y > 1,
-      Grid[X,Y] == 'v', Grid[X+1,Y] == '#'),
+      Grid[X,Y] == 'v', (Grid[X+1,Y] == '#'; Grid[X+1,Y] == '.')),
       % Grid[X+1,Y] != '.'),
    
     Grid_TEMP = copy_term(Grid),
@@ -113,8 +114,8 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
   
     (X > 1 , Y > 1, Y < N_Cols, 
-         Grid[X,Y] == '^', Grid[X-1,Y] == '#'),
-        %Grid[X-1,Y] != '.'),
+         Grid[X,Y] == '^', (Grid[X-1,Y] == '#' ; Grid[X-1,Y] == '.')),
+        %Grid[X-1,Y] != '.'), 
         %
     Grid_TEMP = copy_term(Grid),
      
@@ -133,7 +134,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 %% to right and rotate to up or down
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
     (Y < N_Cols,  X < N_Rows,  X > 1,
-        Grid[X,Y] == '>' , Grid[X,Y+1] == '#' ),
+        Grid[X,Y] == '>' , (Grid[X,Y+1] == '#' ; Grid[X,Y+1] == '.') ),
     Grid_TEMP = copy_term(Grid),
    
     if ( Grid[X-1,Y] == '.' ) then %% free to up
@@ -150,7 +151,7 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 %% to left and rotate to up or down
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
     (Y < N_Cols,  X < N_Rows,  Y > 1,
-        Grid[X,Y] == '<' , Grid[X,Y-1] == '#' ),
+        Grid[X,Y] == '<' , (Grid[X,Y-1] == '#'; Grid[X,Y-1] == '.')  ),
     Grid_TEMP = copy_term(Grid),
     
     if ( Grid[X-1,Y] == '.' ) then %% free to up
@@ -198,9 +199,9 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
     %printf("ERROR\n").
 */
 %%%%%%%%%%%%%%%%%%
-%main([File]) =>
-main ?=>    
-    File = "16_A_sample.txt",
+main([File]) ?=>
+%main ?=>    
+    %File = "16_A_sample.txt",
     InputLines = read_file_lines(File),
     N_Rows = length(InputLines),
     N_Cols = length(first(InputLines)),

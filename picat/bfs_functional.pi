@@ -1,0 +1,68 @@
+% BFS recursivo com funções
+
+/*
+Sample of BFS
+  
+       1
+      / \
+     2   3  -------
+    / \ / \        \
+   4   5   6       ------> 12  
+  / \ /     \
+ 7   8       9
+ |           |
+ 10         11
+
+Expected Starting from 1: [1,2,3,4,5,6,12,7,8,9,10,11]
+
+*/
+
+graph(2) = [
+    [1, [2, 3]],
+    [2, [4, 5]],
+    [3, [5, 6, 12]],
+    [4, [5, 7]],
+    [5, [8]],
+    [6, [9]],
+    [7, [10]],
+    [8, []],
+    [9, [11]],
+    [10, []],
+    [11, []],
+    [12, []]
+    ].
+
+graph(1) = [[1, [2, 3]], % Nó 1 conectado a 2 e 3
+                     [2, [4, 5]], % Nó 2 conectado a 4 e 5
+                     [3, [6]],    % Nó 3 conectado a 6
+                     [4, []],     % Nó 4 sem conexões
+                     [5, [6]],    % Nó 5 conectado a 6
+                     [6, []]].    % Nó 6 sem conexões
+main =>
+            Graph = graph(2),
+            Start = 1, %% STARTING IN THIS NODE.
+            Result = bfs(Graph, [Start], []),
+            printf("\n Start: %w \n Visiting order %w\n", Start, Result).
+        
+bfs(_Graph, [], Visited) = reverse(Visited).
+bfs(Graph, [Node|Queue], Visited) = Result =>
+    %%%if Node in Visited then  PICAT has not in yet in if ...
+    if  membchk(Node, Visited) then
+        %printf("\n Node: %w Visited %w", Node, Visited),
+        Result = bfs(Graph, Queue, Visited) % Nó já visitado, continue
+    else
+        Neighbors = get_neighbors(Node, Graph),
+       % printf("\n Node: %w Neighbors %w", Node, Neighbors),
+        NewNodes = [N : N in Neighbors, not member(N, Visited)], % Filtra os já visitados
+        %NewNodes = [N : member(N, Neighbors), not member(N, Visited)], % Filtra os já visitados
+        NewQueue = Queue ++ NewNodes, % Atualiza a fila
+        Result = bfs(Graph, NewQueue, [Node|Visited]) % Adicione à lista visitada
+    end.
+
+
+get_neighbors(Node, Graph) = Neighbors =>
+    [Neighbors] = [Second : [First, Second] in Graph, First == Node].
+
+
+    %%[Neighbors] = [Second : [First, Second] = member(Item, Graph), First == Node].
+%%%Graph = [[1, [2, 3]]],  [Second : [First, Second] in Graph, First == 1] = X.
