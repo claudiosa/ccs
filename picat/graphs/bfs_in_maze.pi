@@ -1,0 +1,296 @@
+% BFS recursivo com funções
+import util.
+/*
+Sample of BFS
+  
+       1
+      / \
+     2   3  -------
+    / \ / \        \
+   4   5   6       ------> 12  
+  / \ /     \
+ 7   8       9
+ |           |
+ 10         11
+
+Expected Starting from 1: [1,2,3,4,5,6,12,7,8,9,10,11]
+
+*/
+
+graph(2) = [
+    [1, [2, 3]],
+    [2, [4, 5]],
+    [3, [5, 6, 12]],
+    [4, [5, 7]],
+    [5, [8]],
+    [6, [9]],
+    [7, [10]],
+    [8, []],
+    [9, [11]],
+    [10, []],
+    [11, []],
+    [12, []]
+    ].
+
+graph(1) = [[1, [2, 3]], % Nó 1 conectado a 2 e 3
+                     [2, [4, 5]], % Nó 2 conectado a 4 e 5
+                     [3, [6]],    % Nó 3 conectado a 6
+                     [4, []],     % Nó 4 sem conexões
+                     [5, [6]],    % Nó 5 conectado a 6
+                     [6, []]].    % Nó 6 sem conexões
+
+                     
+                    % Exemplo de matriz de entrada
+graph(3) = [
+        "###############",
+        "#.......#....E#",
+        "#.#.###.#.###.#",
+        "#.....#.#...#.#",
+        "#.###.#####.#.#",
+        "#.#.#.......#.#",
+        "#.#.#####.###.#",
+        "#...........#.#",
+        "###.#.#####.#.#",
+        "#...#.....#.#.#",
+        "#.#.#.###.#.#.#",
+        "#.....#...#.#.#",
+        "#.###.#.#.#.#.#",
+        "#S..#.....#...#",
+        "###############"
+    ].
+
+graph(4) = [
+        "###############",
+        "#.......#....E#",
+        "#.....#...#.#.#",
+        "#.###.#.#.#.#.#",
+        "#S..#.....#...#",
+        "###############"
+    ].
+                            
+main =>
+        %%% example with  a GRID or MAZE
+        /*
+        Grid = graph(4), %%% 
+        
+        Graph = build_adjacency_list(Grid), %Adjacency_List 
+        print_map(Grid),
+        list(Graph),
+
+        Start = find_symbol(Grid,'S'), %% STARTING IN THIS NODE.
+        %(Start) == (14,2),
+        End = find_symbol(Grid,'E'),
+        printf("\n Start: %w \t End: %w ", Start, End),
+        %trace,
+        Node = (Start),
+        %get_neighbors(Node, Adjacency_List) = Neighbors,
+        %notrace,
+        get_neighbors(Node,  Graph, Neighbors),
+        println(Neighbors),
+        */
+    
+    /*** Example with */
+        Graph = graph(2),
+        printf("\n Format in List: %w\n %w", Graph, len(Graph)),
+        Start = 1, 
+        End = 6,
+        %debug,
+    /******/               
+    
+        Result = bfs(Graph, [Start], End, []),
+        %nodebug,
+        printf("\n Start: %w \t End: %w \n Visiting order %w\n", Start, End, Result),
+        printf("\n Size: %w", len(Result)),
+       
+        if nonvar(Grid) then
+            shortest_path(Result, Shortest),
+            print_path(Grid, Shortest),
+            printf("\n Shortest: %w", Shortest)
+        end.
+        
+
+
+% Define o predicado para reconstruir o caminho mais curto
+% Predicado principal para encontrar o caminho mais curto
+shortest_path([FirstNode | Rest], Path) =>
+    LastNode = last(Rest),  % Último nó é o destino
+    build_predecessors([FirstNode | Rest], [], Predecessors),
+    reconstruct_path(LastNode, Predecessors, [FirstNode], Path).
+
+% Constrói uma lista de predecessores (associações entre nós)
+build_predecessors([(PX, PY) | Rest], Predecessors, Result) =>
+    ( Rest != [] ->
+        % Considera o próximo nó como sucessor
+        [CurrentNode | Tail] = Rest,
+        (not membchk((CurrentNode, PX, PY), Predecessors) -> 
+            build_predecessors([(PX, PY) | Tail], [(CurrentNode, PX, PY) | Predecessors], Result)
+        ; build_predecessors([(PX, PY) | Tail], Predecessors, Result))
+    ; Result = Predecessors).
+
+% Reconstrói o caminho baseado nos predecessores
+reconstruct_path((X, Y), Predecessors, PathSoFar, Path) =>
+    ( membchk(((X, Y), PX, PY), Predecessors) ->
+        reconstruct_path((PX, PY), Predecessors, [(PX, PY) | PathSoFar], Path)
+    ; Path = PathSoFar ).
+
+/*
+Picat>  M = new_map(), M.put(one,1), One = M.get(one).   
+M = (map)[one = 1]
+One = 1
+yes
+*/
+
+% Reconstrói o caminho começando pelo nó final
+reconstruct_path(Node, ParentTable, Path) =>
+    Path = [Node|Rest],
+    (Node == ParentTable.get(Node, Node) -> 
+    Rest = [] % Parada quando atingir a origem
+    ; reconstruct_path(ParentTable.get(Node), ParentTable, Rest)).
+
+
+
+find_symbol(M, Symbol) = R =>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    X := 0, 
+    Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        if member(M[I,J], [Symbol]) then
+            X := I,
+            Y := J
+        end
+    end,
+    if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
+        printf("The symbol  %w  was not found .... ", [Symbol])
+    end,
+    R = (X,Y).   %%% returning as a functor ... n=node
+
+% Constrói a lista de adjacências
+build_adjacency_list(Matrix) = AdjacencyList =>
+    AdjacencyList = 
+        [ [(X, Y), Neighbors] : 
+            X in 1..Matrix.length, 
+            Y in 1..Matrix[1].length, 
+            Matrix[X,Y] \= '#', 
+            Neighbors = find_neighbors(X, Y, Matrix)
+        ].
+
+% Encontra os vizinhos válidos para uma célula
+find_neighbors(X, Y, Matrix) = Neighbors =>
+    Deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)], % Movimentos ortogonais
+    Neighbors = 
+        [(NX, NY) : 
+            (DX, DY) in Deltas, 
+            NX = X + DX, 
+            NY = Y + DY, 
+            NX > 0, NX =< Matrix.length, 
+            NY > 0, NY =< Matrix[1].length, 
+            Matrix[NX,NY] \= '#'
+        ].
+
+
+%%% FUNCTIONAL
+get_neighbors(Node, Graph) = Neighbors =>
+    %Neighbors = {Second : [First, Second] in Graph, First == Node}.
+    [Neighbors] = [Second : [First, Second] in Graph, First == Node].
+
+%%% PREDICATIVE    
+get_neighbors(_Node, [], R) ?=> R = [].
+get_neighbors(Node, [[First, Second]|Rest], R), First == Node ?=>
+    R = Second, !.
+
+get_neighbors(Node, [[First, Second]|Rest], R), First != Node =>
+    get_neighbors(Node, Rest, R).
+
+
+/* 
+Picat> Node = (14,2),G=[[(14,2),[(13,2),(14,3)]],[(14,3),[(14,2),(14,4)]]], get_neighbors(Node, G, X), print(X).  
+[(13,2),(14,3)]Node = (14,2)
+G = [[(14,2),[(13,2),(14,3)]],[(14,3),[(14,2),(14,4)]]]
+X = [(13,2),(14,3)]
+yes
+
+yes
+Picat> Node = (14,2),G=[[(14,2),[(13,2),(14,3)]],[(14,3),[(14,2),(14,4)]]], get_neighbors(Node, G) =  X, print(X).
+[(13,2),(14,3)]Node = (14,2)
+G = [[(14,2),[(13,2),(14,3)]],[(14,3),[(14,2),(14,4)]]]
+X = [(13,2),(14,3)]
+yes
+
+
+*/
+
+
+print_map( M ) =>
+    L = M.length,
+    C = M[1].length,
+        nl,
+        foreach(I in 1  .. L)
+        foreach(J in 1  ..  C)
+            printf("%w " , M[I,J] )
+        end,
+        nl
+    end.   
+
+print_path( M, Path ) =>
+    L = M.length,
+    C = M[1].length,
+        nl,
+        foreach(I in 1  .. L)
+        foreach(J in 1  ..  C)
+            if (membchk((I,J), Path)) then
+            printf("* ")
+            else
+            printf("%w " , M[I,J] )
+            end
+        end,
+        nl
+    end.   
+
+
+
+%%% BFS FUNCTIONAL ....
+
+bfs(Graph, [Node|Queue], End, Visited) = Result,   Node == End =>
+    printf("\n Node: %w \t End: %w ", Node, End),
+    Result =  reverse(Visited)++[End].
+
+bfs(Graph, [Node|Queue], End, Visited) = Result,   membchk(Node, Visited) =>
+    Result = bfs(Graph, Queue, End, Visited). % Nó já visitado, continue
+
+bfs(Graph, [Node|Queue], End, Visited) = Result,  not( membchk(Node, Visited)) =>
+        Neighbors = get_neighbors(Node, Graph),
+        %get_neighbors(Node, Graph, Neighbors), 
+        %printf("\n Node: %w Neighbors %w", Node, Neighbors),
+        NewNodes = [N : N in Neighbors, not membchk(N, Visited), not membchk(N, Queue) ], % Filtra os já visitados
+        %NewNodes = [N : member(N, Neighbors), not member(N, Visited),  not membchk(N, Queue) ], % Filtra os já visitados
+        NewQueue = Queue ++ NewNodes, % Atualiza a fila
+        Path = [Node|Visited],
+        %printf("\n Top or Curr: %w \t Queue: %w\t Path: %w ", Node, Queue, Path),
+        Result = bfs(Graph, NewQueue, End, Path). % Adicione à lista visitada
+
+/*
+OK
+
+bfs(Graph, [Node|Queue], End, Visited) = Result =>
+    printf("...\n"),
+    printf("Node: %w \t Queue: %w \t End: %w\n  ", Node, Queue, End),
+
+    %%%if Node in Visited then  PICAT has not in yet in if ...
+    %% I would keep in separeted function clause
+    %trace,
+    if ( Node == End ) then
+        printf("STOP: Node: %w  \t End: %w\n  ", Node, End),
+        Result =  reverse(Visited)++[End]
+    elseif  membchk(Node, Visited) then %%% Node already visited
+       %printf("\n Node: %w Visited %w", Node, Visited),
+        Result = bfs(Graph, Queue, End, Visited) % Nó já visitado, continue
+    else
+        %Neighbors = get_neighbors(Node, Graph),
+        get_neighbors(Node, Graph, Neighbors), 
+        %printf("\n Node: %w Neighbors %w", Node, Neighbors),
+        NewNodes = [N : N in Neighbors, not membchk(N, Visited)], % Filtra os já visitados
+        %NewNodes = [N : member(N, Neighbors), not member(N, Visited)], % Filtra os já visitados
+        NewQueue = Queue ++ NewNodes, % Atualiza a fila
+        Result = bfs(Graph, NewQueue, End, [Node|Visited]) % Adicione à lista visitada
+    end.
+*/

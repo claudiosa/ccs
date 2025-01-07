@@ -1,0 +1,114 @@
+
+import util.
+% Exemplo de matriz de entrada
+graph(1) = [
+        "###############",
+        "#.......#....E#",
+        "#.#.###.#.###.#",
+        "#.....#.#...#.#",
+        "#.###.#####.#.#",
+        "#.#.#.......#.#",
+        "#.#.#####.###.#",
+        "#...........#.#",
+        "###.#.#####.#.#",
+        "#...#.....#.#.#",
+        "#.#.#.###.#.#.#",
+        "#.....#...#.#.#",
+        "#.###.#.#.#.#.#",
+        "#S..#.....#...#",
+        "###############"
+    ].
+
+
+main =>
+    Matrix = graph(1),
+    Adjacency_List = build_adjacency_list(Matrix),
+    print_map(Matrix),
+    
+    printf("\n Format in List: %w\n", Adjacency_List),
+    Num_Nodes = len(Adjacency_List),
+    printf("\n %w", Num_Nodes),
+    %Adjacency_Array = new_array(Num_Nodes,1), OR
+    Adjacency_Array = new_array(Num_Nodes),
+    Adjacency_Array = build_adjacency_array(Matrix),
+    %Adjacency_Array = list_to_array(AdjacencyList),
+    printf("\n Format in Array: %w\n", Adjacency_Array).
+    
+    %Adjacency_Array = list_matrix_to_array_matrix(AdjacencyList),
+
+
+list_to_array(List) = R =>
+    Len = length(List),
+    Array := new_array(Len), % Cria um array com o mesmo tamanho da lista
+
+    foreach (Index in 1..Len)
+        nth(Index,List,Elem),
+        %printf("\t Index: %w, Elem:%w", Index, Elem),
+        Array[Index] := Elem
+    end,
+    R = Array.
+
+% Constrói a lista de adjacências
+build_adjacency_list(Matrix) = AdjacencyList =>
+    AdjacencyList = 
+        [[(X, Y), Neighbors] : 
+          %((X, Y), Neighbors) : 
+            X in 1..Matrix.length, 
+            Y in 1..Matrix[X].length, 
+            Matrix[X,Y] \= '#', 
+            Neighbors = find_neighbors(X, Y, Matrix)
+        ].
+
+build_adjacency_array(Matrix) = AdjacencyList =>
+    AdjacencyList = 
+        {{(X, Y), Neighbors} : 
+            %((X, Y), Neighbors) : 
+            X in 1..Matrix.length, 
+            Y in 1..Matrix[X].length, 
+            Matrix[X,Y] \= '#', 
+            Neighbors = find_neighbors(X, Y, Matrix)
+        }.
+
+
+% Encontra os vizinhos válidos para uma célula
+find_neighbors(X, Y, Matrix) = Neighbors =>
+    Deltas = [(-1, 0), (1, 0), (0, -1), (0, 1)], % Movimentos ortogonais
+    Neighbors = 
+        [(NX, NY) : 
+            (DX, DY) in Deltas, 
+            NX = X + DX, 
+            NY = Y + DY, 
+            NX > 0, NX =< Matrix.length, 
+            NY > 0, NY =< Matrix[1].length, 
+            Matrix[NX,NY] \= '#'].
+
+
+print_map( M ) =>
+    L = M.length,
+    C = M[1].length,
+        nl,
+        foreach(I in 1  .. L)
+        foreach(J in 1  ..  C)
+            printf("%w " , M[I,J] )
+        end,
+        nl
+    end.   
+
+count_char(M, C) = Count =>
+    Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
+
+find_symbol(M, Symbol) = R =>
+    [N_Rows, N_Cols] = [M.length, M[1].length],
+    X := 0, 
+    Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        if member(M[I,J], [Symbol]) then
+            X := I,
+            Y := J
+        end
+    end,
+    if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
+        printf("The symbol  %w  was not found .... ", [Symbol])
+    end,
+    R = [X,Y].
+            

@@ -1,0 +1,25 @@
+main =>
+    G=[
+    [(14,10),[(13,10),(14,9)]],[(14,12),[(13,12),(14,13)]],
+    [(14,13),[(14,12),(14,14)]],[(14,14),[(13,14),(14,13)]]
+    ],
+    Node = (14,14),
+    get_neighbors(Node, G,Neighbors ), 
+    printf("\n Predicative: %w", Neighbors),
+    printf("\n Functional %w", get_neighbors_2(Node,G)).
+
+get_neighbors_2(Node, Graph) = Neighbors =>
+    %Neighbors = {Second : [First, Second] in Graph, First == Node}.
+    Temp = [Second : [First, Second] in Graph, First == Node],
+    Neighbors = first(Temp).
+    %Neighbors = X[1].
+
+
+get_neighbors(_Node, [], R) ?=> R = [].
+get_neighbors(Node, [[First, Second]|Rest], R) ?=>
+    First == Node,
+    R = Second.
+
+get_neighbors(Node, [[First, Second]|Rest], R) =>
+    First != Node,
+    get_neighbors(Node, Rest, R).
