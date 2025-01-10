@@ -1,4 +1,4 @@
-'%import os.
+%import os.
 import util.
 %import math.
 import datetime.
@@ -6,159 +6,202 @@ import planner.
 
 %% to stop the planner
 final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
-    D := abs(X-X_e) + abs(Y-Y_e),
-    (D <= 1),
-   
+   % D := abs(X-X_e) + abs(Y-Y_e),
+   % (D == 0),
+   X == X_e,
+   Y == Y_e,
+
     printf("\nSolution Found!\n"),
     print_map(Final_Grid).
 
 %final(_) => printf("\n ................ fail in final").
 
-%%%%%%%%%%%%%%%%%% ACTIONS
+%%%%%%%%%%%%%%%%%% ACOES
 
-%%% actions NON-ROTATING -- up movement
-% Move to UP
+
+%%table (+,-,-,min)  %%% does not work
+table %%% faster then without it
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% to DOWN or rotate to left or right
+%% move to down
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (X > 1, 
-        Grid[X,Y] = '^', Grid[X-1,Y] == '.'), %% Checks if there is free space above
-   
-    Grid_TEMP = copy_term(Grid),
-    Action_Cost = 1,              %% Defines the action cost
-    Action = '^',                 %% Direction upward
     
-    X_new := X-1,
-    Y_new := Y,
-    Grid_TEMP[X_new,Y_new] := '^',   %% Updates the robot's new position
-    %% Updates the new state
+    ( X < N_Rows, Y < N_Cols, Y > 1,  Grid[X,Y] == 'v'), %%% to DOW, or Rotate left or rigth
+
+    Grid_TEMP = copy_term(Grid),
+    (
+       (    (Grid[X+1,Y] == '.'), %% Verifica se há espaço livre abaixo
+            Action_Cost = 1,              %% Define o custo da ação
+            Action = 'v',                 %% Direção para cima
+            X_new := X+1,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := 'v'
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        (( Grid[X+1,Y] == '.' ; Grid[X+1,Y] == '#'), Grid[X,Y+1] == '.' ), %% free to right
+
+            Action_Cost = 1000,         %% Define o custo da ação
+            Action = '@1R',               %% Rotação como sentido 
+
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '>'
+        )
+        ; 
+       (     
+        ( (Grid[X+1,Y] == '.' ; Grid[X+1,Y] == '#'), Grid[X,Y-1] == '.' ), %% free to LEFT
+            
+            Action_Cost = 1000,      %% Define o custo da ação
+            Action = '@1L',       %% Rotação como sentido 
+        
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '<'
+        )
+    ),
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
-% Action to move to the right
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% to UP or rotate to left or right -- @2
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-   
-    (Y < N_Cols, 
-        Grid[X,Y] = '>', Grid[X,Y+1] == '.'), %% Checks if there is free space to the right
+    
+    (X > 1 , Y > 1, Y < N_Cols, Grid[X,Y] == '^'), %%% to UP, or Rotate left or rigth
+
     Grid_TEMP = copy_term(Grid),
+    (
+       (    (Grid[X-1,Y] == '.'), %% Verifica se há espaço livre acima
+            Action_Cost = 1,              %% Define o custo da ação
+            Action = '^',                 %% Direção para cima
+            X_new := X-1,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '^'
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        (( Grid[X-1,Y] == '.' ; Grid[X-1,Y] == '#'), Grid[X,Y+1] == '.' ), %% free to right
+
+            Action_Cost = 1000,         %% Define o custo da ação
+            Action = '@2R',               %% Rotação como sentido 
+
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '>'
+        )
+        ; 
+       (     
+        ( (Grid[X-1,Y] == '.' ; Grid[X-1,Y] == '#'), Grid[X,Y-1] == '.' ), %% free to right
+            
+            Action_Cost = 1000,      %% Define o custo da ação
+            Action = '@2L',       %% Rotação como sentido 
+        
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '<'
+        )
+    ),
+    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Ao mover para a direita e encontrar um obstáculo, 
+%% to RIGHT and/or rotate to up or down
+%% to DOWN or rotate to left or right
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
     
-    Action_Cost = 1,              %% Defines the action cost
-    Action = '>',                 %% Direction to the right
-    
-    X_new := X,
-    Y_new := Y+1,
-    Grid_TEMP[X_new,Y_new] := '>',   %% Updates the robot's new position
-    %% Updates the new state
+    (Y < N_Cols,  X < N_Rows,  X > 1, Grid[X,Y] == '>'), %%% to RIGHT, or Rotate up or left
+
+    Grid_TEMP = copy_term(Grid),
+    (
+       (    (Grid[X,Y+1] == '.'),       %% Verifica se há espaço livre a direita
+            Action_Cost = 1,              %% Define o custo da ação
+            Action = '>',                 %% Direção para cima
+            X_new := X,
+            Y_new := Y+1,
+            Grid_TEMP[X_new,Y_new] := '>'
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        (( Grid[X+1,Y] == '.' ; Grid[X,Y+1] == '#'), Grid[X+1,Y] == '.' ), %% free to down
+
+            Action_Cost = 1000,         %% Define o custo da ação
+            Action = '@3R',             %% Rotação como sentido 
+
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := 'v'
+        )
+        ; 
+       (     
+        ( (Grid[X-1,Y] == '.' ; Grid[X,Y+1] == '#'), Grid[X-1,Y] == '.' ), %% free to UP
+            
+            Action_Cost = 1000,      %% Define o custo da ação
+            Action = '@3L',       %% Rotação como sentido 
+        
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '^'
+        )
+    ),
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 
-% Action to move to the left
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (Y > 1 , 
-        Grid[X,Y] = '<', Grid[X,Y-1] == '.'), %% Checks if there is free space to the left
-    Grid_TEMP = copy_term(Grid),
-    
-    Action_Cost = 1,              %% Defines the action cost
-    Action = '<',                 %% Direction to the left
-    
-    X_new := X,
-    Y_new := Y-1,
-    Grid_TEMP[X_new,Y_new] := '<',   %% Updates the robot's new position
-    %% Updates the new state
-    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Action to move down
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-   
-    (X < N_Rows, 
-        Grid[X,Y] = 'v', Grid[X+1,Y] == '.' ), %% Checks if there is free space below
-    Grid_TEMP = copy_term(Grid),
+% Ao mover para a esquerda e encontrar um obstáculo, 
+%% to left OR rotate ( up or down )
+action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
     
-    Action_Cost = 1,              %% Defines the action cost
-    Action = 'v',                 %% Direction downward
-    X_new := X+1,
-    Y_new := Y,
-    
-    Grid_TEMP[X_new,Y_new] := 'v',   %% Updates the robot's new position
-    %% Updates the new state
-    New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+    (Y < N_Cols,  X < N_Rows,  Y > 1,  Grid[X,Y] == '<'), 
 
-%%% actions WITH ROTATING
-%% Moving downward, with ROTATION
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
- 
-    ( X < N_Rows, Y < N_Cols, Y > 1,
-      Grid[X,Y] == 'v', Grid[X+1,Y] == '#'),
     Grid_TEMP = copy_term(Grid),
-    
-    if ( Grid[X,Y+1] == '.' ) then %% Free space to the right
-        Grid_TEMP[X,Y] := '>'
-    elseif ( Grid[X,Y-1] == '.' ) then %% Free space to the left
-        Grid_TEMP[X,Y] := '<'
-    end,
-    Action_Cost = 1000,         %% Defines the action cost
-    Action = '@1',               %% Rotation of +90 degrees (downward)
-    
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+    (
+       (    (Grid[X,Y-1] == '.'),       %% Verifica se há espaço livre a direita
+            Action_Cost = 1,              %% Define o custo da ação
+            Action = '<',                 %% Direção para cima
+            X_new := X,
+            Y_new := Y-1,
+            Grid_TEMP[X_new,Y_new] := '<'
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        (( Grid[X+1,Y] == '.' ; Grid[X-1,Y] == '#'), Grid[X+1,Y] == '.' ), %% free to DOWN
 
-% When moving upward and encountering an obstacle, rotate 90 degrees
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-  
-    (X > 1 , Y > 1, Y < N_Cols, 
-         Grid[X,Y] == '^',  Grid[X-1,Y] == '#'),
-    Grid_TEMP = copy_term(Grid),
-     
-    if ( Grid[X,Y+1] == '.' ) then %% Free space to the right
-        Grid_TEMP[X,Y] := '>'
-    elseif ( Grid[X,Y-1] == '.' ) then %% Free space to the left
-        Grid_TEMP[X,Y] := '<'
-    end,
-    Action_Cost = 1000,         %% Defines the action cost
-    Action = '@2',               %% Rotation in clockwise direction (upward)
- 
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
+            Action_Cost = 1000,         %% Define o custo da ação
+            Action = '@4L',               %% Rotação como sentido 
 
-% When moving to the right and encountering an obstacle, rotate 90 degrees
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (Y < N_Cols,  X < N_Rows,  X > 1,
-        Grid[X,Y] == '>' , Grid[X,Y+1] == '#' ),
-    Grid_TEMP = copy_term(Grid),
-   
-    if ( Grid[X-1,Y] == '.' ) then %% Free space upward
-        Grid_TEMP[X,Y] := '^'
-    elseif ( Grid[X+1,Y] == '.' ) then  %% Free space downward
-        Grid_TEMP[X,Y] := 'v'
-    end,
-    Action_Cost = 1000,         %% Defines the action cost
-    Action = '@3',               %% Rotation in clockwise direction (upward)
- 
-    New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
-
-% When moving to the left and encountering an obstacle, rotate 90 degrees
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
-    (Y < N_Cols,  X < N_Rows,  Y > 1,
-        Grid[X,Y] == '<' , Grid[X,Y-1] == '#' ),
-    Grid_TEMP = copy_term(Grid),
-    
-    if ( Grid[X-1,Y] == '.' ) then %% Free space upward
-        Grid_TEMP[X,Y] := '^'
-    elseif ( Grid[X+1,Y] == '.' ) then  %% Free space downward
-        Grid_TEMP[X,Y] := 'v'
-    end,
-    Action_Cost = 1000,         %% Defines the action cost
-    Action = '@4',               %% Rotation in clockwise direction (upward)
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := 'v'
+        )
+        ; 
+       (     
+        ( (Grid[X-1,Y] == '.' ; Grid[X,Y+1] == '#'), Grid[X-1,Y] == '.' ), %% free to UP
+            
+            Action_Cost = 1000,     %% Define o custo da ação
+            Action = '@4R',      %% Rotação como sentido 
+        
+            X_new := X,
+            Y_new := Y,
+            Grid_TEMP[X_new,Y_new] := '^'
+        )
+    ),
     
     New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
         
-%% Just advance for a rotation
-action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
-    printf("ERROR").
-
 %%%%%%%%%%%%%%%%%%
-%main([File]) =>
-main ?=>    
-    File = "16_A_sample.txt",
+main([File]) ?=>
+%main ?=>    
+    %File = "16_A_sample.txt",
+    %File = "16_B_sample.txt",
     InputLines = read_file_lines(File),
     N_Rows = length(InputLines),
     N_Cols = length(first(InputLines)),
 
-    /* To remember */
+    /* to do not forget it */
     Grid_2D = new_array(N_Rows, N_Cols),
     CurrentRow := 1,
     foreach(Line in InputLines)
@@ -167,29 +210,29 @@ main ?=>
     end,
     [X_s,Y_s] = find_symbol(Grid_2D,'S'), %%% Initial position
     [X_e,Y_e] = find_symbol(Grid_2D,'E'), %%% Initial position
-    Grid_2D[X_s,Y_s] := '^',     /* Just to modify the robot symbol */
-   % Grid_2D[X_e,Y_e] := '.',
+    Grid_2D[X_s,Y_s] := '>',     /* just to modified the robot symbol */
+    Grid_2D[X_e,Y_e] := '.',
   
-    % Also OK print_map(InputLines),
+    % OK ALSO print_map(InputLines),
     print_map(Grid_2D),
     Initial = {[X_s,Y_s], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D },
     println(Initial),
 
    % Initial ....
     T1 = current_time(),
-   %time(best_plan( Initial , Plan, Cost)), %%% CPU TIME ===> FIRST ANSWER
+    time( best_plan( Initial , Plan, Cost) ), %%% CPU TIME ===> FIRST ANSWER
     %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
-    plan_unbounded(Initial, Plan, Cost),
+    %plan_unbounded(Initial, Plan, Cost),
     %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
     T2 = current_time(), 
    
     printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
-    printf("\n CPU TIME START: %w  END %w",     T1, T2),
+    printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
     printf(" \n =========================================\n "),
     print("THE END").
 
 main => println("NO").
-%% Printing the GRID ....
+%% printing the GRID ....
 
 print_map( M ) =>
     L = M.length,
@@ -219,3 +262,26 @@ find_symbol(M, Symbol) = R =>
         printf("The symbol  %w  was not found .... ", [Symbol])
     end,
     R = [X,Y].
+
+/*
+        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+        Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
+    Key = 1
+    R = true
+    yes
+ */    
+
+get_next_move((I,J), M) = R =>
+    Dir = M[I,J],
+    if Dir == '>' && J+1 =< M[1].length && M[I,J+1] != '#' && M[I,J+1] != 'O' then
+        R =  (I, J+1)
+    elseif Dir == '<' && J-1 >= 1 && M[I,J-1] != '#' && M[I,J-1] != 'O' then
+        R =  (I, J-1)
+    elseif Dir == 'v' && I+1 =< M.length && M[I+1,J] != '#' && M[I+1,J] != 'O' then
+        R =   (I+1, J)
+    elseif Dir == '^' && I-1 >= 1 && M[I-1,J] != '#' && M[I-1,J] != 'O' then
+        R =   (I-1, J)
+    else
+        R =  (0,0)
+    end.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
