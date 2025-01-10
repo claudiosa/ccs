@@ -4,6 +4,54 @@ import util.
 import datetime.
 import planner.
 
+main([File]) ?=>
+%main ?=>    
+    %File = "16_A_sample.txt",
+    %File = "16_B_sample.txt",
+    %File = "16_input.txt",
+    garbage_collect(500_000_000),
+    InputLines = read_file_lines(File),
+    N_Rows = length(InputLines),
+    N_Cols = length(first(InputLines)),
+
+    /* do not forget it */
+    Grid_2D = new_array(N_Rows, N_Cols),
+    CurrentRow := 1,
+    foreach(Line in InputLines)
+        Grid_2D[CurrentRow] = to_array(Line),
+        CurrentRow := CurrentRow + 1
+    end,
+    [X_s,Y_s] = find_symbol(Grid_2D,'S'), %%% Initial position
+    [X_e,Y_e] = find_symbol(Grid_2D,'E'), %%% Initial position
+    Grid_2D[X_s,Y_s] := '>',    /* just to modified the robot symbol */
+    Grid_2D[X_e,Y_e] := '.',
+  
+    % OK ALSO print_map(InputLines),
+    print_map(Grid_2D),
+    Initial = {[X_s,Y_s], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D },
+    println(Initial),
+    printf(" \n STARTING THE PLANNER \n "), 
+
+   % Initial ....
+    T1 = current_time(),
+    %time( best_plan( Initial , Plan, Cost) ), %%% CPU TIME ===> FIRST ANSWER
+    %time( best_plan_bb( Initial , Plan, Cost) ),
+    %time(best_plan_unbounded(Initial,Plan,Cost)),
+    time(best_plan_unbounded(Initial, 100000000, Plan, Cost)),
+    %time(best_plan_bin(Initial , Plan, Cost) ), 
+    %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
+    %plan_unbounded(Initial, Plan, Cost),
+    %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
+    T2 = current_time(), 
+   
+    printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
+    printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
+    printf(" \n =========================================\n "),
+    print("THE END").
+
+main => println("NO").
+%% printing the GRID ....
+
 %% to stop the planner
 final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
    % D := abs(X-X_e) + abs(Y-Y_e),
@@ -16,8 +64,7 @@ final({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Final_Grid}) =>
 
 %final(_) => printf("\n ................ fail in final").
 
-%%%%%%%%%%%%%%%%%% ACOES
-
+%%%%%%%%%%%%%%%%%% 
 
 %%table (+,-,-,min)  %%% does not work
 table %%% faster then without it
@@ -27,7 +74,9 @@ table %%% faster then without it
 %% move to down
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
     
-    ( X < N_Rows, Y < N_Cols, Y > 1,  Grid[X,Y] == 'v'), %%% to DOW, or Rotate left or rigth
+    ( X < N_Rows, Y < N_Cols, Y > 1, X > 1,  Grid[X,Y] == 'v'), %%% to DOW, or Rotate left or rigth
+
+    % X >= 1, X =< N_Rows, Y >= 1, Y =< N_Cols
 
     Grid_TEMP = copy_term(Grid),
     (
@@ -68,7 +117,10 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 %% to UP or rotate to left or right -- @2
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
     
-    (X > 1 , Y > 1, Y < N_Cols, Grid[X,Y] == '^'), %%% to UP, or Rotate left or rigth
+    (X < N_Rows, Y < N_Cols, Y > 1, X > 1, Grid[X,Y] == '^'), %%% to UP, or Rotate left or rigth
+%X > 1 , Y > 1, Y < N_Cols,
+    %X =< N_Rows, Y =< N_Cols, Y >= 1, X >= 1,
+
 
     Grid_TEMP = copy_term(Grid),
     (
@@ -105,14 +157,11 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
     ),
     New_State = {[X_new,Y_new],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%% Ao mover para a direita e encontrar um obstáculo, 
-%% to RIGHT and/or rotate to up or down
-%% to DOWN or rotate to left or right
+%% to RIGHT and/or rotate to up or down @3
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
     
-    (Y < N_Cols,  X < N_Rows,  X > 1, Grid[X,Y] == '>'), %%% to RIGHT, or Rotate up or left
-
+    (Y < N_Cols,  X < N_Rows,  X > 1, Y >1,  Grid[X,Y] == '>'), %%% to RIGHT, or Rotate up or left
+    %Y < N_Cols,  X < N_Rows,  X > 1, Y >1, 
     Grid_TEMP = copy_term(Grid),
     (
        (    (Grid[X,Y+1] == '.'),       %% Verifica se há espaço livre a direita
@@ -150,11 +199,11 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Ao mover para a esquerda e encontrar um obstáculo, 
 %% to left OR rotate ( up or down )
 action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) =>
     
-    (Y < N_Cols,  X < N_Rows,  Y > 1,  Grid[X,Y] == '<'), 
+    (X < N_Rows, X > 1, Y < N_Cols,  Y > 1, Grid[X,Y] == '<'), 
+    % X < N_Rows, X > 1, Y < N_Cols,  Y > 1, 
 
     Grid_TEMP = copy_term(Grid),
     (
@@ -192,47 +241,8 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
     
     New_State = {[X,Y],[X_e,Y_e],[N_Rows,N_Cols], Grid_TEMP}.
         
-%%%%%%%%%%%%%%%%%%
-main([File]) ?=>
-%main ?=>    
-    %File = "16_A_sample.txt",
-    %File = "16_B_sample.txt",
-    InputLines = read_file_lines(File),
-    N_Rows = length(InputLines),
-    N_Cols = length(first(InputLines)),
-
-    /* to do not forget it */
-    Grid_2D = new_array(N_Rows, N_Cols),
-    CurrentRow := 1,
-    foreach(Line in InputLines)
-        Grid_2D[CurrentRow] = to_array(Line),
-        CurrentRow := CurrentRow + 1
-    end,
-    [X_s,Y_s] = find_symbol(Grid_2D,'S'), %%% Initial position
-    [X_e,Y_e] = find_symbol(Grid_2D,'E'), %%% Initial position
-    Grid_2D[X_s,Y_s] := '>',     /* just to modified the robot symbol */
-    Grid_2D[X_e,Y_e] := '.',
-  
-    % OK ALSO print_map(InputLines),
-    print_map(Grid_2D),
-    Initial = {[X_s,Y_s], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D },
-    println(Initial),
-
-   % Initial ....
-    T1 = current_time(),
-    time( best_plan( Initial , Plan, Cost) ), %%% CPU TIME ===> FIRST ANSWER
-    %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
-    %plan_unbounded(Initial, Plan, Cost),
-    %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
-    T2 = current_time(), 
-   
-    printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
-    printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
-    printf(" \n =========================================\n "),
-    print("THE END").
-
-main => println("NO").
-%% printing the GRID ....
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% AUXILIARY predicates
 
 print_map( M ) =>
     L = M.length,
@@ -262,14 +272,15 @@ find_symbol(M, Symbol) = R =>
         printf("The symbol  %w  was not found .... ", [Symbol])
     end,
     R = [X,Y].
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 /*
-        ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+    ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
         Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
     Key = 1
     R = true
     yes
- */    
+ 
 
 get_next_move((I,J), M) = R =>
     Dir = M[I,J],
@@ -284,4 +295,5 @@ get_next_move((I,J), M) = R =>
     else
         R =  (0,0)
     end.
+*/    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
