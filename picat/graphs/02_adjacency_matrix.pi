@@ -1,0 +1,57 @@
+
+import util.
+maze(1) = [
+        "###############",
+        "#.......#....E#",
+        "#.#.###.#.###.#",
+        "#.....#.#...#.#",
+        "#.###.#####.#.#",
+        "#.#.#.......#.#",
+        "#.#.#####.###.#",
+        "#...........#.#",
+        "###.#.#####.#.#",
+        "#...#.....#.#.#",
+        "#.#.#.###.#.#.#",
+        "#.....#...#.#.#",
+        "#.###.#.#.#.#.#",
+        "#S..#.....#...#",
+        "###############"
+].
+
+main =>
+    Maze = maze(1),  
+    [M, N] = [length(Maze), length(first(Maze))],
+    Grid = [to_array(Line) : Line in Maze],
+    AdjacencyList = create_adjacency_list(Grid, M, N),
+    println(AdjacencyList).
+
+% Gera a lista de adjacência
+create_adjacency_list(Grid, M, N) = AdjacencyList =>
+    AdjacencyList = [
+        [to_node(X, Y, N),
+         find_neighbors(X, Y, M, N, Grid)]
+         : X in 1..M, Y in 1..N, Grid[X,Y] != '#'
+    ].
+
+%%% NAO TEM MUITO SENTIDO .... o indice não corresponde ao nó
+create_adjacency_array(Grid, M, N) = Adjacency =>
+        Adjacency = {
+            [to_node(X, Y, N), find_neighbors(X, Y, M, N, Grid)]
+            : X in 1..M, Y in 1..N, Grid[X,Y] != '#'
+        }.
+    
+
+% JA ARRUMEI ... Converte coordenadas (X, Y) em um número de nó
+to_node(X, Y, N) = (X - 1) * N + Y.
+
+% Encontra os vizinhos válidos para a célula (X, Y)
+find_neighbors(X, Y, M, N, Grid) = R =>
+    Neighbors = [],
+    foreach([DX, DY] in [[-1, 0], [1, 0], [0, -1], [0, 1]])  % Acima, Abaixo, Esquerda, Direita
+        NX = X + DX,
+        NY = Y + DY,
+        if NX >= 1, NX =< M, NY >= 1, NY =< N, Grid[NX, NY] != '#' then
+            Neighbors := [to_node(NX, NY, N) | Neighbors]
+        end
+    end,
+    R = Neighbors.

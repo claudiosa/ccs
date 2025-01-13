@@ -27,24 +27,30 @@ main([File]) ?=>
     Grid_2D[X_e,Y_e] := '.',
   
     % OK ALSO print_map(InputLines),
-    print_map(Grid_2D),
+    %print_map(Grid_2D),
     Initial = {[X_s,Y_s], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D },
     println(Initial),
+    printf("\n Coordenates Start: %w \t End: %w", [X_s,Y_s] , [X_e,Y_e]),
+    
+    %Teste = find_symbol(Grid_2D,'S'), %%% Initial position
+    % printf("%w", Teste),
+    
     printf(" \n STARTING THE PLANNER \n "), 
 
    % Initial ....
     T1 = current_time(),
     %time( best_plan( Initial , Plan, Cost) ), %%% CPU TIME ===> FIRST ANSWER
-    %time( best_plan_bb( Initial , Plan, Cost) ),
+    time( best_plan_bb( Initial , Plan, Cost) ),
     %time(best_plan_unbounded(Initial,Plan,Cost)),
-    time(best_plan_unbounded(Initial, 100000000, Plan, Cost)),
+   % time(best_plan_unbounded(Initial, 100000000, Plan, Cost)),
     %time(best_plan_bin(Initial , Plan, Cost) ), 
     %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
     %plan_unbounded(Initial, Plan, Cost),
     %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
     T2 = current_time(), 
    
-    printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
+    %printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
+    printf("\n Plan:%w  \t Cost: %w\n", Plan, Cost),
     printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
     printf(" \n =========================================\n "),
     print("THE END").
@@ -80,9 +86,9 @@ action({[X,Y],[X_e,Y_e], [N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost)
 
     Grid_TEMP = copy_term(Grid),
     (
-       (    (Grid[X+1,Y] == '.'), %% Verifica se há espaço livre abaixo
-            Action_Cost = 1,              %% Define o custo da ação
-            Action = 'v',                 %% Direção para cima
+       (    (Grid[X+1,Y] == '.'),       %% Verifica se há espaço livre abaixo
+            Action_Cost = 1,            %% Define o custo da ação
+            Action = 'v',               %% Direção para cima
             X_new := X+1,
             Y_new := Y,
             Grid_TEMP[X_new,Y_new] := 'v'
@@ -250,29 +256,47 @@ print_map( M ) =>
      nl,
       foreach(I in 1  .. L)
         foreach(J in 1  ..  C)
-         printf("%w " , M[I,J] )
+         printf("%w ", M[I,J] )
         end,
         nl
     end.   
 
 count_char(M, C) = Count =>
     Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
-
+/*
 find_symbol(M, Symbol) = R =>
-    [N_Rows, N_Cols] = [M.length, M[1].length],
+    %[N_Rows, N_Cols] = [M.length, M[1].length],
+    N_Rows = M.length,
+    N_Cols =  M[1].length,
     X := 0, 
     Y := 0,
     foreach(I in 1..N_Rows, J in 1..N_Cols)
-        if member(M[I,J], [Symbol]) then
+        %if membchk(M[I,J], [Symbol]) then
+        if (M[I,J] == Symbol) then    
             X := I,
-            Y := J
+            Y := J,
+            printf("\n Symbol %w was found in: [%w,%w] ", Symbol,X,Y)
+
         end
     end,
     if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
-        printf("The symbol  %w  was not found .... ", [Symbol])
+        printf("\n The symbol  %w  was not found .... ", Symbol)
     end,
     R = [X,Y].
+*/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+find_symbol(M, Symbol) = R =>
+    Positions = [ [I, J] : I in 1..M.length, J in 1..M[1].length, M[I, J] == Symbol ],
+    if (Positions == []) then
+        printf("\n The symbol %w was not found .... ", Symbol),
+        R = [0, 0]  % Retorna [0, 0] se o símbolo não for encontrado
+    else
+        [X, Y] = Positions[1],  % Pega a primeira posição encontrada
+        printf("\n Symbol %w was found in: [%w,%w] ", Symbol, X, Y),
+        R = [X, Y]
+    end.
+
 
 /*
     ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
