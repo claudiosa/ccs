@@ -19,9 +19,7 @@ Expected Starting from 1: [1,2,3,4,5,6,12,7,8,9,10,11]
 
 graph(3) = [
         [1, [2, 3, 4]],
-        [2, [5, 6]]
-].
-/*
+        [2, [5, 6]],
         [3, [7, 8, 9]],
         [4, [10, 11]],
         [5, [12]],
@@ -42,12 +40,12 @@ graph(3) = [
         [20, []],
         [21, []]
     ].
-*/
+
                             
 main =>
         Graph = graph(3), 
         Start = 1, 
-        End = 5,
+        End = 21,
         
 % Teste 1: Caminho do nó 1 para o nó 21
 % Caminho esperado: [1, 4, 11, 18, 21]
@@ -65,20 +63,33 @@ main =>
         printf("\n Size: %w", len(Result)).
        
         
-bfs(Graph, [[Node|Path]|Queue], End, Result), Node == End ?=> 
-    Result = reverse([Node|Path]).
+bfs(Graph, All_Paths, End, Result) ?=> 
+    % , Node == End   
+    Result = reverse([One : One in All_Paths, membchk(End,[One]) ]), !.
 
-bfs(Graph, [[Node|Path]|Queue], End, Path) => 
-    printf("\n Node: %w Path: %w", Node, Path ),
+bfs(Graph, [[Node|Path]|Rest], End, Path) => 
+    
+    %%printf("\n Node: %w Path: %w", Node, Path ),
+    expansion(Graph, [[Node|Path]|Rest], Paths_Expanded),
+
+    printf("\n Top or Curr: %w Path %w\t Path: \t REST: %w ", Node,  Path, Rest),
+    bfs(Graph, Rest, End ,TempPath),
+    Path = Paths_Expanded ++ TempPath .
+
+expansion(Graph, X [[]], Paths_Expanded), 
+    (X == [[]] ; X==[]) ?=>  Paths_Expanded = [].
+
+expansion(Graph, [[Node|Path]|Rest], Paths_Expanded) =>
+
     Neighbors = get_neighbors(Node, Graph),
     printf("\n Node: %w Neighbors: %w", Node, Neighbors ),
-    NewPaths = [[N, Node|Path] : N in Neighbors, not member([N|_], Queue), not member(N, Path)],
-    printf("\n Top or Curr: %w \t Queue: %w\t Path: %w ", Node, Queue, Path),
-    bfs(Graph, Queue ++ NewPaths, End ,TempPath),
-    Path = [Node|TempPath].
-
-%bfs(_, [], _,_) => fail.
+    %%% varias ramificacoes em Node .... branches
+    NewPaths = [[N, Node|Path] : N in Neighbors, not member(N, Path)],
+    
+    expansion(Graph, [Rest],  TempPath),
+    Paths_Expanded = NewPaths ++ TempPath.
 /*
+
 A construção [[N, Node|Path] : N in Neighbors] desempenha papel semelhante ao findall ao gerar todas as novas combinações de caminhos. Com essa abordagem, você deve obter o caminho mais curto corretamente, preservando o comportamento típico do BFS. 
 */
 
