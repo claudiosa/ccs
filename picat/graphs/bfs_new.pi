@@ -1,4 +1,4 @@
-% BFS recursivo com funções
+% BFS developed by CCS
 import util.
 /*
 Sample of BFS
@@ -16,6 +16,14 @@ Sample of BFS
 Expected Starting from 1: [1,2,3,4,5,6,12,7,8,9,10,11]
 
 */
+
+graph(2) = [
+        [1, [2, 3, 4]],
+        [2, [4, 5]],
+        [3, [4]],
+        [4, []],
+        [5, []]
+        ].
 
 graph(3) = [
         [1, [2, 3, 4]],
@@ -45,8 +53,8 @@ graph(3) = [
 main =>
         Graph = graph(3), 
         Start = 1, 
-        End = 21,
-        
+        %End = 21,
+      
 % Teste 1: Caminho do nó 1 para o nó 21
 % Caminho esperado: [1, 4, 11, 18, 21]
 
@@ -55,48 +63,57 @@ main =>
 
 % Teste 3: Caminho do nó 1 para o nó 15
 % Caminho esperado: [1, 3, 8, 15]
-
         print(Graph),
-        bfs(Graph, [Start], End, Result),  
-    
-        printf("\n Start: %w \t End: %w \n Visiting order %w\n", Start, End, Result),
-        printf("\n Size: %w", len(Result)).
+        Temp = [2,21,19,15,22],
+        foreach( End in Temp)
+            printf("\n Start: %w \t End: %w ", Start, End),
+            bfs(Graph, [Start], End, Result),  
+            (Result != []) ->
+                (printf("\n Visiting order: %w", Result),
+                printf("\n Size: %w", len(Result))
+                );
+                (printf("\n >>> The End Node: %w  not found!!!", End)
+            )    
+        end.
        
-        
+bfs(_, [], _End, Result) ?=> Result = [], !.                 
 bfs(Graph, All_Paths, End, Result) ?=> 
-    % , Node == End   
-    Result = reverse([One : One in All_Paths, membchk(End,[One]) ]), !.
+    % , Node == End  
+    L = [One_Path : One_Path in All_Paths, membchk( End, One_Path) ], 
+    L != [],
+    Result = reverse(flatten(L)),
+    !.
 
-bfs(Graph, [[Node|Path]|Rest], End, Path) => 
+bfs(Graph, [Node | Rest], End, Path) => 
     
-    %%printf("\n Node: %w Path: %w", Node, Path ),
-    expansion(Graph, [[Node|Path]|Rest], Paths_Expanded),
+    expansion(Graph, [Node], Paths_Expanded),
+    New_Paths = Rest ++ Paths_Expanded, % Atualiza a fila
+    %printf("\n Node or Path: %w \t Rest: %w", Node, Rest ),
+    printf("\n One Path: %w Paths Expanded: %w ", Node,  New_Paths),
+    
+    bfs(Graph, New_Paths, End , Path).
 
-    printf("\n Top or Curr: %w Path %w\t Path: \t REST: %w ", Node,  Path, Rest),
-    bfs(Graph, Rest, End ,TempPath),
-    Path = Paths_Expanded ++ TempPath .
-
-expansion(Graph, X [[]], Paths_Expanded), 
-    (X == [[]] ; X==[]) ?=>  Paths_Expanded = [].
-
-expansion(Graph, [[Node|Path]|Rest], Paths_Expanded) =>
-
-    Neighbors = get_neighbors(Node, Graph),
-    printf("\n Node: %w Neighbors: %w", Node, Neighbors ),
+%expansion(Graph, P , Paths_Expanded),   (P==[];P==[[]]) ?=> 
+%     Paths_Expanded = [], !.
+% (X == [[]] ;  Picat> G = [[1,[2,3,4]],[2,[4,5]],[3,[4]],[4,[]],[5,[]]], expansion(G, [2], X), write(X).
+expansion(Graph, [], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [[]], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [First_Path|Paths], Paths_Expanded) =>
+    First = first(flatten(First_Path)),
+    Neighbors = get_neighbors(First, Graph),
+    %%%%printf("\n Node: %w Neighbors: %w", Node, Neighbors ),
     %%% varias ramificacoes em Node .... branches
-    NewPaths = [[N, Node|Path] : N in Neighbors, not member(N, Path)],
-    
-    expansion(Graph, [Rest],  TempPath),
+    NewPaths = [[N, First_Path |Paths] : N in Neighbors, not membchk(N, [First_Path|Paths])],
+    expansion(Graph, Paths,  TempPath),
     Paths_Expanded = NewPaths ++ TempPath.
-/*
 
+/*
 A construção [[N, Node|Path] : N in Neighbors] desempenha papel semelhante ao findall ao gerar todas as novas combinações de caminhos. Com essa abordagem, você deve obter o caminho mais curto corretamente, preservando o comportamento típico do BFS. 
 */
 
 %%% FUNCTIONAL
-%get_neighbors(Node, Graph) = Neighbors =>
-    %Neighbors = {Second : [First, Second] in Graph, First == Node}.
-%    [Neighbors] = [Second : [First, Second] in Graph, First == Node].
 
 %%% take the NEIGHBOURS from NODE in Graph
 get_neighbors(_,[]) = [].
@@ -131,19 +148,6 @@ bfs(Graph, [Node|Queue], End, Visited) = Result,  not( membchk(Node, Visited)) =
         Path = [Node|Visited],
         printf("\n Top or Curr: %w \t Queue: %w\t Path: %w ", Node, Queue, Path),
         Result = bfs(Graph, NewQueue, End, Path). % Adicione à lista visitada
-
-
-bfs_search(Graph, [], _, _, []) ?=> true.
-bfs_search(Graph, [EndNode | _], _, EndNode, Path) ?=> Path = [EndNode].
-bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
-        Neighbours = [N : N in get_neighbors( Node, Graph ), not membchk(N, Visited)],
-        NewVisited = Visited ++ Neighbours,
-        NewQueue = Rest ++ Neighbours,
-        printf("\n Top or Curr: %w \t Queue: %w\t NewVisited: %w ", Node, NewQueue, NewVisited),
-        bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
-        printf("\n Back the right path: %w", TempPath),
-        Path = [Node | TempPath].
-
 
 
 OK

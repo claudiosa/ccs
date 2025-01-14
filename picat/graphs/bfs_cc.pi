@@ -1,0 +1,69 @@
+%%% Author - CCS e Chat-GPT
+graph(3) = [
+    [1, [2, 3, 4]],
+    [2, [5, 6]],
+    [3, [7, 8, 9]],
+    [4, [10, 11]],
+    [5, [12]],
+    [6, [13, 14]],
+    [7, []],
+    [8, [15]],
+    [9, [16, 17]],
+    [10, []],
+    [11, [18]],
+    [12, [19]],
+    [13, [20]],
+    [14, []],
+    [15, []],
+    [16, []],
+    [17, []],
+    [18, [21]],
+    [19, []],
+    [20, []],
+    [21, []]
+].
+                  
+
+
+main =>
+    Graph = graph(3), 
+    Start = 1, 
+    Destinations = [21, 19, 15, 22],  % Testes de destino
+
+    foreach(End in Destinations)
+        printf("\nStart: %w \tEnd: %w", Start, End),
+        bfs(Graph, [Start], End, Result),
+        (Result != [])
+        -> printf("\nPath found: %w\nSize: %w\n", Result, len(Result))
+        ; printf("\n>>> The End Node %w was not found!\n", End)
+    end.
+
+bfs(_, [], _End, Result) ?=> Result = [], !.  %%% NODE not reached                
+bfs(Graph, All_Paths, End, Result) ?=> 
+    % some node is END ???
+    L = [One_Path : One_Path in All_Paths, membchk( End, One_Path) ], 
+    L != [],
+    Result = reverse(flatten(L)),
+    !.
+   
+bfs(Graph, [Path | Rest], End, Result) =>
+    expansion(Graph, [Path], ExpandedPaths),
+    bfs(Graph, Rest ++ ExpandedPaths, End, Result).
+
+
+expansion(Graph, [], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [[]], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [First_Path|Paths], Paths_Expanded) =>
+    First = first(flatten(First_Path)),
+    Neighbors = get_neighbors(First, Graph),
+    %%%%printf("\n Node: %w Neighbors: %w", Node, Neighbors ),
+    %%% varias ramificacoes em Node .... branches
+    NewPaths = [[N, First_Path |Paths] : N in Neighbors, not membchk(N, [First_Path|Paths])],
+    expansion(Graph, Paths,  TempPath),
+    Paths_Expanded = NewPaths ++ TempPath.
+        
+get_neighbors(_, []) = [].
+get_neighbors(Node, [[Node, Neighbors] | _]) = Neighbors.
+get_neighbors(Node, [_ | Rest]) = get_neighbors(Node, Rest).
