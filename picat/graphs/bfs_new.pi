@@ -48,13 +48,12 @@ graph(3) = [
         [20, []],
         [21, []]
     ].
-
                             
 main =>
         Graph = graph(3), 
         Start = 1, 
         %End = 21,
-      
+     
 % Teste 1: Caminho do nó 1 para o nó 21
 % Caminho esperado: [1, 4, 11, 18, 21]
 
@@ -63,39 +62,45 @@ main =>
 
 % Teste 3: Caminho do nó 1 para o nó 15
 % Caminho esperado: [1, 3, 8, 15]
+
         print(Graph),
         Temp = [2,21,19,15,22],
         foreach( End in Temp)
             printf("\n Start: %w \t End: %w ", Start, End),
-            bfs(Graph, [Start], End, Result),  
+            % bfs(Graph, [Start], End, Result),  %%% PREDICATE version
+            Result = bfs_F(Graph, [Start], End), %%% Functional version
+            printf("\n => OUTPUT: %w", Result),  
+            
             (Result != []) ->
                 (printf("\n Visiting order: %w", Result),
-                printf("\n Size: %w", len(Result))
+                 printf("\n Size/Steps: %w\n", len(Result))
                 );
-                (printf("\n >>> The End Node: %w  not found!!!", End)
-            )    
+                (printf("\n >>> The End Node: %w was not found!!!\n", End)
+            ) 
+            
         end.
        
 bfs(_, [], _End, Result) ?=> Result = [], !.                 
 bfs(Graph, All_Paths, End, Result) ?=> 
-    % , Node == End  
+    % Procurando:  Node == End  
     L = [One_Path : One_Path in All_Paths, membchk( End, One_Path) ], 
     L != [],
     Result = reverse(flatten(L)),
     !.
 
-bfs(Graph, [Node | Rest], End, Path) => 
+bfs(Graph, [Path | Rest], End, Result) => 
     
-    expansion(Graph, [Node], Paths_Expanded),
+    expansion(Graph, [Path], Paths_Expanded),
     New_Paths = Rest ++ Paths_Expanded, % Atualiza a fila
-    %printf("\n Node or Path: %w \t Rest: %w", Node, Rest ),
-    printf("\n One Path: %w Paths Expanded: %w ", Node,  New_Paths),
-    
-    bfs(Graph, New_Paths, End , Path).
+    printf("\n Node or Curr Path: %w \t Paths Expanded: %w ", Path, Paths_Expanded),
+    printf("\n Rest: %w \t New_Rest(Paths): %w", Rest, New_Paths ),
+    bfs(Graph, New_Paths, End ,Result).
 
+%
 %expansion(Graph, P , Paths_Expanded),   (P==[];P==[[]]) ?=> 
 %     Paths_Expanded = [], !.
 % (X == [[]] ;  Picat> G = [[1,[2,3,4]],[2,[4,5]],[3,[4]],[4,[]],[5,[]]], expansion(G, [2], X), write(X).
+%
 expansion(Graph, [], Paths_Expanded) => 
     Paths_Expanded = [], !.
 expansion(Graph, [[]], Paths_Expanded) => 
@@ -113,8 +118,37 @@ expansion(Graph, [First_Path|Paths], Paths_Expanded) =>
 A construção [[N, Node|Path] : N in Neighbors] desempenha papel semelhante ao findall ao gerar todas as novas combinações de caminhos. Com essa abordagem, você deve obter o caminho mais curto corretamente, preservando o comportamento típico do BFS. 
 */
 
-%%% FUNCTIONAL
+%%% BFS FUNCTIONAL version by CCS ....
 
+bfs_F(_, [], _End ) = Result => Result = [].                 
+bfs_F(Graph, [Path | Rest], End) = Result => 
+    
+/*
+    membchk(End,flatten([Path | Rest])),
+    All_Paths = [Path | Rest],
+    L = [One_Path : One_Path in All_Paths, membchk(End, One_Path) ], 
+    Result = reverse(flatten(L)).
+*/
+    All_Paths = [Path | Rest],
+    if (membchk(End,flatten(All_Paths))) then
+        %All_Paths = [Path | Rest],
+        %%% FILTRAR em qual caminho o nó End está presente
+        Sol = [One_Path : One_Path in All_Paths,  membchk(End, One_Path) ], 
+        %%% por isto que precisa passar o Flatten na resposta final
+        Result = reverse(flatten(Sol))
+    else
+
+%bfs_F(Graph, [Path | Rest], End) = Result => 
+    
+        expansion(Graph, [Path], Paths_Expanded),
+        New_Paths = Rest ++ Paths_Expanded, % Atualiza a fila
+        printf("\n Node or Curr Path: %w \t Paths Expanded: %w ", Path, Paths_Expanded),
+        printf("\n Rest: %w \t New_Rest(Paths): %w", Rest, New_Paths ),
+        Result = bfs_F(Graph, New_Paths, End),
+    end.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Functional BFS - END
+%%% FUNCTIONAL
 %%% take the NEIGHBOURS from NODE in Graph
 get_neighbors(_,[]) = [].
 get_neighbors(Node, [[Node, Neighbours] | _] ) = Neighbours.
@@ -128,49 +162,4 @@ get_neighbors(Node, [[First, Second]|Rest], R), First == Node ?=>
 get_neighbors(Node, [[First, Second]|Rest], R), First != Node =>
     get_neighbors(Node, Rest, R).
 
-
-%%% BFS FUNCTIONAL ....
-/*
-bfs(Graph, [Node|Queue], End, Visited) = Result,  Node == End =>
-    printf("\n Node: %w \t End: %w ", Node, End),
-    Result =  reverse(Visited)++[End].
-
-bfs(Graph, [Node|Queue], End, Visited) = Result,   membchk(Node, Visited) =>
-    Result = bfs(Graph, Queue, End, Visited). % Nó já visitado, continue
-
-bfs(Graph, [Node|Queue], End, Visited) = Result,  not( membchk(Node, Visited)) =>
-        Neighbors = get_neighbors(Node, Graph),
-        %get_neighbors(Node, Graph, Neighbors), 
-        %printf("\n Node: %w Neighbors %w", Node, Neighbors),
-        NewNodes = [N : N in Neighbors, not membchk(N, Visited), not membchk(N, Queue) ], % Filtra os já visitados
-        %NewNodes = [N : member(N, Neighbors), not member(N, Visited),  not membchk(N, Queue) ], % Filtra os já visitados
-        NewQueue = Queue ++ NewNodes, % Atualiza a fila
-        Path = [Node|Visited],
-        printf("\n Top or Curr: %w \t Queue: %w\t Path: %w ", Node, Queue, Path),
-        Result = bfs(Graph, NewQueue, End, Path). % Adicione à lista visitada
-
-
-OK
-bfs(Graph, [Node|Queue], End, Visited) = Result =>
-    printf("...\n"),
-    printf("Node: %w \t Queue: %w \t End: %w\n  ", Node, Queue, End),
-
-    %%%if Node in Visited then  PICAT has not in yet in if ...
-    %% I would keep in separeted function clause
-    %trace,
-    if ( Node == End ) then
-        printf("STOP: Node: %w  \t End: %w\n  ", Node, End),
-        Result =  reverse(Visited)++[End]
-    elseif  membchk(Node, Visited) then %%% Node already visited
-       %printf("\n Node: %w Visited %w", Node, Visited),
-        Result = bfs(Graph, Queue, End, Visited) % Nó já visitado, continue
-    else
-        %Neighbors = get_neighbors(Node, Graph),
-        get_neighbors(Node, Graph, Neighbors), 
-        %printf("\n Node: %w Neighbors %w", Node, Neighbors),
-        NewNodes = [N : N in Neighbors, not membchk(N, Visited)], % Filtra os já visitados
-        %NewNodes = [N : member(N, Neighbors), not member(N, Visited)], % Filtra os já visitados
-        NewQueue = Queue ++ NewNodes, % Atualiza a fila
-        Result = bfs(Graph, NewQueue, End, [Node|Visited]) % Adicione à lista visitada
-    end.
-*/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
