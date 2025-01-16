@@ -1,42 +1,67 @@
-  
+
 /*
-Sample of BFS
+Grafo orientado ciclico - NAO EH UM DAG
+                     1
+                    /|\ 
+                   / | \
+                 /  |  \
+                /   |   \
+            ->2    3    4
+             |\    |   /|
+            |  \   |  / |
+            |   \  | /  | 
+            |     5     |
+            |     / \  |
+            |    /   \|
+            |   /     7----------------> 1
+            |  /     (volta ao nó 1 - ciclo) 
+            | /
+            |/
+            6     
+*/
+graph(1) = G =>
+    G = [
+        [1,[2,3,4]],
+        [2,[5,6]],
+        [3,[5]],
+        [4,[5,7]],
+        [5,[6,7]],
+        [6,[]],
+        [7,[1]]
+    ].
+
+
+/*
+Sample of BFS -- EH UM DAG
   
-       1
-      / \
-     2   3  -------
-    / \ / \        \
+       1 ---------------
+      / \               \
+     2   3  -------      \
+    / \ / \        \      \
    4   5   6       ------> 12  
   / \ /     \
  7   8       9
  |           |
  10         11
 
-
 */
-%%%%% This code is not mine .... but it's clean and elegant
-bfs_search(Graph, [], _, _, []) ?=> true.
-bfs_search(Graph, [EndNode | _], _, EndNode, Path) ?=> Path = [EndNode].
-bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
-    Neighbours = [N : N in get_neighbors(Graph, Node), not membchk(N, Visited), not membchk(N, Rest)],
-    NewVisited = Visited ++ Neighbours,
-    NewQueue = Rest ++ Neighbours,
-    printf("\n Top or Curr: %w \t Queue: %w\t Path: %w ", Node, NewQueue, Path),
-    bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
-    Path = [Node | TempPath].
+     % Definindo um grafo simples
+graph(2) = G =>
+    G =  [
+    [1, [2, 3, 12]],
+    [2, [4, 5]],
+    [3, [5, 6, 12]],
+    [4, [5, 7]],
+    [5, [8]],
+    [6, [9]],
+    [7, [10]],
+    [8, []],
+    [9, [11]],
+    [10, []],
+    [11, []],
+    [12, []]
+].
 
-/* ********************************************* */
-
-/* MUITO TOP ESTA VERSAO FUNCIONAL */
-get_neighbors([], _) = [].
-get_neighbors([{Node, Neighbours} | _], Node) = Neighbours.
-get_neighbors([_ | Rest], Node) = get_neighbors(Rest, Node).
-
-all_nodes( Graph ) = Nodes =>
-    %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
-    Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
-
-main =>
     % Definindo um grafo simples
 /*    Graph = [
         {1, [2, 3]},
@@ -70,39 +95,57 @@ Y = '{}'
 yes
 
 */
-     % Definindo um grafo simples
-    Graph = [
-    {1, [12, 2, 3]},
-    {2, [4, 5]},
-    {3, [5, 6, 12]},
-    {4, [5, 7]},
-    {5, [8]},
-    {6, [9]},
-    {7, [10]},
-    {8, []},
-    {9, [11]},
-    {10, []},
-    {11, []},
-    {12, []}
-    ],
+
+main =>
 
  % Testando o BFS Classico
     InitNode = 1,
+    Graphs = [graph(1), graph(2)],  %%% uma lista de grafos=matriz de adjacencias
+    Nodes = [all_nodes(graph(1)), all_nodes(graph(2))], %% uma lista dos nos em cada grafo
+    printf("Graphs %w \nNodes: %w", Graphs, Nodes),
+    N_Graphs = Graphs.len,
+    
+    %%%% Apenas para CHAMAR TODOS os TESTES por aqui 
+    foreach(I in 1..N_Graphs)  
+        foreach(EndNode in Nodes[I])
+            bfs_search(Graphs[I], [InitNode], [InitNode], EndNode, Sol),
+            printf("\n\n INPUT DATA: graph(%w) ", I), 
+            printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
+            printf("\n Visiting order: %w \n", Sol)
+        end
+    end,
+    printf("\n End of main: OK\n").   
+
+main => printf("\n End of main with fail ... NO SOLUTION").     
+
 /*  
     EndNode = 8,
     printf("\n Start: %w\t  End: %w \t", InitNode, EndNode),
       bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
     printf("Nós Visitados: %w \n", Sol).
 */
-    Nodes = all_nodes(Graph),
-  
-    foreach(EndNode in Nodes)
-        bfs_search(Graph, [InitNode], [InitNode], EndNode, Sol),
-        printf("\n\n INPUT DATA:"), 
-        printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
-        printf("\n Visiting sequence: %w \n", Sol)
-    end,
-    printf("\n End of main: OK\n").   
 
-main => printf("\n End of main with fail ... NO SOLUTION").     
+%%%%%%%% CLASSICAL VERSION ... just a TRANSVERSAL.... 
+bfs_search(Graph, [], _, _, []) ?=> true.
+bfs_search(Graph, [EndNode | _], _, EndNode, Path) ?=> Path = [EndNode].
+bfs_search(Graph, [Node | Rest], Visited, EndNode, Path) =>
+    Neighbours = [N : N in get_neighbors(Graph, Node), not membchk(N, Visited), not membchk(N, Rest)],
+    NewVisited = Visited ++ Neighbours,
+    NewQueue = Rest ++ Neighbours,
+    printf("\n First/Curr: %w \t Queue/Rest: %w\t New_Queue: %w ", Node, Rest, NewQueue),
+    bfs_search(Graph, NewQueue, NewVisited, EndNode, TempPath),
+    Path = [Node | TempPath].
 
+/* ********************************************* */
+
+/* MUITO TOP ESTA VERSAO FUNCIONAL */
+get_neighbors([], _) = [].
+%get_neighbors([{Node, Neighbours} | _], Node) = Neighbours.
+get_neighbors([[Node, Neighbours] | _], Node) = Neighbours.
+get_neighbors([_ | Rest], Node) = get_neighbors(Rest, Node).
+
+all_nodes( Graph ) = Nodes =>
+    %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
+    %Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
+    Nodes = [N : Termo in Graph, [N, _] = Termo ] .   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
