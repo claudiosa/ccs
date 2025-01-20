@@ -1,0 +1,323 @@
+%import os.
+import util.
+%import math.
+import datetime.
+import planner.
+
+main([File]) ?=>
+%main ?=>    
+    %File = "16_A_sample.txt",
+    %File = "16_B_sample.txt",
+    %File = "16_input.txt",
+    garbage_collect(500_000_000),
+    InputLines = read_file_lines(File),
+    N_Rows = length(InputLines),
+    N_Cols = length(first(InputLines)),
+
+    /* do not forget it */
+    Grid_2D = new_array(N_Rows, N_Cols),
+    CurrentRow := 1,
+    foreach(Line in InputLines)
+        Grid_2D[CurrentRow] = to_array(Line),
+        CurrentRow := CurrentRow + 1
+    end,
+    [X_s,Y_s] = [14,2] , % find_symbol(Grid_2D,'S'), %%% Initial position
+    [X_e,Y_e] =  [2,14], %find_symbol(Grid_2D,'E'), %%% Initial position
+    %Grid_2D[X_s,Y_s] := '>',    /* just to modified the robot symbol */
+    %Grid_2D[X_e,Y_e] := '.',
+    % Dir := Grid_2D[X_s,Y_s],
+    %Start: [14,2] 	 End: [2,14] 
+    Dir := '>',
+    % OK ALSO print_map(InputLines),
+    %print_map(Grid_2D),
+    Initial = {[X_s,Y_s], Dir, [], [X_e,Y_e], [N_Rows,N_Cols], Grid_2D },
+    println(Initial),
+    printf("\n Coordenates Start: %w \t End: %w", [X_s,Y_s] , [X_e,Y_e]),
+    
+    %Teste = find_symbol(Grid_2D,'S'), %%% Initial position
+    % printf("%w", Teste),
+    
+    printf(" \n STARTING THE PLANNER \n "), 
+
+   % Initial ....
+    T1 = current_time(),
+    %time( best_plan( Initial , Plan, Cost) ), %%% CPU TIME ===> FIRST ANSWER
+    %time( best_plan_bb( Initial , Plan, Cost) ),
+    %time(best_plan_unbounded(Initial,Plan,Cost)),
+   % time(best_plan_unbounded(Initial, 100000000, Plan, Cost)),
+    %time(best_plan_bin(Initial , Plan, Cost) ), 
+    %time(best_plan_unbounded( Initial , Plan, Cost)), %%% CPU TIME
+    plan(Initial, Plan, Cost),
+    %time(best_plan_unbounded(Initial,10000,Plan,Cost)),
+    T2 = current_time(), 
+   
+    %printf("\n Plan:%w\n Steps: %w \t Cost: %w\n", Plan, length(Plan), Cost),
+    printf("\n Plan:%w  \t Cost: %w\n", Plan, Cost),
+    printf("\n CPU TIME INIC: %w  FIM %w",     T1, T2),
+    printf(" \n =========================================\n "),
+    print("THE END").
+
+main => println("NO").
+%% printing the GRID ....
+
+%% to stop the planner
+final({[X,Y], Dir, Path, [X_e,Y_e], [N_Rows,N_Cols], Grid}) =>
+    % D := abs(X-X_e) + abs(Y-Y_e),
+    % (D == 0),
+    X == X_e,
+    Y == Y_e,
+
+    printf("\nSolution Found!\n"),
+    print_map(Path).
+
+%final(_) => printf("\n ................ fail in final").
+
+%%%%%%%%%%%%%%%%%% 
+
+%%table (+,-,-,min)  %%% does not work
+table %%% faster then without it
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% to DOWN or rotate to left or right
+%% move to down
+action({[X,Y], Dir, Path, [X_e,Y_e],[N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    
+    ( X+1 < N_Rows, Y < N_Cols, Y > 1, X > 1,  Dir == 'v'), 
+    %%% 'v'), %%% to DOW, or Rotate left or rigth
+    (
+       (    
+        (Grid[X+1,Y] == '.'),       %% Verifica se há espaço livre abaixo
+        Action_Cost = 1,            %% Define o custo da ação
+        Action = 'v',               %% Direção para cima
+        X_new := X+1,
+        Y_new := Y,
+        %not(membchk([X_new,Y_new], Path)),
+        Dir_New := 'v',
+        Path_New :=  [[X_new,Y_new]]++Path
+       )
+       ;
+    %%% Options to rotate only to RIGHT
+            /*
+            (     
+                (Grid[X,Y+1] == '.'),
+                Action_Cost = 1000,         
+                Action = '@1R',             
+                X_new := X,
+                Y_new := Y,
+                Dir_New :=  '>',
+                Path_New := Path
+                )
+                ; 
+            */  
+       (     
+        Grid[X,Y-1] == '.',
+                                 %%%   %Grid[X+1,Y] == '#',
+        Action_Cost = 1000,      %% Define o custo da ação
+        Action = '@1L',         %% Rotação como sentido 
+    
+        X_new := X,
+        Y_new := Y,
+        Dir_New := '<',
+        Path_New := Path
+        )
+    ),
+
+    New_State = {[X_new,Y_new], Dir_New, Path_New, [X_e,Y_e], [N_Rows,N_Cols], Grid}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% to UP or rotate to left or right -- @2
+action({[X,Y], Dir, Path, [X_e,Y_e],[N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    
+    (X < N_Rows, Y < N_Cols, Y > 1, X-1 > 1, Dir == '^'), %%% to UP, or Rotate left or rigth
+   
+    (
+       (    
+        Grid[X-1,Y] == '.', %% Verifica se há espaço livre acima
+        Action_Cost = 1,              %% Define o custo da ação
+        Action = '^',                 %% Direção para cima
+        X_new := X-1,
+        Y_new := Y,
+        Dir_New :='^',
+        %not(membchk([X_new,Y_new], Path)),    
+        Path_New :=  [[X_new,Y_new]]++Path   
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        %Grid[X,Y+1] == '.',
+        Action_Cost = 1000,         %% Define o custo da ação
+        Action = '@2R',               %% Rotação como sentido 
+
+        X_new := X,
+        Y_new := Y,
+        Dir_New := '>',
+        Path_New := Path
+        )
+    /*    ; 
+       (     
+        %Grid[X,Y-1] == '.',
+        Action_Cost = 1000,      %% Define o custo da ação
+        Action = '@2L',       %% Rotação como sentido 
+    
+        X_new := X,
+        Y_new := Y,
+        Dir_New := '<',
+        Path_New := Path
+        )
+    */    
+    ),
+    
+    
+    New_State = {[X_new,Y_new], Dir_New, Path_New, [X_e,Y_e], [N_Rows,N_Cols], Grid}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% to RIGHT and/or rotate to up or down @3
+action({[X,Y], Dir, Path, [X_e,Y_e],[N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    
+    (Y+1 < N_Cols,  X < N_Rows,  X > 1, Y >1,  Dir == '>'), %%% to RIGHT, or Rotate up or left
+        
+    (
+       (    
+        (Grid[X,Y+1] == '.'),       %% Verifica se há espaço livre a direita
+        Action_Cost = 1,              %% Define o custo da ação
+        Action = '>',                 %% Direção para cima
+        X_new := X,
+        Y_new := Y+1,
+        Dir_New := '>',
+        %not(membchk([X_new,Y_new], Path)),    
+        Path_New :=  [[X_new,Y_new]]++Path   
+        )
+        ;
+        %%% Options to rotate only
+       (     
+        %Grid[X+1,Y] == '.',
+        Action_Cost = 1000,         %% Define o custo da ação
+        Action = '@3R',             %% Rotação como sentido 
+
+        X_new := X,
+        Y_new := Y,
+        Dir_New :=  'v',
+        Path_New := Path
+        )
+     
+     /*   ; 
+       (     
+       % Grid[X-1,Y] == '.',
+        Action_Cost = 1000,      %% Define o custo da ação
+        Action = '@3L',       %% Rotação como sentido 
+    
+        X_new := X,
+        Y_new := Y,
+        Dir_New :=  '^'
+        )
+     */   
+    ),
+
+    
+    New_State = {[X_new,Y_new], Dir_New, Path_New, [X_e,Y_e], [N_Rows,N_Cols], Grid}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% to left OR rotate ( up or down )
+action({[X,Y], Dir, Path, [X_e,Y_e],[N_Rows,N_Cols], Grid}, New_State, Action, Action_Cost) ?=>
+    
+    (X < N_Rows, X > 1, Y < N_Cols,  Y > 2, Dir == '<'), 
+    
+    (
+       (    (Grid[X,Y-1] == '.'),       %% Verifica se há espaço livre a direita
+            Action_Cost = 1,              %% Define o custo da ação
+            Action = '<',                 %% Direção para cima
+            X_new := X,
+            Y_new := Y-1,
+            Dir_New :=  '<',
+            %not(membchk([X_new,Y_new], Path)),    
+            Path_New :=  [[X_new,Y_new]]++Path   
+        )
+        ;
+        %%% Options to rotate only
+     /*   
+       (
+        %Grid[X+1,Y] == '.',     
+        Action_Cost = 1000,         %% Define o custo da ação
+        Action = '@4L',               %% Rotação como sentido 
+
+        X_new := X,
+        Y_new := Y,
+        Dir_New :=  'v'
+        )
+      */  
+    
+       (
+        %Grid[X-1,Y] == '.',     
+        Action_Cost = 1000,     %% Define o custo da ação
+        Action = '@4R',      %% Rotação como sentido 
+    
+        X_new := X,
+        Y_new := Y,
+        Path_New := Path,
+        Dir_New :=  '^'
+        )
+    ),
+      
+    New_State = {[X_new,Y_new], Dir_New, Path_New, [X_e,Y_e], [N_Rows,N_Cols], Grid}.
+      
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% AUXILIARY predicates
+
+print_map( M ) =>
+    L = M.length,
+    C = M[1].length,
+     nl,
+      foreach(I in 1  .. L)
+        foreach(J in 1  ..  C)
+         printf("%w ", M[I,J] )
+        end,
+        nl
+    end.   
+
+count_char(M, C) = Count =>
+    Count = sum([1 : I in 1..M.length, J in 1..M[I].length, M[I,J] == C]).
+/*
+find_symbol(M, Symbol) = R =>
+    %[N_Rows, N_Cols] = [M.length, M[1].length],
+    N_Rows = M.length,
+    N_Cols =  M[1].length,
+    X := 0, 
+    Y := 0,
+    foreach(I in 1..N_Rows, J in 1..N_Cols)
+        %if membchk(M[I,J], [Symbol]) then
+        if (M[I,J] == Symbol) then    
+            X := I,
+            Y := J,
+            printf("\n Symbol %w was found in: [%w,%w] ", Symbol,X,Y)
+
+        end
+    end,
+    if (var(X) || var(Y)|| (X == 0 && Y == 0) ) then
+        printf("\n The symbol  %w  was not found .... ", Symbol)
+    end,
+    R = [X,Y].
+*/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+/*
+find_symbol(M, Symbol) = R =>
+    Positions = [ [I, J] : I in 1..M.length, J in 1..M[1].length, M[I, J] == Symbol ],
+    if (Positions == []) then
+        printf("\n The symbol %w was not found .... ", Symbol),
+        R = [0, 0]  % Retorna [0, 0] se o símbolo não for encontrado
+    else
+        [X, Y] = Positions[1],  % Pega a primeira posição encontrada
+        printf("\n Symbol %w was found in: [%w,%w] ", Symbol, X, Y),
+        R = [X, Y]
+    end.
+*/
+
+/*
+    ((Key == 1) -> R = true ; R = false ).   %%% FUNCAO RETORNA TRUE OU FALSE
+        Picat> Key = 1, ((Key == 1) -> R = true ; R = false ).
+    Key = 1
+    R = true
+    yes
+ 
+
+*/    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

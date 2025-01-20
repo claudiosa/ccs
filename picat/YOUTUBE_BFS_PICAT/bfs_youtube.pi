@@ -1,0 +1,188 @@
+% BFS developed by CCS
+import util.
+
+/*
+Grafo orientado ciclico - NAO EH UM DAG
+                     1
+                    /|\ 
+                   / | \
+                 /  |  \
+                /   |   \
+            ->2    3    4
+             |\    |   /|
+            |  \   |  / |
+            |   \  | /  | 
+            |     5     |
+            |     / \  |
+            |    /   \|
+            |   /     7----------------> 1
+            |  /     (volta ao nó 1 - ciclo) 
+            | /
+            |/
+            6 --------------> 3    (volta ao nó 3 - ciclo) 
+*/
+graph(1) = G =>
+    G = [
+        [1,[2,3,4]],
+        [2,[5,6]],
+        [3,[5]],
+        [4,[5,7]],
+        [5,[6,7]],
+        [6,[3]],
+        [7,[1]]
+    ].
+
+
+/*
+Sample of BFS -- EH UM DAG
+  
+       1 ---------------
+      / \               \
+     2   3  -------      \
+    / \ / \        \      \
+   4   5   6       ------> 12  
+  / \ /     \
+ 7   8       9
+ |           |
+ 10         11
+
+*/
+     % Definindo um grafo simples
+graph(2) = G =>
+    G =  [
+    [1, [2, 3, 12]],
+    [2, [4, 5]],
+    [3, [5, 6, 12]],
+    [4, [5, 7]],
+    [5, [8]],
+    [6, [9]],
+    [7, [10]],
+    [8, []],
+    [9, [11]],
+    [10, []],
+    [11, []],
+    [12, []]
+].
+
+                            
+main =>
+       
+ % Testando o BFS Classico
+    InitNode = 1,
+    Graphs = [graph(1), graph(2)],  %%% uma lista de grafos=matriz de adjacencias
+    Nodes = [all_nodes(graph(1)), all_nodes(graph(2))], %% uma lista dos nos em cada grafo
+    printf("Graphs %w \nNodes: %w", Graphs, Nodes),
+    N_Graphs = Graphs.len,
+    
+    %%%% Apenas para CHAMAR TODOS os TESTES por aqui 
+    foreach(I in 1..N_Graphs)  
+        foreach(EndNode in Nodes[I])
+            bfs(Graphs[I], [InitNode], EndNode, Sol),
+            % bfs(Graph, [Start], End, Result),  %%% PREDICATIVE version
+           % Sol = bfs_F(Graph, [Start], End), %%% Functional version
+            printf("\n => OUTPUT: %w", Sol),  
+            
+            (Sol != []) ->
+            (
+            printf("\n\n INPUT DATA: graph(%w) ", I), 
+            printf("\n Init Node:%w  End Node:%w  ", InitNode, EndNode),
+            printf("\n Visiting order: %w \n", Sol)
+            
+            );
+            (printf("\n >>> The End Node: %w was not found!!!\n", End)
+            ) 
+        end
+    end,
+    printf("\n End of main: OK\n").   
+
+main => printf("\n End of main with fail ... NO SOLUTION").     
+
+
+%%%%%%%%%%%%%%%% Um bom BFS PREDICADOS
+bfs(_, [], _End, Result) ?=> Result = [], !.                 
+bfs(Graph, All_Paths, End, Result) ?=> 
+    % Procurando:  Node == End  
+    L = [One_Path : One_Path in All_Paths, membchk( End, One_Path) ], 
+    L != [],
+    Result = reverse(flatten(L)),
+    !.
+
+bfs(Graph, [Path | Rest], End, Result) => 
+    
+    expansion(Graph, [Path], Paths_Expanded),
+    New_Paths = Rest ++ Paths_Expanded, % Atualiza a fila
+    printf("\n Node or Curr Path: %w \t Paths Expanded: %w ", Path, Paths_Expanded),
+    printf("\n Rest: %w \t New_Rest(Paths): %w", Rest, New_Paths ),
+    bfs(Graph, New_Paths, End ,Result).
+
+%
+%expansion(Graph, P , Paths_Expanded),   (P==[];P==[[]]) ?=> 
+%     Paths_Expanded = [], !.
+% (X == [[]] ;  Picat> G = [[1,[2,3,4]],[2,[4,5]],[3,[4]],[4,[]],[5,[]]], expansion(G, [2], X), write(X).
+%
+% EXPANDE O NO DE INICIO EM CADA CAMINHO POSSIVEL ... 
+% FATOR DE RAMIFICACAO EH EXPONENCIAL MESMO
+expansion(Graph, [], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [[]], Paths_Expanded) => 
+    Paths_Expanded = [], !.
+expansion(Graph, [First_Path|Paths], Paths_Expanded) =>
+    First = first(flatten(First_Path)),
+    Neighbors = get_neighbors(First, Graph),
+    %%%%printf("\n Node: %w Neighbors: %w", Node, Neighbors ),
+    %%% varias ramificacoes em Node .... branches
+    NewPaths = [[N, First_Path |Paths] : N in Neighbors, not membchk(N, [First_Path|Paths])],
+    expansion(Graph, Paths,  TempPath),
+    Paths_Expanded = NewPaths ++ TempPath.
+
+/*
+A construção [[N, Node|Path] : N in Neighbors] desempenha papel semelhante ao findall ao gerar todas as novas combinações de caminhos. Com essa abordagem, você deve obter o caminho mais curto corretamente, preservando o comportamento típico do BFS. 
+*/
+%%% BFS FUNCTIONAL version by CCS ....
+bfs_F(_, [], _End ) = Result => Result = [].                 
+/*
+    membchk(End,flatten([Path | Rest])),
+    All_Paths = [Path | Rest],
+    L = [One_Path : One_Path in All_Paths, membchk(End, One_Path) ], 
+    Result = reverse(flatten(L)).
+    %bfs_F(Graph, [Path | Rest], End) = Result => 
+
+*/
+bfs_F(Graph, [Path | Rest], End) = Result => 
+    All_Paths = [Path | Rest],
+    if (membchk(End,flatten(All_Paths))) then
+        %All_Paths = [Path | Rest],
+        %%% FILTRAR em qual caminho o nó End está presente
+        Sol = [One_Path : One_Path in All_Paths,  membchk(End, One_Path) ], 
+        %%% por isto que precisa passar o Flatten na resposta final
+        Result = reverse(flatten(Sol))
+    else
+        expansion(Graph, [Path], Paths_Expanded),
+        New_Paths = Rest ++ Paths_Expanded, % Atualiza a fila
+        printf("\n Node or Curr Path: %w \t Paths Expanded: %w ", Path, Paths_Expanded),
+        printf("\n Rest: %w \t New_Rest(Paths): %w", Rest, New_Paths ),
+        Result = bfs_F(Graph, New_Paths, End),
+    end.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Functional BFS - END
+%%% FUNCTIONAL
+%%% take the NEIGHBOURS from NODE in Graph
+get_neighbors(_,[]) = [].
+get_neighbors(Node, [[Node, Neighbours] | _] ) = Neighbours.
+get_neighbors(Node, [_ | Rest]) = get_neighbors(Node, Rest).
+
+%%% PREDICATIVE    
+get_neighbors(_Node, [], R) ?=> R = [].
+get_neighbors(Node, [[First, Second]|Rest], R), First == Node ?=>
+    R = Second, !.
+
+get_neighbors(Node, [[First, Second]|Rest], R), First != Node =>
+    get_neighbors(Node, Rest, R).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+all_nodes( Graph ) = Nodes =>
+    %Nodes = sort( [N : Termo in Graph, {N, _} = Termo ]) . 
+    %Nodes = [N : Termo in Graph, {N, _} = Termo ] .   
+    Nodes = [N : Termo in Graph, [N, _] = Termo ] .   
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
